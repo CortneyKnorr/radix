@@ -14,7 +14,7 @@ function controlFlowCall(controlFlow){
         } else {
             setImmediate(() => next(iter, cb, ecb, value));
         }
-    }
+    };
     return (...args) => (new Promise((resolve, reject) => {
         next(controlFlow(...args), val => resolve(val), val => reject(val));
     }));

@@ -103,7 +103,7 @@ var initExpress = function () {
 
     stack.helpers.log("Loading app's routers", 3).iLog();
     stack.globals.controllers = hooks_routers;
-    stack.helpers.aLog(JSON.stringify(hooks_routers));
+
     let loadRoutersOnto = function (parentRouter, routersAsObj) {
         for (var routerBase in routersAsObj) {
             let router = hooks_routers[routerBase];

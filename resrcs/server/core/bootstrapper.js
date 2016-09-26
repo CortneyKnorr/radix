@@ -1,4 +1,4 @@
-function launchServer() {
+function* stack_bootstrapper() {
     var __env__ = project.env.data;
     stack.globals.environment = __env__;
     //Module dependencies.

@@ -8,7 +8,15 @@ function stack_requirements() {
             stack.helpers.cLog("Requirements checked out");
             console.timeEnd("|-| Requirements");
             console.log();
-            launchServer();
+            controlFlowCall(stack_main)()
+                .then(data => {
+
+                })
+                .catch(errors => {
+                    console.log("Fact of awesomeness");
+                    console.log(errors);
+                })
+            ;
         })
         .catch(error => {
             stack.helpers.cLog("Requirements could not be verified");
