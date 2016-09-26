@@ -1,4 +1,4 @@
-function stack_crash(error) {
+function* hooks_crash(error) {
     var debug = getDependency('debug')('test:server');
     var http = getDependency('http');
     var https = getDependency('https');

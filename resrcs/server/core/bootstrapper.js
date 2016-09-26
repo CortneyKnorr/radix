@@ -1,45 +1,5 @@
-exports.launch = function (__env__) {
-    __env__ = __env__.data;
-
-    Promise.all(requirements())
-        .then(_ => {
-            try {
-                launchServer(__env__);
-            } catch (e) {
-                console.log((new Date()).toLocaleString() + " SERVER CRASHED");
-
-                if (stack.globals.server) {
-                    console.log((new Date()).toLocaleString() + " SHUTTING DOWN SERVER");
-                    stack.globals.server.close();
-                }
-
-                stack_crash(e);
-            }
-        })
-        .catch(err => {
-            console.log(err);
-            console.log("Error exiting app some requirements were not met.")
-        })
-    ;
-};
-
-var project = {};
-project.models = {};
-
-var stack = {};
-stack.globals = {};
-stack.globals.server = {};
-stack.globals.expressApp = {};
-stack.globals.redirectServer = {};
-stack.globals.environment = {};
-stack.globals.mongoose = {};
-stack.globals.version = "1.0.0";
-stack.mapis = {};
-stack.dapis = {};
-stack.models = {};
-stack.core = {};
-
-function launchServer(__env__) {
+function launchServer() {
+    var __env__ = project.env.data;
     stack.globals.environment = __env__;
     //Module dependencies.
     var debug = getDependency('debug')('test:server');
