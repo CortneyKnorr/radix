@@ -1,0 +1,20 @@
+{
+  "defaultApps": {
+    "defaultUserManagement": {
+      "description": "Defines if user mangaement is activated",
+      "value": true,
+      "analog": false,
+      "boolean": true,
+      "valueSet": [],
+      "default": true
+    },
+    "defaultFileUploader": {
+      "description": "Defines if the default file uploader is activated",
+      "value": true,
+      "analog": false,
+      "boolean": true,
+      "valueSet": [],
+      "default": true
+    }
+  }
+}

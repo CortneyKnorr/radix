@@ -1,0 +1,10 @@
+{
+  "description": "Configuration file for FILES DAPI",
+  "namespace": true,
+
+  "enabled": {
+    "description": "Enables FILES DAPI on server",
+    "namespace": false,
+    "value": true
+  }
+}
