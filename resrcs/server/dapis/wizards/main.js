@@ -1,0 +1,107 @@
+stack.dapis.wizards = {};
+
+(() => {
+    let wizards = stack.dapis.wizards;
+    let standards = wizards.standards = {};
+    let objects = wizards.objects = {};
+    let cruds = wizards.cruds = {};
+
+    /*
+     Standards
+     Wizards for standards will often be used to simplify the implementation
+     of a norm
+     */
+    standards.ehgf13Arg = function ehgf13Arg(arg, request, defaultValue) {
+        var value;
+        if (typeof arg == "function") {
+            value = arg(request);
+        } else if (typeof arg == "undefined") {
+            value = defaultValue;
+        } else {
+            value = arg;
+        }
+        return value;
+    };
+
+    /*
+     Objects
+     Wizards for objects are a set of awesome function that can be used on
+     js objects
+     */
+    objects.update = function update(instance, leanInstance) {
+        for (let key in leanInstance) {
+            if (!instance.hasOwnProperty(key)) {
+
+            }
+            instance[key] = leanInstance[key];
+        }
+        return instance;
+    };
+
+    /*
+     Cruds
+     Wizards for simplifying crud creation;
+     */
+    cruds.ehg = {
+        update(idArg, modelArg, leanInstanceArg) {
+            return function*(request, response, next) {
+                let model = wizards.standards.ehgf13Arg(modelArg, request, false);
+                let id = wizards.standards.ehgf13Arg(idArg, request, false);
+                let leanInstance = wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                if (model && id && typeof leanInstance == "object") {
+                    let myInstance = yield model.findById(id);
+                    wizards.objects.update(myInstance, leanInstance);
+                    response.send(yield myInstance.save())
+                } else {
+                    throw "Express generator arguments are invalid";
+                }
+            }
+        },
+        get(idArg, modelArg) {
+            return function*(request, response, next) {
+                let model = wizards.standards.ehgf13Arg(modelArg, request, false);
+                let id = wizards.standards.ehgf13Arg(idArg, request, false);
+                if (model && id) {
+                    response.send(yield model.findById(id));
+                } else {
+                    throw "Express generator arguments are invalid";
+                }
+            }
+        },
+        getAll(modelArg) {
+            return function*(request, response, next) {
+                let model = wizards.standards.ehgf13Arg(modelArg, request, false);
+                if (model) {
+                    response.send(yield model.find(id));
+                } else {
+                    throw "Express generator arguments are invalid";
+                }
+            }
+        },
+        delete(idArg, modelArg) {
+            return function*(request, response, next) {
+                let model = wizards.standards.ehgf13Arg(modelArg, request, false);
+                let id = wizards.standards.ehgf13Arg(idArg, request, false);
+                if (model && id) {
+                    response.send(yield model.findByIdAndRemove(id));
+                } else {
+                    throw "Express generator arguments are invalid";
+                }
+            }
+        },
+        create(modelArg, leanInstanceArg) {
+            return function*(request, response, next) {
+                let model = wizards.standards.ehgf13Arg(modelArg, request, false);
+                let leanInstance = wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                if (model && typeof leanInstance == "object") {
+                    let myInstance = new model(leanInstance);
+                    response.send(yield myInstance.save())
+                } else {
+                    throw "Express generator arguments are invalid";
+                }
+            }
+        },
+    }
+
+
+})();
