@@ -1,6 +1,7 @@
 var project = {};
 project.models = {};
 project.env = {};
+project.middleware = {};
 
 var stack = {};
 stack.globals = {};

@@ -78,8 +78,8 @@ function* stack_express() {
     stack.helpers.log("Setting up Stacks Core Hooks").iLog();
     stack.helpers.log("Loading custom middleware", 3).iLog();
 
-    stack.globals.middleware = stack_middleware;
-    for (let middleware of stack_middleware) {
+    project.middleware = hooks_middleware.map(eh => controlFlowCall(eh));
+    for (let middleware of project.middleware) {
         app.use(middleware);
         stack.helpers.log("Added [" + middleware.name + "] to app.");
     }
