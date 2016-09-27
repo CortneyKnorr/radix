@@ -1,3 +1,3 @@
 function* stack_main(){
-    yield controlFlowCall(stack_bootstrapper)();
+    yield* stack_bootstrapper();
 }

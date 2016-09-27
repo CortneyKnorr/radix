@@ -37,7 +37,7 @@ function* stack_bootstrapper() {
         stack.globals.server = http.createServer(stack.globals.expressApp);
     }
 
-    initExpress();
+    yield* stack_express();
 
     //Listen on provided port, on all network interfaces.
     stack.globals.server.listen(port);

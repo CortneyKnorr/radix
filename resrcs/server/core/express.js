@@ -1,4 +1,4 @@
-var initExpress = function () {
+function* stack_express() {
     console.log();
     console.log("|-| Initializing express...");
     console.log(" | ");
@@ -97,8 +97,8 @@ var initExpress = function () {
     stack_dapis();
     stack.helpers.log("Loading Stack MAPIs", 3);
     stack.helpers.iLog();
-    controlFlowCall(hooks_mapis)();
-    stack.helpers.lastLogLevel = 4;
+    yield* hooks_mapis();
+    stack.helpers.l87astLogLevel = 4;
     stack.helpers.cLog("Stack MAPIs Loaded");
 
     stack.helpers.log("Loading app's routers", 3).iLog();
@@ -128,7 +128,7 @@ var initExpress = function () {
 
     if (app.get('env') === 'development') {
         stack.helpers.log("Executing Stack Tests").iLog();
-        controlFlowCall(hooks_tests)();
+        yield* hooks_tests();
         stack.helpers.log("Stack Tests executed", -3);
     }
 
@@ -172,4 +172,4 @@ var initExpress = function () {
     console.timeEnd("|-| Express init");
     console.log();
     return app;
-};
+}

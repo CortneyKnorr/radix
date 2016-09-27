@@ -9,6 +9,7 @@ function controlFlowCall(controlFlow){
             value.then(val => {
                 setImmediate(() => next(iter, cb, ecb, val));
             }).catch(error => {
+                console.log(ecb);
                 ecb(error);
             });
         } else {
