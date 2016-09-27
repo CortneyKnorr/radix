@@ -15,11 +15,11 @@ function* stack_bootstrapper() {
         port = __env__.httpsPort;
         stack.globals.expressApp.set('port', port);
 
-        var privateKey = fs.readFileSync(__env__.privateKeyPath, "utf8");
-        var certificate = fs.readFileSync(__env__.certificatePath, "utf8");
+        var privateKey = fs.readFileSync("./config/"+__env__.privateKeyPath, "utf8");
+        var certificate = fs.readFileSync("./config/"+__env__.certificatePath, "utf8");
         var ca = [];
         for (var caPath of __env__.caPaths) {
-            ca.push(fs.readFileSync(caPath, "utf8"));
+            ca.push(fs.readFileSync("./config/"+caPath, "utf8"));
         }
         var credentials = {key: privateKey, cert: certificate, secure: true, ca: ca};
 
