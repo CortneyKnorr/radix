@@ -47,9 +47,10 @@ exports.server.build = function () {
         .pipe(debug())
         .pipe(sourcemaps.init())
         .pipe(concat('index.js'))
-        .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
-        //only uglifyjs if gulp is ran with '--type production'
-        .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+        // has to be fixed
+        // .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+        // //only uglifyjs if gulp is ran with '--type production'
+        // .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(io.server.out));
 };
