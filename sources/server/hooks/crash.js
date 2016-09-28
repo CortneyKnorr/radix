@@ -23,10 +23,10 @@ function* hooks_crash(error) {
         crashApp.set('port', stack.globals.environment.httpsPort);
         var crashServer = https.createServer(credentials, crashApp);
         crashServer.listen(stack.globals.environment.httpsPort);
-        console.log((new Date()).toLocaleString() + " CATCH SERVER LAUNCHED ON PORT " + stack.globals.environment.httpsPort);
+        console.log((new Date()).toLocaleString() + " CATCH SERVER LAUNCHED ON PORT " + project.env.data.httpsPort);
     } else {
-        console.log((new Date()).toLocaleString() + " CATCH SERVER LAUNCHED ON PORT " + stack.globals.environment.httpPort);
-        crashApp.listen(stack.globals.environment.httpPort);
+        console.log((new Date()).toLocaleString() + " CATCH SERVER LAUNCHED ON PORT " + project.env.data.httpPort);
+        crashApp.listen(project.env.data.httpPort);
     }
 
 }

@@ -9,12 +9,8 @@ function stack_requirements() {
             console.timeEnd("|-| Requirements");
             console.log();
             controlFlowCall(stack_main)()
-                .then(data => {
-
-                })
-                .catch(errors => {
-                    console.log("Fact of awesomeness");
-                    console.log(errors);
+                .catch(error => {
+                    controlFlowCall(hooks_crash)(error);
                 })
             ;
         })
@@ -25,6 +21,7 @@ function stack_requirements() {
             stack.helpers.cLog("End of results");
             console.timeEnd("|-| Requirements");
             console.log();
+            controlFlowCall(hooks_crash)(error);
         });
 
 }
