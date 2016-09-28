@@ -146,14 +146,13 @@ function* stack_express() {
     });
     app.use(
         function (err, request, response, next) {
-            console.log("Hello" + response.statusCode);
             if (response.statusCode) {
                 if (hooks_catch[response.statusCode.toString()]) {
                     hooks_catch[response.statusCode.toString()](request, response, () => response.send(err))
                 } else if (hooks_catch.default) {
-                    hooks_catch.default(request, response, () => response.send(err));
+                    hooks_catch.default(request, response, () => response.status(500).send(err));
                 } else {
-                    response.send(err);
+                    response.status(500).send(err);
                 }
             } else {
                 response.statusCode = 500;

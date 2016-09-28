@@ -7,17 +7,26 @@ function controlFlowCall(controlFlow){
 
         if(typeof value !== 'undefined' && typeof value.then === 'function'){
             value.then(val => {
-                setImmediate(() => next(iter, cb, ecb, val));
+                try {
+                    setImmediate(() => next(iter, cb, ecb, val));
+                } catch(e) {
+                    ecb(e);
+                }
             }).catch(error => {
-                console.log(ecb);
                 ecb(error);
             });
         } else {
-            setImmediate(() => next(iter, cb, ecb, value));
+            try {
+                setImmediate(() => next(iter, cb, ecb, value));
+            } catch(e) {
+                ecb(e);
+            }
         }
     };
     return (...args) => (new Promise((resolve, reject) => {
-        next(controlFlow(...args), val => resolve(val), val => reject(val));
+        next(controlFlow(...args), val => resolve(val), val => {
+            reject(val)
+        });
     }));
 
 }
