@@ -36,6 +36,17 @@ class StackRouter extends getDependency("express").Router {
         return this;
     }
 
+    onAll(path, ...args) {
+        super.all(path, ...args.map(arg => function (request, response, next) {
+            controlFlowCall(arg)(request, response, next)
+                .catch(errors => {
+                        next(errors);
+                })
+            ;
+        }));
+        return this;
+    }
+
     onDelete(path, ...args) {
         super.delete(path, ...args.map(arg => function (request, response, next) {
             controlFlowCall(arg)(request, response, next)
@@ -62,6 +73,16 @@ class StackRouter extends getDependency("express").Router {
         };
         route.onPost = function (...args) {
             route.post(...args.map(arg => function (request, response, next) {
+                controlFlowCall(arg)(request, response, next)
+                    .catch(errors => {
+                        next(errors);
+                    })
+                ;
+            }));
+            return route;
+        };
+        route.onAll = function (...args) {
+            route.all(...args.map(arg => function (request, response, next) {
                 controlFlowCall(arg)(request, response, next)
                     .catch(errors => {
                         next(errors);
