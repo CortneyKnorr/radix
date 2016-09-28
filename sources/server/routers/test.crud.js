@@ -3,8 +3,6 @@ function router_test(){
 
     router.onRoute("/")
         .onGet(function* (request, response, next) {
-            console.log("fuck");
-            throw "fuck";
             response.send(yield project.models.dummy.find());
         })
         .onPost(function* (request, response, next) {
