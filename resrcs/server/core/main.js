@@ -16,11 +16,11 @@ function* stack_main(){
         // Count the machine's CPUs
         var cpuCount = require('os').cpus().length;
         var workerCount = 0;
-        var attempts = 0;
+        var wantedWorkers = cpuCount < project.env.data.threads ? cpuCount : project.env.data.threads || 1;
 
 
         var clusterGenerator = function* () {
-            for(let i = 0; i < cpuCount; i++) {
+            for(let i = 0; i < wantedWorkers; i++) {
                 let worker = cluster.fork();
                 yield new Promise((resolve, reject) => {
                     worker.on('message', function (message) {
