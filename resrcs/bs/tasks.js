@@ -14,4 +14,5 @@ module.exports = {
     'build-front': ['arch-server', 'build-js', 'build-static', 'build-css', 'build-views', 'build-ts'],
     'build-all': ['build-front', 'build-server'],
     'ba': ['build-front', 'build-server'],
+    's': ['serve'],
 };

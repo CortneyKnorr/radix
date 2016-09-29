@@ -16,7 +16,11 @@ var gulp = require('gulp'),
     jade = require('gulp-jade'),
     traceur = require('gulp-traceur'),
     io = require('./io'),
-    typescriptConfig = typescript.createProject('tsconfig.json');
+    typescriptConfig = typescript.createProject('tsconfig.json'),
+    postcss = require('gulp-postcss'),
+    autoprefixer = require('autoprefixer'),
+    cssnano = require('cssnano');
+
 
 var env = require('../../config/env.json');
 var node_env = process.env.NODE_ENV || 'development';
@@ -55,7 +59,7 @@ exports.server.build = function () {
         .pipe(gulp.dest(io.server.out));
 };
 exports.server.clean = function () {
-    return del([io.server .out+ '*.*'])
+    return del([io.server.out + '*.*'])
 };
 
 //Gulp javascript functions
@@ -107,6 +111,9 @@ exports.static.clean = function () {
 //Gulp css functions
 exports.css = {};
 exports.css.build = function () {
+    var processors = [
+        autoprefixer(),
+    ];
     var stream = gulp.src(io.stylesheets.in)
         .pipe(debug())
         .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
@@ -115,6 +122,7 @@ exports.css.build = function () {
             console.log(err);
             console.log("Error building css");
         })
+        .pipe(postcss(processors))
         .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
         .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
         .pipe(gulp.dest(io.stylesheets.out));

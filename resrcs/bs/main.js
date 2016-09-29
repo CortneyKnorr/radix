@@ -14,7 +14,7 @@ var allWatchTasks = [];
 for(task in watch.logic){
     var taskName = "watch--"+task;
     allWatchTasks.push(taskName);
-    gulp.task(taskName, ()=> { gulp.watch(watch[task].files, watch[task].tasks); });
+    gulp.task(taskName, ()=> { gulp.watch(watch.logic[task].files, watch.logic[task].tasks); });
 }
 
 gulp.task("watch-all", allWatchTasks);
