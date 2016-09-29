@@ -173,7 +173,7 @@ exports.nodemon = function (cb) {
     return nodemon({
         script: 'stack.js',
         ext: 'js',
-        watch: exports.watchInput.server,
+        watch: require("./watch").files.server,
         tasks: ['build-all']
     }).on('start', function () {
         if (!started) {
