@@ -146,7 +146,6 @@ function* stack_express() {
     stack.helpers.log("Loading Stack 404 and error handlers");
     // catch 404 and forward to error handler
     app.use(function (request, response, next) {
-        console.log("404");
         response.statusCode = 404;
         throw "404";
     });
