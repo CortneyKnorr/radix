@@ -28,7 +28,6 @@ function* stack_main(){
                 yield new Promise((resolve, reject) => {
                     worker.on('message', function (message) {
                         workerCount += 1;
-                        console.log(message);
                         resolve();
                     })
                 })

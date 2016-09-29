@@ -67,6 +67,6 @@ function* stack_bootstrapper(worker) {
             ? 'pipe ' + addr
             : 'port ' + addr.port;
         stack.helpers.aLog('\033[32mListening on ' + bind + "\033[0m");
-        worker.process.send("All done");
+        worker.process.send("done");
     });
 }

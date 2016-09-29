@@ -105,29 +105,15 @@ function* stack_express() {
     stack.helpers.l87astLogLevel = 4;
     stack.helpers.cLog("Stack MAPIs Loaded");
 
+    //Adding stack routers onto app
+    stack.helpers.log("Loading stack routers", 3).iLog();
+    stack_loadRoutersOnto(app, stack_internal_routers);
+    stack.helpers.cLog("Stack routers loaded");
+
+    //Adding projects routers onto app
     stack.helpers.log("Loading app's routers", 3).iLog();
     stack.globals.controllers = hooks_routers;
-
-    let loadRoutersOnto = function (parentRouter, routersAsObj) {
-        for (var routerBase in routersAsObj) {
-            let router = hooks_routers[routerBase];
-            if (typeof router == 'object'){
-                stack.helpers.log("Loading onto " + routerBase).iLog();
-                let myNewRouter = new express.Router();
-                loadRoutersOnto(myNewRouter, router);
-                parentRouter.use(routerBase, myNewRouter);
-                stack.helpers.dLog();
-            } else if (typeof router == 'function'){
-                stack.helpers.log("Loading onto " + routerBase + " router [" + router.name + "]");
-                parentRouter.use(routerBase, router());
-            } else {
-                throw `${typeof router} routers are not supported`;
-            }
-        }
-    };
-
-    loadRoutersOnto(app, hooks_routers);
-
+    stack_loadRoutersOnto(app, hooks_routers);
     stack.helpers.cLog("App routers loaded");
 
     if (app.get('env') === 'development') {
