@@ -146,22 +146,24 @@ function* stack_express() {
     stack.helpers.log("Loading Stack 404 and error handlers");
     // catch 404 and forward to error handler
     app.use(function (request, response, next) {
-        throw response.statusCode = 404;
+        console.log("404");
+        response.statusCode = 404;
+        throw "404";
     });
     app.use(
         function (err, request, response, next) {
             if (response.statusCode) {
                 if (hooks_catch[response.statusCode.toString()]) {
-                    hooks_catch[response.statusCode.toString()](request, response, () => response.send(err))
+                    controlFlowCall(hooks_catch[response.statusCode.toString()])(request, response, () => response.send(err))
                 } else if (hooks_catch.default) {
-                    hooks_catch.default(request, response, () => response.status(500).send(err));
+                    controlFlowCall(hooks_catch.default)(request, response, () => response.send(err));
                 } else {
                     response.status(500).send(err);
                 }
             } else {
                 response.statusCode = 500;
                 if (hooks_catch.default) {
-                    hooks_catch.default(request, response, () => response.send(err));
+                    controlFlowCall(hooks_catch.default)(request, response, () => response.send(err));
                 } else {
                     response.send(err);
                 }

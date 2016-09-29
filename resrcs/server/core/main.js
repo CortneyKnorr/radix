@@ -3,10 +3,13 @@ function* stack_main(){
 
     process.on('SIGINT', function() {
         console.log("Caught interrupt signal");
-
+        console.log("[-] Shutting down server");
+        console.time("[-] Shut down");
         for (var id in cluster.workers) {
+            stack.helpers.log(`Killing worker ${id}`, 1);
             cluster.workers[id].kill();
         }
+        console.timeEnd("[-] Shut down");
 
         process.exit(0);
     });
