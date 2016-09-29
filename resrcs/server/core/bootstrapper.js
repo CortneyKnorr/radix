@@ -1,4 +1,5 @@
-function* stack_bootstrapper() {
+function* stack_bootstrapper(worker) {
+    stack.globals.WORKER = worker;
     var __env__ = project.env.data;
     stack.globals.environment = __env__;
     //Module dependencies.
@@ -66,5 +67,6 @@ function* stack_bootstrapper() {
             ? 'pipe ' + addr
             : 'port ' + addr.port;
         stack.helpers.aLog('\033[32mListening on ' + bind + "\033[0m");
+        worker.process.send("All done");
     });
 }

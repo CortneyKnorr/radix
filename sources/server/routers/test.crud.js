@@ -3,14 +3,14 @@ function router_test() {
 
     router.onRoute("/")
         .onGet(function*(request, response, next) {
-            response.send(yield project.models.dummy.find());
-        })
-        .onPost(function*(request, response, next) {
-            let myDummy = new project.models.dummy({title: Date.now().toString()});
-            let results = yield Promise.all([myDummy.save(), myDummy.save()]);
-            response.send(results);
-        })
-    ;
+            request.session.varr = new Date();
+            response.send(request.session.varr);
+        });
+
+    router.onRoute("/g")
+        .onGet(function*(request, response, next) {
+            response.send(request.session.varr);
+        });
 
     return router;
 }

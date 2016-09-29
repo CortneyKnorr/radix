@@ -12,6 +12,7 @@ function* stack_express() {
         logger = getDependency('morgan'),
         cookieParser = getDependency('cookie-parser'),
         bodyParser = getDependency('body-parser'),
+        MongoStore = require('connect-mongo')(session),
         mongoose = getDependency('mongoose');
 
     stack.helpers.cLog("Dependencies imported");
@@ -52,7 +53,8 @@ function* stack_express() {
     stack.helpers.log("Setting up default Middleware");
     app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
     if (app.get('env') === 'development') {
-        logger.format('stack', '\033[96m | ASYNC|->\033[0m :remote-addr - :remote-user [:date[clf]] \033[95m":method :url HTTP/:http-version" :status :res[content-length]\033[0m');
+        var prefix = stack.globals.WORKER ? (stack.globals.WORKER.id || "") : "";
+        logger.format('stack', prefix + '\033[96m | ASYNC|->\033[0m :remote-addr - :remote-user [:date[clf]] \033[95m":method :url HTTP/:http-version" :status :res[content-length]\033[0m');
         app.use(logger("stack"));
     }
 
@@ -68,7 +70,9 @@ function* stack_express() {
 
     stack.helpers.log("Setting up Express session");
     app.use(session({
+        store: new MongoStore({ mongooseConnection: mongoose.connection }),
         secret: 'a4f8071f-c873-4447-8ee2',
+        proxy: true,
         resave: false,
         saveUninitialized: true,
         cookie: {secure: stack.globals.environment.https}

@@ -16,7 +16,7 @@ stack.dapis = {};
 stack.models = {};
 stack.core = {};
 
-exports.init = function init(envData) {
+exports.init = function init() {
     console.log();
 
     console.time('|-| Prepared');
