@@ -2,17 +2,17 @@ function stack_dapis_users() {
     var Users = getDependency(stack_models_users);
     return {
         cfs: {
-            create: function*(username, password, rights) {
-                if (username && password && typeof rights == 'number') {
+            create: function*(leanInstance) {
+                if (leanInstance.username && leanInstance.password && leanInstance.rights) {
                     //Retrieve users with same name
-                    var usersWithSameName = yield Users.count({username: username});
+                    var usersWithSameName = yield Users.count({username: leanInstance.username});
 
                     //If no one else has the same username
                     if (usersWithSameName == 0) {
                         var myUser = new Users();
-                        myUser.username = username;
-                        myUser.password = password;
-                        myUser.rights = rights;
+                        myUser.username = leanInstance.username;
+                        myUser.password = leanInstance.password;
+                        myUser.rights = leanInstance.rights;
                         return yield myUser.save();
                     } else {
                         return false;
@@ -39,10 +39,10 @@ function stack_dapis_users() {
                 let newUser = stack.dapis.wizards.objects.update(oldUser, leanInstance);
                 return yield newUser.save();
             },
-            remove: function*(userId, leanInstance) {
+            remove: function*(userId) {
                 return yield Users.findByIdAndRemove(userId);
             },
-            getRealRights: function*(userId, leanInstance) {
+            getRealRights: function*(userId) {
                 let conf = getDependency("../config/dapi/access.json");
                 let user = yield Users.findById(userId);
                 return yield (conf[user.rights] || {});
@@ -54,60 +54,74 @@ function stack_dapis_users() {
                     'username': username,
                     'password': ( Hash.isHashed(password) ? password : Hash.generate(password))
                 });
-                if (potentialUser){
-                    return true;
-                } else {
-                    return false;
-                }
+                return !!potentialUser;
             }
         },
         ehgs: {
-            create: function*(usernameArg, passwordArg, rightsArg) {
-                return function*(request, response, next){
-                    let username = stack.dapis.wizards.standards.ehgf13Arg(usernameArg, request, false);
-                    let password = stack.dapis.wizards.standards.ehgf13Arg(passwordArg, request, false);
-                    let rights = stack.dapis.wizards.standards.ehgf13Arg(rightsArg, request, false);
-                    let results = yield* stack.dapis.users.cfs.create(username, password, rights);
+            create: function (leanInstanceArg) {
+                return function*(request, response){
+                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    let results = yield* stack.dapis.users.cfs.create(leanInstance);
                     response.send(results);
                 };
             },
-            get: function*(userId) {
-                yield Users.findById(userId);
+            get: function (userIdArg) {
+                return function*(request, response){
+                    let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
+                    let results = yield* stack.dapis.users.cfs.get(userId);
+                    response.send(results);
+                };
             },
-            getWithoutPassword: function*(userId) {
-                yield Users.findById(userId, "-password");
+            getWithoutPassword: function (userIdArg) {
+                return function*(request, response){
+                    let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
+                    let results = yield* stack.dapis.users.cfs.getWithoutPassword(userId);
+                    response.send(results);
+                };
             },
-            getAllByRights: function*(rightsArg) {
-                yield Users.find({"rights": rightsArg}, "-password");
+            getAllByRights: function (rightsArg) {
+                return function*(request, response){
+                    let rights = stack.dapis.wizards.standards.ehgf13Arg(rightsArg, request, false);
+                    let results = yield* stack.dapis.users.cfs.getAllByRights(rights);
+                    response.send(results);
+                };
             },
-            exists: function*(userId) {
-                let matches = yield Users.count({_id: userId});
-                yield matches > 0;
+            exists: function (userIdArg) {
+                return function*(request, response){
+                    let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
+                    let results = yield* stack.dapis.users.cfs.exists(userId);
+                    response.send(results);
+                };
             },
-            update: function*(userId, leanInstance) {
-                let oldUser = yield Users.findById(userId);
-                let newUser = stack.dapis.wizards.objects.update(oldUser, leanInstance);
-                yield newUser.save();
+            update: function (userIdArg, leanInstanceArg) {
+                return function*(request, response){
+                    let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
+                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    let results = yield* stack.dapis.users.cfs.update(userId, leanInstance);
+                    response.send(results);
+                };
             },
-            remove: function*(userId, leanInstance) {
-                yield Users.findByIdAndRemove(userId);
+            remove: function (userIdArg) {
+                return function*(request, response){
+                    let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
+                    let results = yield* stack.dapis.users.cfs.remove(userId);
+                    response.send(results);
+                };
             },
-            getRealRights: function*(userId, leanInstance) {
-                let conf = getDependency("../config/dapi/access.json");
-                let user = yield Users.findById(userId);
-                yield (conf[user.rights] || {});
+            getRealRights: function (userIdArg) {
+                return function*(request, response){
+                    let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
+                    let results = yield* stack.dapis.users.cfs.getRealRights(userId);
+                    response.send(results);
+                };
             },
-            checkCredentials: function*(username, password) {
-                let Hash = require('password-hash');
-                let potentialUser = yield Users.findOne({
-                    'username': username,
-                    'password': ( Hash.isHashed(password) ? password : Hash.generate(password))
-                });
-                if (potentialUser){
-                    yield true;
-                } else {
-                    yield false;
-                }
+            checkCredentials: function (usernameArg, passwordArg) {
+                return function*(request, response){
+                    let username = stack.dapis.wizards.standards.ehgf13Arg(usernameArg, request, false);
+                    let password = stack.dapis.wizards.standards.ehgf13Arg(passwordArg, request, false);
+                    let results = yield* stack.dapis.users.cfs.checkCredentials(username, password);
+                    response.send(results);
+                };
             }
         }
     }

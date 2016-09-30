@@ -1,6 +1,6 @@
 var hooks_routers = {
     "/crud": {
-        "/": router_test
+        "/users": router_users
     },
     "/": router_test
 };
