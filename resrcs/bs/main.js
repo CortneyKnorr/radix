@@ -35,6 +35,7 @@ for(task in tasks){
 gulp.task('watch-css', ()=> { gulp.watch(watch.files.stylesheets, ['build-css']); });
 gulp.task('watch-responsive', ()=> { gulp.watch(watch.files.responsive, ['arch-res-pages']); });
 gulp.task('watch-server', ()=> { gulp.watch(watch.files.server, ['build-server']); });
+gulp.task('watch-server-dev', ()=> { gulp.watch([...watch.files.server, watch.files.dev], ['build-server']); });
 gulp.task('watch-js', ()=> { gulp.watch(watch.files.javascript, ['build-js']); });
 gulp.task('watch-ts', ()=> { gulp.watch(watch.files.typescript, ['build-ts']); });
 gulp.task('watch-views', ()=> { gulp.watch(watch.files.views, ['build-views']); });
@@ -43,9 +44,11 @@ gulp.task('watch-static', ()=> { gulp.watch(watch.files.static, ['build-static']
 gulp.task('watch-front', ['watch-static', 'watch-views', 'watch-js', 'watch-ts', 'watch-css']);
 
 gulp.task('watch-all', ['watch-front', 'watch-server']);
+gulp.task('watch-dev', ['watch-front', 'watch-server', 'watch-server-dev']);
 
 
 gulp.task('nodemon', ['watch-all'], src.nodemon);
 gulp.task('serve', ['nodemon'], src.browser_sync);
+gulp.task('serve-dev', ['nodemon', 'watch-dev'], src.browser_sync);
 
 gulp.task('prepare', ['arch-server', 'build-all']);
