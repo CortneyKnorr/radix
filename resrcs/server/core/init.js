@@ -15,8 +15,22 @@ stack.mapis = {};
 stack.dapis = {};
 stack.models = {};
 stack.core = {};
+stack.classes = {};
 
 exports.init = function init() {
+
+    //Setting up variables
+    stack.classes.StackRouter = StackRouter;
+
+
+
+
+
+
+
+
+
+
     console.log();
 
     console.time('|-| Prepared');
@@ -24,9 +38,9 @@ exports.init = function init() {
     console.log("|-| Preparing project environment...");
     console.log(" | ");
 
-    console.log(" | Fetching configuration data for [" + process.env.NODE_ENV + "] environment...");
+    console.log(" | Fetching configuration data for [" + (process.env.NODE_ENV || process.argv[2]) + "] environment...");
     let env = require('../config/env.json');
-    let node_env = process.env.NODE_ENV || 'development';
+    let node_env = process.argv[2] || process.env.NODE_ENV || 'development';
 
     if (env[node_env]) {
         project.env.data = env[node_env];

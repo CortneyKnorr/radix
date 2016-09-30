@@ -185,6 +185,26 @@ exports.nodemon = function (cb) {
     });
 };
 
+exports.nodemondev = function (cb) {
+
+    var started = false;
+    var watchSrcs = require("./watch");
+
+    return nodemon({
+        script: 'stack.js',
+        ext: 'js',
+        watch: [watchSrcs.files.server, watchSrcs.files.dev],
+        tasks: ['build-all']
+    }).on('start', function () {
+        if (!started) {
+            cb();
+            started = true;
+        }
+    }).on('restart', function () {
+
+    });
+};
+
 exports.help = function () {
     fs.readFile('./assets/gulp/help.txt', 'utf8', function (err, data) {
         if (err) {

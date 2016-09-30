@@ -48,7 +48,8 @@ gulp.task('watch-dev', ['watch-front', 'watch-server', 'watch-server-dev']);
 
 
 gulp.task('nodemon', ['watch-all'], src.nodemon);
+gulp.task('nodemon-dev', ['watch-dev'], src.nodemondev);
 gulp.task('serve', ['nodemon'], src.browser_sync);
-gulp.task('serve-dev', ['nodemon', 'watch-dev'], src.browser_sync);
+gulp.task('serve-dev', ['nodemon-dev'], src.browser_sync);
 
 gulp.task('prepare', ['arch-server', 'build-all']);
