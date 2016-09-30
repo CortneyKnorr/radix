@@ -21,7 +21,11 @@ exports.init = function init() {
 
     //Setting up variables
     stack.classes.StackRouter = StackRouter;
+    stack.dapis.wizards = stack_dapis_wizards();
+    stack.dapis.access = stack_dapis_access();
+    stack.dapis.users = stack_dapis_users();
 
+    stack.models.users = getDependency(stack_models_users);
 
 
 

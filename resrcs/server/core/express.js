@@ -99,7 +99,6 @@ function* stack_express() {
     }
     stack.helpers.cLog("Models added");
     stack.helpers.log("Loading Stack DAPIs", 3);
-    stack_dapis();
     stack.helpers.log("Loading Stack MAPIs", 3);
     stack.helpers.iLog();
     yield* hooks_mapis();

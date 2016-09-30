@@ -221,47 +221,5 @@ dapi.access.users.removeFromGroup = function (groupId, userId) {
 };
 
 
-dapi.access.ehAuth = function (limit, failureRedirect) {
-    return function (request, response, next) {
-        if (request.user) {
-            if (request.user.admin) {
-                next();
-            } else if(!limit && limit !== 0) {
-                console.log("next applied");
-                next();
-            } else {
-                dapi.access.users.getBestRights(request.user._id).then(rights => {
-                    if (rights <= limit) {
-                        next();
-                    } else {
-                        response.statusCode = 403;
-                        response.redirect(failureRedirect || dapi.access.conf.failureRedirect.value);
-                    }
-                }).catch(err => {
-                    response.statusCode = 401;
-                    response.redirect(failureRedirect || dapi.access.conf.failureRedirect.value);
-                })
-            }
-        } else {
-            response.statusCode = 401;
-            response.redirect(failureRedirect || dapi.access.conf.failureRedirect.value);
-        }
-    }
-};
-
-dapi.access.ehLogin = function (successRedirect, failureRedirect) {
-    return getDependency('passport').authenticate('local', {
-        successRedirect: successRedirect || dapi.access.conf.successRedirect.value,
-        failureRedirect: failureRedirect || dapi.access.conf.failureRedirect.value,
-        failureFlash: true
-    })
-};
-
-dapi.access.ehLogout = function () {
-    return function (request, response, next) {
-        request.logout();
-        next();
-    }
-};
 stack.dapis.access = stack.dapis.access || {};
 stack.dapis.access.users = dapi.access.users;

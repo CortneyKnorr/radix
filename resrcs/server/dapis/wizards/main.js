@@ -1,7 +1,5 @@
-stack.dapis.wizards = {};
-
-(() => {
-    let wizards = stack.dapis.wizards;
+function stack_dapis_wizards() {
+    let wizards = {};
     let standards = wizards.standards = {};
     let objects = wizards.objects = {};
     let cruds = wizards.cruds = {};
@@ -42,7 +40,7 @@ stack.dapis.wizards = {};
      Cruds
      Wizards for simplifying crud creation;
      */
-    cruds.ehg = {
+    cruds.ehgs = {
         update(idArg, modelArg, leanInstanceArg) {
             return function*(request, response, next) {
                 let model = wizards.standards.ehgf13Arg(modelArg, request, false);
@@ -101,7 +99,26 @@ stack.dapis.wizards = {};
                 }
             }
         },
-    }
+    };
+    cruds.simpleEhg = function (func, param1, param2) {
+        return function*(request, response, next) {
+            var thePromise;
+            if (param1 && param2) {
+                thePromise = func(
+                    standards.ehgf13Arg(param1, request, false),
+                    standards.ehgf13Arg(param2, request, false)
+                );
+            } else if (param1) {
+                thePromise = func(
+                    standards.ehgf13Arg(param1, request, false)
+                );
+            } else {
+                thePromise = func();
+            }
+            return yield controlFlowCall(thePromise);
+        };
+    };
 
+    return wizards;
 
-})();
+}

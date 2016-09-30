@@ -14,7 +14,7 @@ var authDeserializer = function (id, done) {
 };
 
 function authentication() {
-    var User = getDependency(dapi_model_users);
+    var User = stack.models.users;
 
     var passport = getDependency('passport');
     var PassportLocalStrategy = getDependency('passport-local');

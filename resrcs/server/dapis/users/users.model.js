@@ -1,5 +1,5 @@
 
-function dapi_model_users(){
+function stack_models_users(){
     var mongoose = getDependency('mongoose');
     var Schema = mongoose.Schema;
     var Hash = require('password-hash');
@@ -9,7 +9,7 @@ function dapi_model_users(){
         password: {type: String, required: true, set: function(newValue) {
             return Hash.isHashed(newValue) ? newValue : Hash.generate(newValue);
         }},
-        groups: [{type: Schema.ObjectId, ref: 'dapi_group'}],
+        groups: [{type: Schema.ObjectId, ref: 'stack_groups'}],
         rights: {type: Number, default: 5}
     });
 
@@ -31,5 +31,5 @@ function dapi_model_users(){
         }
     };
 
-    return mongoose.model('dapi_user', users);
+    return mongoose.model('stack_users', users);
 }
