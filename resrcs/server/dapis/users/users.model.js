@@ -9,7 +9,6 @@ function stack_models_users(){
         password: {type: String, required: true, set: function(newValue) {
             return Hash.isHashed(newValue) ? newValue : Hash.generate(newValue);
         }},
-        groups: [{type: Schema.ObjectId, ref: 'stack_groups'}],
         rights: {type: Number, default: 5}
     });
 

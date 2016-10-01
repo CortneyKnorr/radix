@@ -21,6 +21,13 @@ function stack_dapis_users() {
                     throw "Params are not defined properly";
                 }
             },
+            getPaged: function* (page, pageLength) {
+                let offset = page*pageLength;
+                return yield Users.find().skip(offset).limit(pageLength);
+            },
+            count: function* () {
+                return yield Users.count();
+            },
             get: function*(userId) {
                 return yield Users.findById(userId);
             },
@@ -70,6 +77,19 @@ function stack_dapis_users() {
                     let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
                     let results = yield* stack.dapis.users.cfs.get(userId);
                     response.send(results);
+                };
+            },
+            getPaged: function (pageArg, pageLengthArg) {
+                return function*(request, response){
+                    let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
+                    let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
+                    let results = yield* stack.dapis.users.cfs.getPaged(page, pageLength);
+                    response.send(results);
+                };
+            },
+            count: function () {
+                return function*(request, response){
+                    response.send(yield* stack.dapis.users.cfs.count());
                 };
             },
             getWithoutPassword: function (userIdArg) {

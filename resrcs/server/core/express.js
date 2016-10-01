@@ -22,20 +22,25 @@ function* stack_express() {
     config.main = getDependency('../config/main.json');
     config.mongo = getDependency('../config/mongo.json');
 
-    stack.helpers.log("Initializing mongoDB").iLog();
-    stack.helpers.log("Connection to mongoDB initialized");
+    stack.helpers.log("Setting up mongoDB and mongoose").iLog();
+    stack.helpers.log("Connection to mongoDB initialized").iLog();
     stack.helpers.log(config.mongo.url);
     // Connect to mongoDB
-    mongoose.connect(config.mongo.url, {user: config.mongo.user, pass: config.mongo.password}, function (err) {
-        if (err)
-            stack.helpers.aLog("Failed to connect MongoDB: " + err);
-        else
-            stack.helpers.aLog("Connected to MongoDB");
+    yield new Promise((res, rej) => {
+        mongoose.connect(config.mongo.url, {user: config.mongo.user, pass: config.mongo.password}, function (err) {
+            if (err) {
+                stack.helpers.cLog("Failed to connect MongoDB: " + err);
+                rej("Failed to connect MongoDB: " + err);
+            } else {
+                stack.helpers.cLog("Connected to MongoDB");
+                res();
+            }
+        });
     });
 
     stack.helpers.log("Injecting ES6 Promises into Mongoose");
     mongoose.Promise = Promise;
-    stack.helpers.cLog("MongoDB initialized");
+    stack.helpers.cLog("MongoDB set up");
 
 
     stack.helpers.log("Setting up Express app").iLog();
@@ -124,7 +129,7 @@ function* stack_express() {
     }
 
     stack.helpers.log("Executing Stack Start").iLog();
-    controlFlowCall(hooks_start)();
+    yield* hooks_start();
     stack.helpers.log("Stack start executed", -3);
 
     stack.helpers.log("", 3);

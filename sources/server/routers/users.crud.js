@@ -11,6 +11,10 @@ function router_users() {
         .onPost(stack.dapis.users.ehgs.create(bodyExtractor))
     ;
 
+    router.onRoute("/pages/:page/:pageLength")
+        .onGet(stack.dapis.users.ehgs.getPaged(r => r.params.page, r => r.params.pageLength))
+    ;
+
     router.onRoute("/:identifier")
         .onGet(stack.dapis.users.ehgs.get(identifierExtractor))
         .onPut(stack.dapis.users.ehgs.update(identifierExtractor, bodyExtractor))
