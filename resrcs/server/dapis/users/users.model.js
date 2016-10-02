@@ -3,6 +3,7 @@ function stack_models_users(){
     var mongoose = getDependency('mongoose');
     var Schema = mongoose.Schema;
     var Hash = require('password-hash');
+    var conf = getDependency("../config/dapi/access.json");
 
     var users = new Schema({
         username: {type: String, required: true, unique: true},
@@ -13,8 +14,8 @@ function stack_models_users(){
     });
 
     users.statics.authenticate = function(username, password, callback) {
-        if (username == dapi.access.conf.adminUser.login.value &&
-            getDependency('sha256')(password) == dapi.access.conf.adminUser.password.value
+        if (username == conf.adminUser.login.value &&
+            getDependency('sha256')(password) == conf.adminUser.password.value
         ) {
             callback(null, {admin : "true", id: "admin"});
         } else {

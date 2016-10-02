@@ -3,7 +3,7 @@ var authSerializer = function (user, done) {
 };
 
 var authDeserializer = function (id, done) {
-    var User = getDependency(dapi_model_users);
+    var User = getDependency(stack_models_users);
     if(id == "admin"){
         done(null, {admin : "true", id: "admin"})
     } else {
@@ -14,7 +14,7 @@ var authDeserializer = function (id, done) {
 };
 
 function authentication() {
-    var User = stack.models.users;
+    var User = getDependency(stack_models_users);
 
     var passport = getDependency('passport');
     var PassportLocalStrategy = getDependency('passport-local');
@@ -28,6 +28,7 @@ function authentication() {
             // You can write any kind of message you'd like.
             // The message will be displayed on the next page the user visits.
             // We're currently not displaying any success message for logging in.
+            console.log(error);
             done(error, user, error ? { message: error.message } : null);
         });
     });
@@ -35,8 +36,6 @@ function authentication() {
     passport.use(authStrategy);
     passport.serializeUser(authSerializer);
     passport.deserializeUser(authDeserializer);
-    var session = getDependency('express-session');
-
     var app = stack.globals.expressApp;
     app.use(getDependency('connect-flash')());
     app.use(passport.initialize());

@@ -18,14 +18,18 @@ stack.core = {};
 stack.classes = {};
 
 exports.init = function init() {
-
-    //Setting up variables
+    //Classes
     stack.classes.StackRouter = StackRouter;
+
+    //Dapis
     stack.dapis.wizards = stack_dapis_wizards();
     stack.dapis.access = stack_dapis_access();
     stack.dapis.users = stack_dapis_users();
+    stack.dapis.files = stack_dapis_files();
 
+    //Models
     stack.models.users = getDependency(stack_models_users);
+    stack.models.files = getDependency(stack_models_files);
 
 
 
