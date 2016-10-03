@@ -1,4 +1,4 @@
-function dapi_model_content(){
+function stack_models_contents(){
     var mongoose = getDependency('mongoose');
     var Schema = mongoose.Schema;
 
@@ -10,12 +10,12 @@ function dapi_model_content(){
         tags: [{type: String}],
         properties: [{type: String}],
         rights: {type: Number},
-        author: {type: Schema.ObjectId, ref: "dapi_user", required: false},
-        children: [{type: Schema.ObjectId, ref: "dapi_content"}],
+        author: {type: Schema.ObjectId, ref: "stack_users", required: false},
+        children: [{type: Schema.ObjectId, ref: "stack_contents"}],
         timestamp: {type: Date, default: Date.now},
         isPublic : {type: Boolean},
         hasParent : {type: Boolean, default: false}
     });
 
-    return mongoose.model('dapi_content', contents);
+    return mongoose.model('stack_contents', contents);
 }

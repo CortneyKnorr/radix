@@ -31,6 +31,7 @@ exports.init = function init() {
     //Models
     stack.models.users = getDependency(stack_models_users);
     stack.models.files = getDependency(stack_models_files);
+    stack.models.contents = getDependency(stack_models_contents);
 
 
 
