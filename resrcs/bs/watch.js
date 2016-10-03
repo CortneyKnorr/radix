@@ -6,7 +6,7 @@ var files = exports.files = {
     'dev': 'resrcs/server/**/**.*',
     'static': 'sources/public/**/*',
     'stylesheets': 'sources/client/assets/stylesheets/**/**.scss',
-    'views': 'sources/mvc/views/**/*',
+    'views': 'sources/client/views/**/*',
     'javascript': 'sources/assets/javascript/**/*.js',
     'typescript': 'sources/assets/typescript/**/*.ts',
 };
