@@ -1,8 +1,8 @@
-// var dapi = dapi || {};
-// dapi.content = dapi.content || {};
-// dapi.content.interface = {};
-// stack = stack || {};
-// stack.dapis = stack.dapis || {};
+function stack_dapis_content() {
+    return {
+
+    }
+}
 //
 // dapi.content.newInstance = function (content, title, identifier, channel, tags, properties, rights, author, isPublic, hasParent) {
 //     var Content = getDependency(dapi_model_content);
@@ -468,5 +468,3 @@
 //         }
 //     };
 // };
-//
-// stack.dapis.content = dapi.content;

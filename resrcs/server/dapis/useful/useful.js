@@ -39,4 +39,5 @@ function stack_dapis_useful() {
             }
         }
     };
+    return thisDapi;
 }
