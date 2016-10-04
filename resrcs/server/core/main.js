@@ -45,15 +45,27 @@ function* stack_main(){
 
         // Listen for dying workers
         cluster.on('exit', function (worker) {
-            if (workerCount < cpuCount){
+            if (workerCount < wantedWorkers){
                 console.log(`Workers: ${workerCount}`);
-            } else {
                 // Replace the dead worker, we're not sentimental
                 console.log('Worker %d died :(', worker.id);
                 cluster.fork();
+                workerCount += 1;
+                setTimeout(function () {
+                    workerCount = 0;
+                    stack.helpers.aLog("Security buffer cleared");
+                }, 30000);
+            } else {
+                console.log(`Workers: ${workerCount}`);
             }
 
+
         });
+
+        setTimeout(function () {
+            workerCount = 0;
+            stack.helpers.aLog("Security buffer cleared");
+        }, 30000);
 
 // Code to run if we're in a worker process
     } else {

@@ -23,6 +23,10 @@ function stack_dapis_settings() {
             getUsingKey: function*(key) {
                 return yield Settings.findOne({key});
             },
+            getPaged: function* (page, pageLength) {
+                let offset = page*pageLength;
+                return yield Settings.find().skip(offset).limit(pageLength);
+            },
             get: function*(id) {
                 return yield Settings.findById(id);
             },
@@ -39,7 +43,12 @@ function stack_dapis_settings() {
             create: function (leanInstanceArg) {
                 return function*(request, response, next) {
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, {});
-                    response.send(yield* thisDapi.cfs.create(leanInstance));
+                    try {
+                        let createdSetting = yield* thisDapi.cfs.create(leanInstance);
+                        response.send(createdSetting);
+                    } catch(e) {
+                        response.send(e);
+                    }
                 }
             },
             set: function (keyArg, valueArg) {
@@ -60,6 +69,14 @@ function stack_dapis_settings() {
                     let key = stack.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
                     response.send(yield* thisDapi.cfs.getUsingKey(key));
                 }
+            },
+            getPaged: function (pageArg, pageLengthArg) {
+                return function*(request, response){
+                    let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
+                    let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
+                    let results = yield* thisDapi.cfs.getPaged(page, pageLength);
+                    response.send(results);
+                };
             },
             get: function (idArg) {
                 return function*(request, response, next) {

@@ -7,7 +7,7 @@ class StackRouter extends getDependency("express").Router {
         super.get(path, ...args.map(arg => function (request, response, next) {
             controlFlowCall(arg)(request, response, next)
                 .catch(errors => {
-                        next(errors);
+                    next(errors);
                 })
             ;
         }));
@@ -18,7 +18,7 @@ class StackRouter extends getDependency("express").Router {
         super.post(path, ...args.map(arg => function (request, response, next) {
             controlFlowCall(arg)(request, response, next)
                 .catch(errors => {
-                        next(errors);
+                    next(errors);
                 })
             ;
         }));
@@ -29,7 +29,7 @@ class StackRouter extends getDependency("express").Router {
         super.put(path, ...args.map(arg => function (request, response, next) {
             controlFlowCall(arg)(request, response, next)
                 .catch(errors => {
-                        next(errors);
+                    next(errors);
                 })
             ;
         }));
@@ -40,7 +40,7 @@ class StackRouter extends getDependency("express").Router {
         super.all(path, ...args.map(arg => function (request, response, next) {
             controlFlowCall(arg)(request, response, next)
                 .catch(errors => {
-                        next(errors);
+                    next(errors);
                 })
             ;
         }));
@@ -51,7 +51,7 @@ class StackRouter extends getDependency("express").Router {
         super.delete(path, ...args.map(arg => function (request, response, next) {
             controlFlowCall(arg)(request, response, next)
                 .catch(errors => {
-                        next(errors);
+                    next(errors);
                 })
             ;
         }));
