@@ -56,7 +56,11 @@ exports.server.build = function () {
         // //only uglifyjs if gulp is ran with '--type production'
         // .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest(io.server.out));
+        .pipe(gulp.dest(io.server.out))
+        .on('error', err => {
+            console.log(err);
+            console.log("Error building server");
+        });
 };
 exports.server.clean = function () {
     return del([io.server.out + '*.*'])
@@ -72,7 +76,11 @@ exports.javascript.build = function () {
         .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
         .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest(io.javascript.out));
+        .pipe(gulp.dest(io.javascript.out))
+        .on('error', err => {
+            console.log(err);
+            console.log("Error building javascript");
+        });
 };
 exports.javascript.clean = function () {
     return del([io.javascript.out])
@@ -91,6 +99,11 @@ exports.typescript.build = function () {
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(io.typescript.out));
     stream.on('end', browserSync.reload);
+
+    stream.on('error', err => {
+        console.log(err);
+        console.log("Error building typescript");
+    });
     return stream;
 };
 exports.typescript.clean = function () {
@@ -144,6 +157,10 @@ exports.views.build = function () {
         .pipe(debug())
         .pipe(gulp.dest(io.views.out));
     stream.on('end', browserSync.reload);
+    stream.on('error', err => {
+        console.log(err);
+        console.log("Error building pug");
+    });
 };
 exports.views.clean = function () {
     return del([io.views.out])
