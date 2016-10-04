@@ -4,7 +4,7 @@ var files = exports.files = {
         'sources/both/schemas/**/*.js'
     ],
     'dev': 'resrcs/server/**/**.*',
-    'static': 'sources/public/**/*',
+    'static': 'sources/client/public/**/*',
     'stylesheets': 'sources/client/assets/stylesheets/**/**.scss',
     'views': 'sources/client/views/**/*',
     'javascript': 'sources/assets/javascript/**/*.js',
