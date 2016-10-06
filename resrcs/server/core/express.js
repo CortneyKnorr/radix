@@ -98,7 +98,7 @@ function* stack_express() {
     stack.helpers.cLog("Middleware loaded");
     stack.globals.mongoose = mongoose;
     stack.helpers.log("Loading authentication", 3);
-    authentication();
+    yield* stack_authentication();
     stack.helpers.log("Adding app models", 3).iLog();
     for (let modelName in hooks_models){
         stack.helpers.log(`Model ${modelName} added`);

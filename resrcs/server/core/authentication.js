@@ -1,0 +1,34 @@
+function* stack_authentication() {
+
+    var passport = getDependency('passport');
+
+    stack.helpers.log("Loading strategy");
+    var authStrategy = yield* hooks_strategy();
+
+    passport.use(authStrategy);
+    passport.serializeUser(controlFlowCall(hooks_serializer));
+    passport.deserializeUser(controlFlowCall(hooks_deserializer));
+    var app = stack.globals.expressApp;
+    app.use(getDependency('connect-flash')());
+    app.use(passport.initialize());
+    app.use(passport.session());
+}
+
+function stack_authentication_strategy(){
+    var User = getDependency(stack_models_users);
+    var PassportLocalStrategy = getDependency('passport-local');
+
+    return new PassportLocalStrategy({
+        usernameField: 'username',
+        passwordField: 'password',
+        passReqToCallback: true
+    }, function(req, username, password, done) {
+        User.authenticate(username, password, function(error, user){
+            // You can write any kind of message you'd like.
+            // The message will be displayed on the next page the user visits.
+            // We're currently not displaying any success message for logging in.
+            console.log(error);
+            done(error, user, error ? { message: error.message } : null);
+        });
+    });
+}
