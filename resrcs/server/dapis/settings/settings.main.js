@@ -1,5 +1,6 @@
 function stack_dapis_settings() {
     let Settings = getDependency(stack_models_settings);
+
     let thisDapi = {
         cfs: {
             create: function*(leanInstance) {
@@ -40,7 +41,7 @@ function stack_dapis_settings() {
             },
         },
         ehgs: {
-            create: function (leanInstanceArg) {
+            create(leanInstanceArg) {
                 return function*(request, response, next) {
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, {});
                     try {
@@ -51,26 +52,26 @@ function stack_dapis_settings() {
                     }
                 }
             },
-            set: function (keyArg, valueArg) {
+            set(keyArg, valueArg) {
                 return function*(request, response, next) {
                     let key = stack.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
                     let value = stack.dapis.wizards.standards.ehgf13Arg(valueArg, request, false);
                     response.send(yield* thisDapi.cfs.set(key, value));
                 }
             },
-            reset: function (keyArg) {
+            reset(keyArg) {
                 return function*(request, response, next) {
                     let key = stack.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
                     response.send(yield* thisDapi.cfs.reset(key));
                 }
             },
-            getUsingKey: function (keyArg) {
+            getUsingKey(keyArg) {
                 return function*(request, response, next) {
                     let key = stack.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
                     response.send(yield* thisDapi.cfs.getUsingKey(key));
                 }
             },
-            getPaged: function (pageArg, pageLengthArg) {
+            getPaged(pageArg, pageLengthArg) {
                 return function*(request, response){
                     let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
                     let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
@@ -78,20 +79,20 @@ function stack_dapis_settings() {
                     response.send(results);
                 };
             },
-            get: function (idArg) {
+            get(idArg) {
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     response.send(yield* thisDapi.cfs.get(id));
                 }
             },
-            update: function (id, leanInstanceArg) {
+            update(id, leanInstanceArg) {
                 return function*(request, response, next) {
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     response.send(yield* thisDapi.cfs.update(id, leanInstance));
                 }
             },
-            delete: function (idArg) {
+            delete(idArg) {
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     response.send(yield* thisDapi.cfs.delete(id));
