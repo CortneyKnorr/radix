@@ -57,7 +57,7 @@ function* stack_express() {
 
     stack.helpers.log("Setting up default Middleware");
     app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-    if (app.get('env') === 'development' || app.get('env') === 'tests') {
+    if (project.env.name === 'development' || project.env.name === 'tests') {
         var prefix = stack.globals.WORKER ? (stack.globals.WORKER.id || "") : "";
         logger.format('stack', prefix + '\033[96m | ASYNC|->\033[0m :remote-addr - :remote-user [:date[clf]] \033[95m":method :url HTTP/:http-version" :status :res[content-length]\033[0m');
         app.use(logger("stack"));
@@ -123,7 +123,7 @@ function* stack_express() {
     stack_loadRoutersOnto(app, hooks_routers);
     stack.helpers.cLog("App routers loaded");
 
-    if (app.get('env') === 'tests') {
+    if (project.env.name === 'tests') {
         stack.helpers.log("Executing Stack Tests").iLog();
         yield* hooks_tests();
         stack.helpers.log("Stack Tests executed", -3);
