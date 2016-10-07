@@ -10,6 +10,10 @@ function stack_dapis_contents() {
                 let offset = page * pageLength;
                 return yield Contents.find().skip(offset).limit(pageLength);
             },
+            create: function*(lightInstance) {
+                let content = new Contents(lightInstance);
+                return content.save();
+            },
             delete: function*(contentId) {
                 return yield Contents.findByIdAndRemove(contentId);
             },
@@ -23,7 +27,7 @@ function stack_dapis_contents() {
                     return {};
                 }
             },
-            getTrashs: function*(){
+            getTrashs: function*() {
                 return yield Contents.find({obitDate: {$ne: null}});
             },
 
@@ -40,13 +44,42 @@ function stack_dapis_contents() {
                 return yield thisDapi.cfs.update(id, {publishDate: null})
             },
             makeIndependent: function*(id) {
-                let content = Contents.findById(id);
-            },
-            createAndBind: function*(parentId) {
+                let content = yield Contents.findById(id);
+                if (content.hasParent) {
+
+                    let parents = yield Contents.find({children: {$in: content._id}});
+                    for (let index in parents) {
+                        let i = parents[index].children.indexOf(content._id);
+                        if (i != -1) {
+                            parents[index].children.splice(i, 1);
+                            yield parents[index].save();
+                        }
+                    }
+                    content.hasParent = false;
+                }
+                ;
+                return yield content.save();
 
             },
-            bind: function*(parentId) {
+            createAndBind: function*(lightInstance, parentId) {
+                let child = yield thisDapi.cfs.create(lightInstance);
+                return yield thisDapi.cfs.bind(child_id, parentId);
 
+            },
+            bind: function*(childId, parentId) {
+
+                let fy = yield mapPromises({
+                    child: thisDapi.cfs.get(childId).exec(),
+                    parent: thisDapi.cfs.get(parentId).exec()
+                });
+
+                fy.child.hasParent = true;
+                fy.parent.children.push(fy.child._id);
+
+                return yield mapPromises({
+                    child: fy.child.save().exec(),
+                    parent: fy.parent.save().exec()
+                })
             },
             getInChanel: function*(channel) {
 
@@ -63,7 +96,21 @@ function stack_dapis_contents() {
             updateProperty: function*() {
 
             },
-            setChildren: function*() {
+            setChildren: function*(id, childrenId) {
+                let fy = yield mapPromises({
+                    children: Contents.find({_id: {$all: childrenId}}).exec(),
+                    parent: thisDapi.cfs.get(id).exec()
+                });
+
+                for (let index in fy.children) {
+                    parent.children.push(children[index]._id);
+                    fy.children[index].hasParent = true;
+                }
+                yield parent.save();
+
+                return yield fy.children.map(child => {
+                    child.save();
+                });
 
             }
 
