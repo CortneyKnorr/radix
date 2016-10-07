@@ -100,40 +100,34 @@ function stack_dapis_contents() {
 
             },
             setChildren: function*(id, childrenId) {
-                let fy = yield mapPromises({
-                    children: Contents.find({_id: {$all: childrenId}}).exec(),
-                    parent: thisDapi.cfs.get(id).exec()
-                });
-
-                for (let index in fy.children) {
-                    parent.children.push(children[index]._id);
-                    fy.children[index].hasParent = true;
-                }
-                yield parent.save();
-
-                return yield fy.children.map(child => {
-                    child.save();
-                });
-
+                return yield mapPromises({
+                    parent: thisDapi.cfs.get(id).then(par => {
+                        par.children.concat(childrenId);
+                        return par.save();
+                    }),
+                    children: Contents.findAndUpdate({_id: {$all: childrenId}},
+                        {hasParent: true},
+                        {new: true}).exec()
+                })
             }
 
         },
         ehgs: {
             get(idArg){
-                return function*(request, response, next){
+                return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     response.send(yield* thisDapi.cfs.get(id));
                 }
             },
             getPaged(pageArg, pageLengthArg){
-                return function*(request, response, next){
+                return function*(request, response, next) {
                     let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
                     let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
                     response.send(yield* thisDapi.cfs.getPaged(page, pageLength));
                 }
             },
             create(leanInstanceArg){
-                return function*(request, response, next){
+                return function*(request, response, next) {
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
                     response.send(yield* thisDapi.cfs.create(leanInstance));
                 }
@@ -158,13 +152,13 @@ function stack_dapis_contents() {
                 }
             },
             trash(idArg){
-                return function*(request, response, next){
+                return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     response.send(yield* thisDapi.cfs.trash(id));
                 }
             },
             untrash(idArg){
-                return function*(request, response, next){
+                return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     response.send(yield* thisDapi.cfs.untrash(id));
                 }
