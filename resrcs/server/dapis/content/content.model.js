@@ -13,9 +13,9 @@ function stack_models_contents() {
         author: {type: Schema.ObjectId, ref: "dapi_user", required: false},
         children: [{type: Schema.ObjectId, ref: "dapi_content"}],
         birthDate: {type: Date, default: Date.now},
-        publishDate: {type: Boolean},
-        obitDate: {type: Boolean},
-        updateDate: {type: Boolean},
+        publishDate: {type: Date},
+        obitDate: {type: Date},
+        updateDate: {type: Date},
         hasParent: {type: Boolean, default: false}
     });
 
