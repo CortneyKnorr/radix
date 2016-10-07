@@ -3,16 +3,17 @@ stack.helpers = stack.helpers || {};
 stack.helpers.lastLogLevel = 0;
 
 
-
 stack.helpers.iLog = function () {
     stack.helpers.lastLogLevel += 1;
     return stack.helpers;
 };
 
+
 stack.helpers.dLog = function () {
     stack.helpers.lastLogLevel -= 1;
     return stack.helpers;
 };
+
 
 stack.helpers.cLog = function (toBeLogged) {
     stack.helpers.lastLogLevel -= 1;
@@ -22,11 +23,13 @@ stack.helpers.cLog = function (toBeLogged) {
     return stack.helpers;
 };
 
+
 stack.helpers.aLog = function (toBeLogged) {
     var prefix = stack.globals.WORKER ? (stack.globals.WORKER.id || "") : "";
     console.log(prefix+"\033[96m | ASYNC|-> \033[0m" + toBeLogged);
     return stack.helpers;
 };
+
 
 stack.helpers.log = function (toBeLogged, level) {
     if (level) {
