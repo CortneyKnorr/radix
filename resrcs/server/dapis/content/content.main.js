@@ -20,7 +20,6 @@ function stack_dapis_contents() {
             update: function*(contentId, leanInstance) {
                 let content = yield Contents.findById(contentId);
                 if (content) {
-
                     content.updateDate = Date.now;
                     return yield content.save();
                 } else {
@@ -81,19 +80,28 @@ function stack_dapis_contents() {
                     parent: fy.parent.save().exec()
                 })
             },
-            getInChanel: function*(channel) {
-
+            getInChannel: function*(channel) {
+                return yield Contents.find({channel: channel});
             },
-            getIndependentChanel: function*() {
-
+            getIndependentInChannel: function*(channel) {
+                return yield Contents.find({channel: channel, hasParent: false});
             },
-            renameChanel: function*() {
-
+            renameChannel: function*(channelArg, newChannel) {
+                let channel = yield Contents.find({channel: channelArg});
+                if (channel) {
+                    channel.channel = newChannel;
+                    return yield channel.save();
+                } else {
+                    return {};
+                }
             },
-            updateProperties: function*() {
-
+            updateProperties: function*(id, leanInstance) {
+                return yield thisDapi.cfs.update(id, {properties: leanInstance});
             },
-            updateProperty: function*() {
+            updateProperty: function*(id, propertyArg, leanInstance) {
+                let element = yield Contents.find(id);
+                element.properties = leanInstance;
+
 
             },
             setChildren: function*(id, childrenId) {
@@ -115,7 +123,132 @@ function stack_dapis_contents() {
             }
 
         },
-        ehgs: {}
+        ehgs: {
+            get(idArg){
+                return function*(request, response, next){
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    response.send(yield* thisDapi.cfs.get(id));
+                }
+            },
+            getPaged(pageArg, pageLengthArg){
+                return function*(request, response, next){
+                    let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
+                    let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
+                    response.send(yield* thisDapi.cfs.getPaged(page, pageLength));
+                }
+            },
+            create(leanInstanceArg){
+                return function*(request, response, next){
+                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    response.send(yield* thisDapi.cfs.create(leanInstance));
+                }
+            },
+            delete(idArg){
+                return function*(request, response, next) {
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    let deletedFile = yield* thisDapi.cfs.delete(id);
+                    response.send(deletedFile);
+                }
+            },
+            update(idArg, leanInstanceArg){
+                return function*(request, response, next) {
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    response.send(yield* thisDapi.cfs.update(id, leanInstance));
+                }
+            },
+            getTrashs(){
+                return function*(request, response, next) {
+                    response.send(yield* thisDapi.cfs.getTrashs());
+                }
+            },
+            trash(idArg){
+                return function*(request, response, next){
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    response.send(yield* thisDapi.cfs.trash(id));
+                }
+            },
+            untrash(idArg){
+                return function*(request, response, next){
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    response.send(yield* thisDapi.cfs.untrash(id));
+                }
+            },
+            createAndBind(leanInstanceArg, parentIdArg){
+                return function*(request, response, next) {
+                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    let parentId = stack.dapis.wizards.standards.ehgf13Arg(parentIdArg, request, false);
+                    response.send(yield* thisDapi.cfs.createAndBind(leanInstance, parentId));
+                }
+            },
+            getInChannel(idArg){
+                return function*(request, response, next) {
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    response.send(yield* thisDapi.cfs.getInChannel(id));
+                }
+            },
+            makeIndependent(idArg){
+                return function*(request, response, next) {
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    response.send(yield* thisDapi.cfs.makeIndependent(id));
+                }
+            },
+            getIndependentInChannel(idArg){
+                return function*(request, response, next) {
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    response.send(yield* thisDapi.cfs.getIndependentInChannel(id));
+                }
+            },
+            renameChannel(idArg, newIdArg){
+                return function*(request, response, next) {
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    let newId = stack.dapis.wizards.standards.ehgf13Arg(newIdArg, request, false);
+                    response.send(yield* thisDapi.cfs.renameChannel(id, newId));
+                }
+            },
+            publish(idArg){
+                return function*(request, response, next) {
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    response.send(yield* thisDapi.cfs.publish(id));
+                }
+            },
+            unpublish(idArg){
+                return function*(request, response, next) {
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    response.send(yield* thisDapi.cfs.unpublish(id));
+                }
+            },
+            updateProperties(idArg, leanInstanceArg){
+                return function*(request, response, next) {
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    response.send(yield* thisDapi.cfs.updateProperties(id, leanInstance));
+                }
+            },
+            updateProperty(idArg, propertyIdArg, leanInstanceArg){
+                return function*(request, response, next) {
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    let propertyId = stack.dapis.wizards.standards.ehgf13Arg(propertyIdArg, request, false);
+                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    response.send(yield* thisDapi.cfs.updateProperty(id, propertyId, leanInstance));
+                }
+            },
+            setChildren(idArg, childrenIdArg){
+                return function*(request, response, next) {
+                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    let childrenId = stack.dapis.wizards.standards.ehgf13Arg(childrenIdArg, request, false);
+                    response.send(yield* thisDapi.cfs.setChildren(id, childrenId));
+                }
+            },
+            bind(childIdArg, parentIdArg){
+                return function*(request, response, next) {
+                    let childId = stack.dapis.wizards.standards.ehgf13Arg(childIdArg, request, false);
+                    let parentId = stack.dapis.wizards.standards.ehgf13Arg(parentIdArg, request, false);
+                    response.send(yield* thisDapi.cfs.bind(childId, parentId));
+                }
+            },
+
+        }
     };
     return thisDapi;
 }
