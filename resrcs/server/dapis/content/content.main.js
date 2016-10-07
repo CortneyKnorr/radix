@@ -26,7 +26,7 @@ function stack_dapis_contents() {
                     return {};
                 }
             },
-            getTrashs: function*() {
+            getTrashed: function*() {
                 return yield Contents.find({obitDate: {$ne: null}});
             },
 
@@ -87,20 +87,15 @@ function stack_dapis_contents() {
                 return yield Contents.find({channel: channel, hasParent: false});
             },
             renameChannel: function*(channelArg, newChannel) {
-                let channel = yield Contents.find({channel: channelArg});
-                if (channel) {
-                    channel.channel = newChannel;
-                    return yield channel.save();
-                } else {
-                    return {};
-                }
+                return yield Contents.findAndUpdate({channel: channelArg}, {channel: newChannel});
             },
             updateProperties: function*(id, leanInstance) {
                 return yield thisDapi.cfs.update(id, {properties: leanInstance});
             },
-            updateProperty: function*(id, propertyArg, leanInstance) {
-                let element = yield Contents.find(id);
-                element.properties = leanInstance;
+            updateProperty: function*(id, propertyArg, stringArg) {
+                let element = yield Contents.findById(id);
+                element.properties[propertyArg] = stringArg;
+                return yield element.save();
 
 
             },
@@ -157,9 +152,9 @@ function stack_dapis_contents() {
                     response.send(yield* thisDapi.cfs.update(id, leanInstance));
                 }
             },
-            getTrashs(){
+            getTrashed(){
                 return function*(request, response, next) {
-                    response.send(yield* thisDapi.cfs.getTrashs());
+                    response.send(yield* thisDapi.cfs.getTrashed());
                 }
             },
             trash(idArg){
@@ -181,10 +176,10 @@ function stack_dapis_contents() {
                     response.send(yield* thisDapi.cfs.createAndBind(leanInstance, parentId));
                 }
             },
-            getInChannel(idArg){
+            getInChannel(channelArg){
                 return function*(request, response, next) {
-                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
-                    response.send(yield* thisDapi.cfs.getInChannel(id));
+                    let channel = stack.dapis.wizards.standards.ehgf13Arg(channelArg, request, false);
+                    response.send(yield* thisDapi.cfs.getInChannel(channel));
                 }
             },
             makeIndependent(idArg){
@@ -193,17 +188,17 @@ function stack_dapis_contents() {
                     response.send(yield* thisDapi.cfs.makeIndependent(id));
                 }
             },
-            getIndependentInChannel(idArg){
+            getIndependentInChannel(channelArg){
                 return function*(request, response, next) {
-                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
-                    response.send(yield* thisDapi.cfs.getIndependentInChannel(id));
+                    let channel = stack.dapis.wizards.standards.ehgf13Arg(channelArg, request, false);
+                    response.send(yield* thisDapi.cfs.getIndependentInChannel(channel));
                 }
             },
-            renameChannel(idArg, newIdArg){
+            renameChannel(channelArg, newChannelArg){
                 return function*(request, response, next) {
-                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
-                    let newId = stack.dapis.wizards.standards.ehgf13Arg(newIdArg, request, false);
-                    response.send(yield* thisDapi.cfs.renameChannel(id, newId));
+                    let channel = stack.dapis.wizards.standards.ehgf13Arg(channelArg, request, false);
+                    let newChannel = stack.dapis.wizards.standards.ehgf13Arg(newChannelArg, request, false);
+                    response.send(yield* thisDapi.cfs.renameChannel(channel, newChannel));
                 }
             },
             publish(idArg){
@@ -225,11 +220,11 @@ function stack_dapis_contents() {
                     response.send(yield* thisDapi.cfs.updateProperties(id, leanInstance));
                 }
             },
-            updateProperty(idArg, propertyIdArg, leanInstanceArg){
+            updateProperty(idArg, propertyIdArg, stringArg){
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     let propertyId = stack.dapis.wizards.standards.ehgf13Arg(propertyIdArg, request, false);
-                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(stringArg, request, false);
                     response.send(yield* thisDapi.cfs.updateProperty(id, propertyId, leanInstance));
                 }
             },
