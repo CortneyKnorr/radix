@@ -18,6 +18,7 @@ stack.models = {};
 stack.classes = {};
 stack.helpers = {};
 stack.functions = {};
+stack.project = {};
 
 exports.init = function init() {
     //Classes
@@ -51,6 +52,9 @@ exports.init = function init() {
 
     //Libraries
     stack_logging(stack.helpers);
+
+    //Project
+    stack.project = $project;
 
 
 
