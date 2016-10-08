@@ -19,7 +19,7 @@ function* stack_main(){
         // Count the machine's CPUs
         var cpuCount = require('os').cpus().length;
         var workerCount = 0;
-        var wantedWorkers = cpuCount < project.env.data.threads ? cpuCount : project.env.data.threads || 1;
+        var wantedWorkers = cpuCount < $project.env.data.threads ? cpuCount : $project.env.data.threads || 1;
 
 
         var clusterGenerator = function* () {

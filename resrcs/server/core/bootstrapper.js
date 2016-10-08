@@ -1,6 +1,6 @@
 function* stack_bootstrapper(worker) {
     stack.globals.WORKER = worker;
-    var __env__ = project.env.data;
+    var __env__ = $project.env.data;
     stack.globals.environment = __env__;
     //Module dependencies.
     var debug = getDependency('debug')('test:server');

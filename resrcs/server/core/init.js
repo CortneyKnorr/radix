@@ -1,7 +1,8 @@
-var project = {};
-project.models = {};
-project.env = {};
-project.middleware = {};
+var $project = {};
+$project.models = {};
+$project.env = {};
+$project.middleware = {};
+$project.mapis = {};
 
 var stack = {};
 stack.globals = {};
@@ -10,12 +11,13 @@ stack.globals.expressApp = {};
 stack.globals.redirectServer = {};
 stack.globals.environment = {};
 stack.globals.mongoose = {};
-stack.globals.version = "1.0.0";
-stack.mapis = {};
+stack.globals.version = "2.0.0@beta";
+
 stack.dapis = {};
 stack.models = {};
-stack.core = {};
 stack.classes = {};
+stack.helpers = {};
+stack.functions = {};
 
 exports.init = function init() {
     //Classes
@@ -38,9 +40,17 @@ exports.init = function init() {
     stack.models.contents = getDependency(stack_models_contents);
     stack.models.settings = getDependency(stack_models_settings);
 
+    //functions
+    stack.functions.controlFlowCall = controlFlowCall;
+    stack.functions.mapPromises = mapPromises;
+    stack.functions.loadMapi = loadMapi;
+    stack.functions.getDependency = getDependency;
+    stack.functions.updateDependency = updateDependency;
+    stack.functions.isPromise = isPromise;
+    stack.functions.loadRoutersOnto = stack_loadRoutersOnto;
 
-
-
+    //Libraries
+    stack_logging(stack.helpers);
 
 
 
@@ -50,7 +60,7 @@ exports.init = function init() {
 
     console.time('|-| Prepared');
 
-    console.log("|-| Preparing project environment...");
+    console.log("|-| Preparing $project environment...");
     console.log(" | ");
 
     console.log(" | Fetching configuration data for [" + (process.env.NODE_ENV || process.argv[2]) + "] environment...");
@@ -58,15 +68,15 @@ exports.init = function init() {
     let node_env = process.argv[2] || process.env.NODE_ENV || 'development';
 
     if (env[node_env]) {
-        project.env.data = env[node_env];
-        project.env.name = node_env;
+        $project.env.data = env[node_env];
+        $project.env.name = node_env;
     } else {
-        project.env.data = env['development'];
-        project.env.name = 'development';
+        $project.env.data = env['development'];
+        $project.env.name = 'development';
     }
 
-    console.log(" |  | Data for [" + project.env.name + "] environment fetched.");
-    console.log(" |  | Description: " + project.env.data.description);
+    console.log(" |  | Data for [" + $project.env.name + "] environment fetched.");
+    console.log(" |  | Description: " + $project.env.data.description);
     console.log(" |<- Fetched");
     console.log(" |");
 
