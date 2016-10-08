@@ -25,6 +25,7 @@ exports.init = function init() {
     stack.dapis.wizards = stack_dapis_wizards();
     stack.dapis.access = stack_dapis_access();
     stack.dapis.users = stack_dapis_users();
+    stack.dapis.groups = stack_dapis_groups();
     stack.dapis.files = stack_dapis_files();
     stack.dapis.useful = stack_dapis_useful();
     stack.dapis.settings = stack_dapis_settings();
@@ -32,6 +33,7 @@ exports.init = function init() {
 
     //Models
     stack.models.users = getDependency(stack_models_users);
+    stack.models.groups = getDependency(stack_models_groups);
     stack.models.files = getDependency(stack_models_files);
     stack.models.contents = getDependency(stack_models_contents);
     stack.models.settings = getDependency(stack_models_settings);
