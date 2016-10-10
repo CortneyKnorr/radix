@@ -12,7 +12,7 @@ function stack_dapis_contents() {
             },
             create: function*(lightInstance) {
                 let content = new Contents(lightInstance);
-                return content.save();
+                return yield content.save();
             },
             delete: function*(contentId) {
                 return yield Contents.findByIdAndRemove(contentId);
@@ -20,7 +20,25 @@ function stack_dapis_contents() {
             update: function*(contentId, leanInstance) {
                 let content = yield Contents.findById(contentId);
                 if (content) {
-                    content.updateDate = Date.now;
+                    if (leanInstance.title) content.title = leanInstance.title;
+                    if (leanInstance.content) content.content = leanInstance.content;
+                    if (leanInstance.channel) content.channel = leanInstance.channel;
+                    if (leanInstance.identifier) content.identifier = leanInstance.identifier;
+                    if (leanInstance.rights) content.rights = leanInstance.rights;
+                    if (leanInstance.tags) content.tags = leanInstance.tags;
+                    if (leanInstance.children) content.children = leanInstance.children;
+                    if (leanInstance.author) content.author = leanInstance.author;
+                    if (leanInstance.birthDate) content.birthDate = leanInstance.birthDate;
+                    if (leanInstance.publishDate) content.publishDate = leanInstance.publishDate;
+                    if (leanInstance.obitDate) content.obitDate = leanInstance.obitDate;
+                    if (leanInstance.hasParent) content.hasParent = leanInstance.hasParent;
+                    if (leanInstance.properties) {
+                        for (let key in leanInstance.properties) {
+                            content.properties[key] = leanInstance.properties[key];
+                        }
+                    }
+
+                    content.updateDate = Date.now();
                     return yield content.save();
                 } else {
                     return {};
@@ -31,13 +49,13 @@ function stack_dapis_contents() {
             },
 
             trash: function*(id) {
-                return yield thisDapi.cfs.update(id, {obitDate: Date.now})
+                return yield thisDapi.cfs.update(id, {obitDate: Date.now}())
             },
             untrash: function*(id) {
                 return yield thisDapi.cfs.update(id, {obitDate: null})
             },
             publish: function*(id) {
-                return yield thisDapi.cfs.update(id, {publishDate: Date.now})
+                return yield thisDapi.cfs.update(id, {publishDate: Date.now()})
             },
             unpublish: function*(id) {
                 return yield thisDapi.cfs.update(id, {publishDate: null})
@@ -96,8 +114,6 @@ function stack_dapis_contents() {
                 let element = yield Contents.findById(id);
                 element.properties[propertyArg] = stringArg;
                 return yield element.save();
-
-
             },
             setChildren: function*(id, childrenId) {
                 return yield mapPromises({
