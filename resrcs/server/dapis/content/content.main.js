@@ -63,8 +63,15 @@ function stack_dapis_contents() {
             makeIndependent: function*(id) {
                 let content = yield Contents.findById(id);
                 if (content.hasParent) {
+                    let parents = [];
+                    for(let parent of yield Contents.find({children: {$ne: null}})){
+                        for(let children of parent.children){
+                            if(children == id){
+                                parents.push(parent)
+                            }
+                        }
+                    }
 
-                    let parents = yield Contents.find({children: {$in: content._id}});
                     for (let index in parents) {
                         let i = parents[index].children.indexOf(content._id);
                         if (i != -1) {
@@ -74,7 +81,6 @@ function stack_dapis_contents() {
                     }
                     content.hasParent = false;
                 }
-                ;
                 return yield content.save();
 
             },
@@ -86,17 +92,17 @@ function stack_dapis_contents() {
             bind: function*(childId, parentId) {
 
                 let fy = yield mapPromises({
-                    child: thisDapi.cfs.get(childId).exec(),
-                    parent: thisDapi.cfs.get(parentId).exec()
+                    child: Contents.findById(childId).exec(),
+                    parent: Contents.findById(parentId).exec()
                 });
 
                 fy.child.hasParent = true;
                 fy.parent.children.push(fy.child._id);
 
-                return yield mapPromises({
-                    child: fy.child.save().exec(),
-                    parent: fy.parent.save().exec()
-                })
+                fy.child.save();
+                fy.parent.save();
+
+                return true;
             },
             getInChannel: function*(channel) {
                 return yield Contents.find({channel: channel});
@@ -105,10 +111,15 @@ function stack_dapis_contents() {
                 return yield Contents.find({channel: channel, hasParent: false});
             },
             renameChannel: function*(channelArg, newChannel) {
-                return yield Contents.findAndUpdate({channel: channelArg}, {channel: newChannel});
+                let elemsInChannel = yield Contents.find({channel: channelArg});
+                for(elem of elemsInChannel){
+                    elem.channel = newChannel;
+                    elem.save();
+                }
+                return true;
             },
             updateProperties: function*(id, leanInstance) {
-                return yield thisDapi.cfs.update(id, {properties: leanInstance});
+                return yield thisDapi.cfs.findByIdAndUpdate(id, {properties: leanInstance}, {new: true});
             },
             updateProperty: function*(id, propertyArg, stringArg) {
                 let element = yield Contents.findById(id);
@@ -116,17 +127,15 @@ function stack_dapis_contents() {
                 return yield element.save();
             },
             setChildren: function*(id, childrenId) {
-                return yield mapPromises({
-                    parent: thisDapi.cfs.get(id).then(par => {
-                        par.children.concat(childrenId);
-                        return par.save();
-                    }),
-                    children: Contents.findAndUpdate({_id: {$all: childrenId}},
-                        {hasParent: true},
-                        {new: true}).exec()
-                })
+                let parent = yield Contents.findById(id);
+                parent.children = parent.children.concat(childrenId);
+                parent.save();
+                for(children of childrenId){
+                    let child = yield Contents.findById(children);
+                    child.hasParent = true;
+                    child.save();
+                }
             }
-
         },
         ehgs: {
             get(idArg){
