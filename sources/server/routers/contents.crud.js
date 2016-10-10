@@ -7,16 +7,25 @@ function router_contents() {
     let contentsEhgs = stack.dapis.contents.ehgs;
 
     router.onRoute("/")
+        .onGet(contentsEhgs.getPaged(0, 5))
         .onPost(contentsEhgs.create(bodyExtractor))
     ;
 
     router.onRoute("/:identifier")
+        .onDelete(contentsEhgs.delete(identifierExtractor))
         .onGet(contentsEhgs.get(identifierExtractor))
     ;
 
-    router.onRoute("/")
-        .onGet(contentsEhgs.getPaged(3,3));
+    router.onRoute("/trash/:identifier")
+        .onPut(contentsEhgs.trash(identifierExtractor))
+    ;
 
+    router.onRoute("/untrash/:identifier")
+        .onPut(contentsEhgs.untrash(identifierExtractor))
+    ;
 
+    router.onRoute("/trashs")
+        .onPut(contentsEhgs.getTrashed())
+    ;
     return router;
 }

@@ -49,10 +49,14 @@ function stack_dapis_contents() {
             },
 
             trash: function*(id) {
-                return yield thisDapi.cfs.update(id, {obitDate: Date.now}())
+                let content = yield Contents.findById(id);
+                content.obitDate = Date.now();
+                return yield content.save();
             },
             untrash: function*(id) {
-                return yield thisDapi.cfs.update(id, {obitDate: null})
+                let content = yield Contents.findById(id);
+                content.obitDate = null;
+                return yield content.save();
             },
             publish: function*(id) {
                 return yield thisDapi.cfs.update(id, {publishDate: Date.now()})
