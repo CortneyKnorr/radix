@@ -44,8 +44,12 @@ function stack_dapis_contents() {
                     return {};
                 }
             },
-            getTrashed: function*() {
-                return yield Contents.find({obitDate: {$ne: null}});
+            getTrashed: function*(page, pageLength) {
+                return yield (
+                    (typeof page == 'number' && pageLength) ?
+                        Contents.find({obitDate: {$ne: null}}).skip(page * pageLength).limit(pageLength) : //true
+                        Contents.find({obitDate: {$ne: null}}) //false
+                );
             },
 
             trash: function*(id) {
@@ -90,7 +94,7 @@ function stack_dapis_contents() {
             },
             createAndBind: function*(lightInstance, parentId) {
                 let child = yield thisDapi.cfs.create(lightInstance);
-                return yield thisDapi.cfs.bind(child_id, parentId);
+                return yield thisDapi.cfs.bind(child._id, parentId);
 
             },
             bind: function*(childId, parentId) {
@@ -127,7 +131,7 @@ function stack_dapis_contents() {
             },
             updateProperty: function*(id, propertyArg, stringArg) {
                 let element = yield Contents.findById(id);
-                element.properties[propertyArg] = stringArg;
+                element.properties[parseInt(propertyArg)] = stringArg;
                 return yield element.save();
             },
             setChildren: function*(id, childrenId) {
