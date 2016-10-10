@@ -24,6 +24,21 @@ function router_contents() {
         .onPut(contentsEhgs.untrash(identifierExtractor))
     ;
 
+    router.onRoute("/bind/:identifier")
+        .onPut(contentsEhgs.bind(identifierExtractor, r => r.body.childId))
+        .onPost(contentsEhgs.createAndBind(bodyExtractor, identifierExtractor))
+    ;
+
+    router.onRoute("/makeIndependent/:identifier")
+        .onPut(contentsEhgs.makeIndependent(identifierExtractor))
+    ;
+
+    router.onRoute("/setChildren/:identifier")
+        .onPut(
+            stack.dapis.useful.pehgs.parseJson(),
+            contentsEhgs.setChildren(identifierExtractor, r => r.body.childrenId))
+    ;
+
     router.onRoute("/channel/:identifier")
         .onGet(contentsEhgs.getInChannel(identifierExtractor))
     ;
@@ -41,9 +56,17 @@ function router_contents() {
         .onGet(contentsEhgs.get(identifierExtractor))
     ;
 
+    router.onRoute("/publish/:identifier")
+        .onPut(contentsEhgs.publish(identifierExtractor))
+    ;
+
+    router.onRoute("/unpublish/:identifier")
+        .onPut(contentsEhgs.unpublish(identifierExtractor))
+    ;
 
     router.onRoute("/property/:identifier")
-        .onPut(contentsEhgs.updateProperty(identifierExtractor, r => r.body.propertyArg, r => r.body.stringArg));
+        .onPut(contentsEhgs.updateProperty(identifierExtractor, r => r.body.propertyArg, r => r.body.stringArg))
+    ;
 
 
     return router;

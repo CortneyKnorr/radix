@@ -63,10 +63,14 @@ function stack_dapis_contents() {
                 return yield content.save();
             },
             publish: function*(id) {
-                return yield thisDapi.cfs.update(id, {publishDate: Date.now()})
+                let content = yield Contents.findById(id);
+                content.publishDate = Date.now();
+                return content.save();
             },
             unpublish: function*(id) {
-                return yield thisDapi.cfs.update(id, {publishDate: null})
+                let content = yield Contents.findById(id);
+                content.publishDate = null;
+                return content.save();
             },
             makeIndependent: function*(id) {
                 let content = yield Contents.findById(id);
@@ -93,11 +97,24 @@ function stack_dapis_contents() {
 
             },
             createAndBind: function*(lightInstance, parentId) {
-                let child = yield thisDapi.cfs.create(lightInstance);
-                return yield thisDapi.cfs.bind(child._id, parentId);
+                let child = new Contents(lightInstance);
+                yield child.save();
+
+                let fy = yield mapPromises({
+                    child: Contents.findById(child._id).exec(),
+                    parent: Contents.findById(parentId).exec()
+                });
+
+                fy.child.hasParent = true;
+                fy.parent.children.push(fy.child._id);
+
+                fy.child.save();
+                fy.parent.save();
+
+                return fy.child;
 
             },
-            bind: function*(childId, parentId) {
+            bind: function*(parentId, childId) {
 
                 let fy = yield mapPromises({
                     child: Contents.findById(childId).exec(),
@@ -110,7 +127,7 @@ function stack_dapis_contents() {
                 fy.child.save();
                 fy.parent.save();
 
-                return true;
+                return fy.child;
             },
             getInChannel: function*(channel) {
                 return yield Contents.find({channel: channel});
@@ -143,6 +160,7 @@ function stack_dapis_contents() {
                     child.hasParent = true;
                     child.save();
                 }
+                return parent;
             }
         },
         ehgs: {
@@ -262,11 +280,11 @@ function stack_dapis_contents() {
                     response.send(yield* thisDapi.cfs.setChildren(id, childrenId));
                 }
             },
-            bind(childIdArg, parentIdArg){
+            bind(parentIdArg, childIdArg){
                 return function*(request, response, next) {
                     let childId = stack.dapis.wizards.standards.ehgf13Arg(childIdArg, request, false);
                     let parentId = stack.dapis.wizards.standards.ehgf13Arg(parentIdArg, request, false);
-                    response.send(yield* thisDapi.cfs.bind(childId, parentId));
+                    response.send(yield* thisDapi.cfs.bind(parentId, childId));
                 }
             },
 
