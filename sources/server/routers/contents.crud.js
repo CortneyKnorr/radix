@@ -68,6 +68,10 @@ function router_contents() {
         .onPut(contentsEhgs.updateProperty(identifierExtractor, r => r.body.propertyArg, r => r.body.stringArg))
     ;
 
+    router.onRoute("/properties/:identifier")
+        .onPut(contentsEhgs.updateProperties(identifierExtractor, bodyExtractor))
+    ;
+
 
     return router;
 }
