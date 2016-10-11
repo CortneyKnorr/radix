@@ -76,9 +76,9 @@ function stack_dapis_contents() {
                 let content = yield Contents.findById(id);
                 if (content.hasParent) {
                     let parents = [];
-                    for(let parent of yield Contents.find({children: {$ne: null}})){
-                        for(let children of parent.children){
-                            if(children == id){
+                    for (let parent of yield Contents.find({children: {$ne: null}})) {
+                        for (let children of parent.children) {
+                            if (children == id) {
                                 parents.push(parent)
                             }
                         }
@@ -137,15 +137,23 @@ function stack_dapis_contents() {
             },
             renameChannel: function*(channelArg, newChannel) {
                 let elemsInChannel = yield Contents.find({channel: channelArg});
-                for(elem of elemsInChannel){
+                for (elem of elemsInChannel) {
                     elem.channel = newChannel;
                     elem.save();
                 }
                 return true;
             },
             updateProperties: function*(id, leanInstance) {
-                return yield thisDapi.cfs.update(id, {properties: leanInstance});
-                // return yield thisDapi.cfs.findByIdAndUpdate(id, {properties: leanInstance}, {new: true});
+                let content = yield Contents.findById(id);
+                if (content) {
+                    if (leanInstance) {
+                        for (let key in leanInstance) {
+                            content.properties[key] = leanInstance[key];
+                        }
+                    }
+                }
+                content.updateDate = Date.now();
+                return yield content.save();
             },
             updateProperty: function*(id, propertyArg, stringArg) {
                 let element = yield Contents.findById(id);
@@ -156,7 +164,7 @@ function stack_dapis_contents() {
                 let parent = yield Contents.findById(id);
                 parent.children = parent.children.concat(childrenId);
                 parent.save();
-                for(children of childrenId){
+                for (let children of childrenId) {
                     let child = yield Contents.findById(children);
                     child.hasParent = true;
                     child.save();
@@ -263,6 +271,7 @@ function stack_dapis_contents() {
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    console.log(leanInstance);
                     response.send(yield* thisDapi.cfs.updateProperties(id, leanInstance));
                 }
             },
