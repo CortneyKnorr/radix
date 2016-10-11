@@ -144,7 +144,8 @@ function stack_dapis_contents() {
                 return true;
             },
             updateProperties: function*(id, leanInstance) {
-                return yield thisDapi.cfs.findByIdAndUpdate(id, {properties: leanInstance}, {new: true});
+                return yield thisDapi.cfs.update(id, {properties: leanInstance});
+                // return yield thisDapi.cfs.findByIdAndUpdate(id, {properties: leanInstance}, {new: true});
             },
             updateProperty: function*(id, propertyArg, stringArg) {
                 let element = yield Contents.findById(id);
