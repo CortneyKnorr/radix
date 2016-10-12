@@ -6,9 +6,9 @@ function stack_dapis_contents() {
             get: function*(id) {
                 return yield Contents.findById(id);
             },
-            getPaged: function*(channelArg,page, pageLength) {
+            getPaged: function*(channelArg, page, pageLength) {
                 let offset = page * pageLength;
-                return yield Contents.find({channel: channelArg}).skip(offset).limit(pageLength);
+                return yield Contents.find({channel: channelArg}).sort({birthDate: -1}).skip(offset).limit(pageLength);
             },
             create: function*(lightInstance) {
                 let content = new Contents(lightInstance);
@@ -47,8 +47,11 @@ function stack_dapis_contents() {
             getTrashed: function*(channelArg, page, pageLength) {
                 return yield (
                     (typeof page == 'number' && pageLength) ?
-                        Contents.find({channel: channelArg, obitDate: {$ne: null}}).skip(page * pageLength).limit(pageLength) : //true
-                        Contents.find({channel: channelArg, obitDate: {$ne: null}}) //false
+                        Contents.find({
+                            channel: channelArg,
+                            obitDate: {$ne: null}
+                        }).sort({birthDate: -1}).skip(page * pageLength).limit(pageLength) : //true
+                        Contents.find({channel: channelArg, obitDate: {$ne: null}}).sort({birthDate: -1}) //false
                 );
             },
 
@@ -129,12 +132,15 @@ function stack_dapis_contents() {
 
                 return fy.child;
             },
+
             getInChannel: function*(channel) {
                 return yield Contents.find({channel: channel});
             },
+
             getIndependentInChannel: function*(channel) {
                 return yield Contents.find({channel: channel, hasParent: false});
             },
+
             renameChannel: function*(channelArg, newChannel) {
                 let elemsInChannel = yield Contents.find({channel: channelArg});
                 for (elem of elemsInChannel) {
@@ -143,6 +149,7 @@ function stack_dapis_contents() {
                 }
                 return true;
             },
+
             updateProperties: function*(id, leanInstance) {
                 let content = yield Contents.findById(id);
                 if (content) {
@@ -155,11 +162,13 @@ function stack_dapis_contents() {
                 content.updateDate = Date.now();
                 return yield content.save();
             },
+
             updateProperty: function*(id, propertyArg, stringArg) {
                 let element = yield Contents.findById(id);
-                element.properties.set([parseInt(propertyArg)], stringArg)  ;
+                element.properties.set([parseInt(propertyArg)], stringArg);
                 return yield element.save();
             },
+
             setChildren: function*(id, childrenId) {
                 let parent = yield Contents.findById(id);
                 parent.children = parent.children.concat(childrenId);
