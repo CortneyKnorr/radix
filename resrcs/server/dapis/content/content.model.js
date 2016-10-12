@@ -3,12 +3,12 @@ function stack_models_contents() {
     var Schema = mongoose.Schema;
 
     var contents = new Schema({
-        title: {type: String, required: true},
+        title: {type: String},
         content: {type: String},
         channel: {type: String},
         identifier: {type: String},
         tags: [{type: String}],
-        properties: [{type: String}],
+        properties: [{type: Schema.Types.Mixed}],
         rights: {type: Number},
         author: {type: Schema.ObjectId, ref: "dapi_user", required: false},
         children: [{type: Schema.ObjectId, ref: "dapi_content"}],

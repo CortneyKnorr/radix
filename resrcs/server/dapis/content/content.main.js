@@ -6,9 +6,9 @@ function stack_dapis_contents() {
             get: function*(id) {
                 return yield Contents.findById(id);
             },
-            getPaged: function*(page, pageLength) {
+            getPaged: function*(channelArg,page, pageLength) {
                 let offset = page * pageLength;
-                return yield Contents.find().skip(offset).limit(pageLength);
+                return yield Contents.find({channel: channelArg}).skip(offset).limit(pageLength);
             },
             create: function*(lightInstance) {
                 let content = new Contents(lightInstance);
@@ -44,11 +44,11 @@ function stack_dapis_contents() {
                     return {};
                 }
             },
-            getTrashed: function*(page, pageLength) {
+            getTrashed: function*(channelArg, page, pageLength) {
                 return yield (
                     (typeof page == 'number' && pageLength) ?
-                        Contents.find({obitDate: {$ne: null}}).skip(page * pageLength).limit(pageLength) : //true
-                        Contents.find({obitDate: {$ne: null}}) //false
+                        Contents.find({channel: channelArg, obitDate: {$ne: null}}).skip(page * pageLength).limit(pageLength) : //true
+                        Contents.find({channel: channelArg, obitDate: {$ne: null}}) //false
                 );
             },
 
@@ -148,7 +148,7 @@ function stack_dapis_contents() {
                 if (content) {
                     if (leanInstance) {
                         for (let key in leanInstance) {
-                            content.properties[key] = leanInstance[key];
+                            content.properties.set(parseInt(key), leanInstance[parseInt(key)]);
                         }
                     }
                 }
@@ -157,7 +157,7 @@ function stack_dapis_contents() {
             },
             updateProperty: function*(id, propertyArg, stringArg) {
                 let element = yield Contents.findById(id);
-                element.properties[parseInt(propertyArg)] = stringArg;
+                element.properties.set([parseInt(propertyArg)], stringArg)  ;
                 return yield element.save();
             },
             setChildren: function*(id, childrenId) {
@@ -179,11 +179,12 @@ function stack_dapis_contents() {
                     response.send(yield* thisDapi.cfs.get(id));
                 }
             },
-            getPaged(pageArg, pageLengthArg){
+            getPaged(channelArg, pageArg, pageLengthArg){
                 return function*(request, response, next) {
+                    let channel = stack.dapis.wizards.standards.ehgf13Arg(channelArg, request, false);
                     let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
                     let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
-                    response.send(yield* thisDapi.cfs.getPaged(page, pageLength));
+                    response.send(yield* thisDapi.cfs.getPaged(channel, page, pageLength));
                 }
             },
             create(leanInstanceArg){
@@ -206,9 +207,12 @@ function stack_dapis_contents() {
                     response.send(yield* thisDapi.cfs.update(id, leanInstance));
                 }
             },
-            getTrashed(){
+            getTrashed(channelArg, pargeArg, pageLengthArg){
                 return function*(request, response, next) {
-                    response.send(yield* thisDapi.cfs.getTrashed());
+                    let channel = stack.dapis.wizards.standards.ehgf13Arg(channelArg, request, false);
+                    let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
+                    let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
+                    response.send(yield* thisDapi.cfs.getTrashed(channel, page, pageLength));
                 }
             },
             trash(idArg){
@@ -271,7 +275,6 @@ function stack_dapis_contents() {
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
-                    console.log(leanInstance);
                     response.send(yield* thisDapi.cfs.updateProperties(id, leanInstance));
                 }
             },
