@@ -14,18 +14,18 @@ function stack_models_peoples() {
         address: {type: String},
         address2: {type: String},
         postal: {type: String},
-        birthDate: {type: Date, default: Date.now},
+        birthDate: {type: Date},
         obitDate: {type: Date},
-        creationDate: {type: Date},
+        creationDate: {type: Date, default: Date.now},
         profilPict: {type: String},
         country: {type: String},
         hobbies: {type: String},
         activity: {type: String},
-        friends: [{type: Schema.ObjectId, ref: "dapi_people"}],
-        siblings: [{type: Schema.ObjectId, ref: "dapi_people"}],
-        spouse: [{type: Schema.ObjectId, ref: "dapi_people"}],
-        parents: [{type: Schema.ObjectId, ref: "dapi_people"}],
-        children: [{type: Schema.ObjectId, ref: "dapi_people"}]
+        friends: [{type: Schema.ObjectId}],
+        siblings: [{type: Schema.ObjectId}],
+        spouse: {type: Schema.ObjectId},
+        parents: [{type: Schema.ObjectId}],
+        children: [{type: Schema.ObjectId}]
     });
 
     return mongoose.model('dapi_people', peoples);
