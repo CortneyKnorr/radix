@@ -3,6 +3,7 @@ $project.models = {};
 $project.env = {};
 $project.middleware = {};
 $project.mapis = {};
+$project.mapisList = new Set();
 
 var stack = {};
 stack.globals = {};

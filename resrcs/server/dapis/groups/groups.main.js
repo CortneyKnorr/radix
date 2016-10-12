@@ -45,28 +45,48 @@ function stack_dapis_groups() {
 
             addUser: function*(parentId, userId) {
                 let parent = yield Groups.findById(parentId);
-                parent.users.push(userId);
-                return yield parent.save();
+                if (parent.users) {
+                    parent.users.push(userId);
+                    return yield parent.save();
+                } else {
+                    return {};
+                }
             },
             addUsers: function*(parentId, userIds) {
                 let parent = yield Groups.findById(parentId);
-                parent.users.concat(userIds);
-                return yield parent.save();
+                if (parent.users) {
+                    parent.users.concat(userIds);
+                    return yield parent.save();
+                } else {
+                    return {};
+                }
             },
             addAdmin: function*(parentId, adminId) {
                 let parent = yield Groups.findById(parentId);
-                parent.admins.push(adminId);
-                return yield parent.save();
+                if (parent.admins) {
+                    parent.admins.push(adminId);
+                    return yield parent.save();
+                } else {
+                    return {};
+                }
             },
             removeAdmin: function*(parentId, adminId) {
                 let parent = yield Groups.findById(parentId);
-                parent.admins = parent.admins.filter(admin => admin != adminId);
-                return yield parent.save();
+                if (parent.admins) {
+                    parent.admins = parent.admins.filter(admin => admin != adminId);
+                    return yield parent.save();
+                } else {
+                    return {};
+                }
             },
             removeUser: function*(parentId, userID) {
                 let parent = yield Groups.findById(parentId);
-                parent.users = parent.admins.filter(admin => admin != userID);
-                return yield parent.save();
+                if (parent.users) {
+                    parent.users = parent.users.filter(admin => admin != userID);
+                    return yield parent.save();
+                } else {
+                    return {};
+                }
             },
             getUsersBestRights: function*(userId) {
                 let differentRights = yield mapPromises({
@@ -106,13 +126,13 @@ function stack_dapis_groups() {
 
         },
         ehgs: {
-            create(leanInstanceArg){
+            create(leanInstanceArg) {
                 return function*(request, response, next) {
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
                     response.send(yield* thisDapi.cfs.create(leanInstance));
                 };
             },
-            update(idArg, leanInstanceArg){
+            update(idArg, leanInstanceArg) {
                 return function*(request, response, next) {
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);

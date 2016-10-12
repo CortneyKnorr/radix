@@ -9,6 +9,7 @@ function loadMapi(mapiArg) {
             if (myDependency.__NAME && myDependency.__VERSION && myDependency.__AUTHOR && myDependency.__STACKVERSIONS && myDependency.load) {
                 if (myDependency.__STACKVERSIONS.indexOf(stack.globals.version) > -1){
                     $project.mapis[myDependency.__NAME] = myDependency;
+                    $project.mapisList.add(myDependency.__NAME);
                     myDependency.load(stack);
                 } else {
                     throw "Dependency is not compatible with this stack version";
