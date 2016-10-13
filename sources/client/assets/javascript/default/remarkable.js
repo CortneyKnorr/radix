@@ -2143,7 +2143,7 @@
     var html_blocks = {};
 
     [
-        'article',
+        'people',
         'aside',
         'button',
         'blockquote',
