@@ -216,7 +216,7 @@ function stack_dapis_contents() {
                     response.send(yield* thisDapi.cfs.update(id, leanInstance));
                 }
             },
-            getTrashed(channelArg, pargeArg, pageLengthArg){
+            getTrashed(channelArg, pageArg, pageLengthArg){
                 return function*(request, response, next) {
                     let channel = stack.dapis.wizards.standards.ehgf13Arg(channelArg, request, false);
                     let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
