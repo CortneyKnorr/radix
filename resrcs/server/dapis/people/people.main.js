@@ -7,11 +7,11 @@ function stack_dapis_peoples() {
                 return yield Peoples.findById(id);
             },
 
-            getElement: function*(id, enumArg){
+            getElement: function*(id, enumArg) {
                 return yield Peoples.find({_id: id}, enumArg);
             },
 
-            getAll: function*(){
+            getAll: function*() {
                 return yield Peoples.find({}, "surname + firstnames + mail").lean();
             },
             create: function*(lightInstance) {
@@ -91,7 +91,7 @@ function stack_dapis_peoples() {
                 return parent;
             },
 
-            makeDivorced: function*(id){
+            makeDivorced: function*(id) {
                 let subject = yield Peoples.findById(id);
                 if (subject.spouse && subject.spouse != null) {
 
@@ -109,7 +109,7 @@ function stack_dapis_peoples() {
                 let subject = yield Peoples.findById(id);
                 let spouseSubject = yield Peoples.findById(spouseId);
 
-                if(subject && spouseSubject){
+                if (subject && spouseSubject) {
                     subject.spouse = spouseId;
                     subject.save();
 
@@ -120,9 +120,9 @@ function stack_dapis_peoples() {
                 }
             },
 
-            desactivateOrReactivate: function*(id){
+            desactivateOrReactivate: function*(id) {
                 let subject = yield Peoples.findById(id);
-                if(subject.obitDate){
+                if (subject.obitDate) {
                     subject.obitDate = subject.obitDate != null ? null : Date.now();
                 } else {
                     subject.obitDate = Date.now();
@@ -130,31 +130,30 @@ function stack_dapis_peoples() {
                 return subject.save();
             },
 
-            addFriend: function*(id, friendId){
+            addFriend: function*(id, friendId) {
                 let subject = yield Peoples.findById(id);
                 let friendSubject = yield Peoples.findById(friendId);
-                if(subject && friendSubject){
+                if (subject && friendSubject) {
                     subject.friends.push(friendId);
                     subject.save();
 
                     friendSubject.friends.push(id);
                     friendSubject.save();
                 }
-
             },
 
-            removeFriend: function*(id, friendId){
+            removeFriend: function*(id, friendId) {
                 let subject = yield Peoples.findById(id);
                 let friendSubject = yield Peoples.findById(friendId);
-                if(subject && friendSubject){
-                    for(let i = 0; i < subject.friends.length; i++){
-                        if(subject.friends[i] == friendId){
+                if (subject && friendSubject) {
+                    for (let i = 0; i < subject.friends.length; i++) {
+                        if (subject.friends[i] == friendId) {
                             subject.friends.splice(i, 1);
                             subject.save();
                         }
                     }
-                    for(let i = 0; i < friendSubject.friends.length; i++){
-                        if(friendSubject.friends[i] == friendId){
+                    for (let i = 0; i < friendSubject.friends.length; i++) {
+                        if (friendSubject.friends[i] == friendId) {
                             friendSubject.friends.splice(i, 1);
                             friendSubject.save();
                         }
@@ -162,10 +161,10 @@ function stack_dapis_peoples() {
                 }
             },
 
-            addSibling: function*(id, siblingId){
+            addSibling: function*(id, siblingId) {
                 let subject = yield Peoples.findById(id);
                 let siblingSubject = yield Peoples.findById(siblingId);
-                if(subject && siblingSubject){
+                if (subject && siblingSubject) {
                     subject.siblings.push(siblingId);
                     subject.save();
 
@@ -176,18 +175,18 @@ function stack_dapis_peoples() {
                 }
             },
 
-            removeSibling: function*(id, siblingId){
+            removeSibling: function*(id, siblingId) {
                 let subject = yield Peoples.findById(id);
                 let siblingSubject = yield Peoples.findById(siblingId);
-                if(subject && siblingSubject){
-                    for(let i = 0; i < subject.siblings.length; i++){
-                        if(subject.siblings[i] == siblingId){
+                if (subject && siblingSubject) {
+                    for (let i = 0; i < subject.siblings.length; i++) {
+                        if (subject.siblings[i] == siblingId) {
                             subject.siblings.splice(i, 1);
                             subject.save();
                         }
                     }
-                    for(let i = 0; i < siblingSubject.siblings.length; i++){
-                        if(siblingSubject.siblings[i] == siblingId){
+                    for (let i = 0; i < siblingSubject.siblings.length; i++) {
+                        if (siblingSubject.siblings[i] == siblingId) {
                             siblingSubject.siblings.splice(i, 1);
                             siblingSubject.save();
                         }
@@ -298,7 +297,6 @@ function stack_dapis_peoples() {
                     response.send(yield* thisDapi.cfs.removeSibling(id, siblingId));
                 }
             },
-
         }
     };
     return thisDapi;

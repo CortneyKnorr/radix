@@ -19,7 +19,7 @@ function stack_models_peoples() {
         creationDate: {type: Date, default: Date.now},
         profilPict: {type: String},
         country: {type: String},
-        hobbies: {type: String},
+        hobbies: [{type: String}],
         activity: {type: String},
         friends: [{type: Schema.ObjectId}],
         siblings: [{type: Schema.ObjectId}],
