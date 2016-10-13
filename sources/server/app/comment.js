@@ -31,28 +31,44 @@ function loadCommentContent() {
         },
 
         addChildren: function*(id, childrenListId){
-            return yield* comment.dapi.cfs.setChildren(id, childrenListId)
+            return yield* comment.dapi.cfs.setChildren(id, childrenListId);
         },
         makeLike: function*(commentId, peopleId){
-            let comment = yield comment.dapi.cfs.get(commentId);
+            let cmt = yield* comment.dapi.cfs.get(commentId);
 
-            for(let i = 0; i < comment.properties.DISLIKES; i++){
-                if(comment.properties.DISLIKES[i] == peopleId){
-                    comment.properties.DISLIKES.split(i, 1);
+            if(!cmt.properties)
+                cmt.properties = [];
+            if(!cmt.properties[comment.properties.LIKES])
+                cmt.properties[comment.properties.LIKES] = [];
+            if(!cmt.properties[comment.properties.DISLIKES])
+                cmt.properties[comment.properties.DISLIKES] = [];
+
+            for(let i = 0; i < cmt.properties[comment.properties.DISLIKES]; i++){
+                if(cmt.properties[comment.properties.DISLIKES][i] == peopleId){
+                    cmt.properties[comment.properties.DISLIKES].split(i, 1);
                 }
             }
-            comment.properties.LIKES.push(peopleId);
+            cmt.properties[comment.properties.LIKES].push(peopleId);
+            return yield cmt.save();
         },
 
         makeDislike: function*(commentId, peopleId){
-            let comment = yield comment.dapi.cfs.get(commentId);
+            let cmt = yield* comment.dapi.cfs.get(commentId);
 
-            for(let i = 0; i < comment.properties.LIKES; i++){
-                if(comment.properties.LIKES[i] == peopleId){
-                    comment.properties.LIKES.split(i, 1);
+            if(!cmt.properties)
+                cmt.properties = [];
+            if(!cmt.properties[comment.properties.LIKES])
+                cmt.properties[comment.properties.LIKES] = [];
+            if(!cmt.properties[comment.properties.DISLIKES])
+                cmt.properties[comment.properties.DISLIKES] = [];
+
+            for(let i = 0; i < cmt.properties[comment.properties.LIKES]; i++){
+                if(cmt.properties[comment.properties.LIKES][i] == peopleId){
+                    cmt.properties[comment.properties.LIKES].split(i, 1);
                 }
             }
-            comment.properties.DISLIKES.push(peopleId);
+            cmt.properties[comment.properties.DISLIKES].push(peopleId);
+            return yield cmt.save();
         },
     };
 
