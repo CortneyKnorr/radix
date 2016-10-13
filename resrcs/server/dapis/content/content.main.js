@@ -4,11 +4,17 @@ function stack_dapis_contents() {
     let thisDapi = {
         cfs: {
             get: function*(id) {
-                return yield Contents.findById(id);
+                return yield Contents.findById(id)
+                    .populate("children")
+                    .populate("tags")
+                    .populate("author");
             },
             getPaged: function*(channelArg, page, pageLength) {
                 let offset = page * pageLength;
-                return yield Contents.find({channel: channelArg}).sort({birthDate: -1}).skip(offset).limit(pageLength);
+                return yield Contents.find({channel: channelArg}).sort({birthDate: -1}).skip(offset).limit(pageLength)
+                    .populate("children")
+                    .populate("tags")
+                    .populate("author");
             },
             create: function*(lightInstance) {
                 let content = new Contents(lightInstance);
@@ -50,7 +56,10 @@ function stack_dapis_contents() {
                         Contents.find({
                             channel: channelArg,
                             obitDate: {$ne: null}
-                        }).sort({birthDate: -1}).skip(page * pageLength).limit(pageLength) : //true
+                        }).sort({birthDate: -1}).skip(page * pageLength).limit(pageLength)
+                            .populate("children")
+                            .populate("tags")
+                            .populate("author") : //true
                         Contents.find({channel: channelArg, obitDate: {$ne: null}}).sort({birthDate: -1}) //false
                 );
             },
@@ -134,11 +143,17 @@ function stack_dapis_contents() {
             },
 
             getInChannel: function*(channel) {
-                return yield Contents.find({channel: channel});
+                return yield Contents.find({channel: channel})
+                    .populate("children")
+                    .populate("tags")
+                    .populate("author");
             },
 
             getIndependentInChannel: function*(channel) {
-                return yield Contents.find({channel: channel, hasParent: false});
+                return yield Contents.find({channel: channel, hasParent: false})
+                    .populate("children")
+                    .populate("tags")
+                    .populate("author");
             },
 
             renameChannel: function*(channelArg, newChannel) {

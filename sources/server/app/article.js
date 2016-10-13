@@ -18,8 +18,31 @@ function loadArticleContent() {
 
         create: function*(lightInstance) {
             lightInstance.channel = article.channel;
+
+            if (lightInstance.title) {
+                if(!lightInstance.properties)
+                    lightInstance.properties = [];
+
+                let str = lightInstance.title;
+
+                str = str.replace(/^\s+|\s+$/g, '');
+                str = str.toLowerCase();
+
+                var from = "ãàáäâẽèéëêìíïîõòóöôùúüûñç·/_,:;";
+                var to = "aaaaaeeeeeiiiiooooouuuunc------";
+                for (var i = 0, l = from.length; i < l; i++) {
+                    str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+                }
+
+                str = str.replace(/[^a-z0-9 -]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-');
+                lightInstance.properties[article.properties.URL_REF] = str;
+            }
+
             return yield* article.dapi.cfs.create(lightInstance);
         },
+
         update: function*(id, lightInstance) {
             return yield* article.dapi.cfs.update(id, lightInstance);
         },
@@ -34,11 +57,8 @@ function loadArticleContent() {
 
         getPaged: function*(page, pageLength) {
             return yield* article.dapi.cfs.getPaged(article.channel, page, pageLength);
-            // .populate("children", null, "category")
-            // .populate("tags")
-            // .populate("author");
-        },
 
+        },
 
         getAbsolutePaged: function*(page, pageLength) {
             let offset = page * pageLength;
@@ -51,15 +71,11 @@ function loadArticleContent() {
                 .populate("author");
         },
 
-
         getTrashed: function*(page, pageLength) {
             return yield* (
                 (typeof page == 'number' && pageLength) ?
 
-                    article.dapi.cfs.getTrashed(article.channel, page, pageLength)
-                        .populate("children")
-                        .populate("tags")
-                        .populate("author") : //true
+                    article.dapi.cfs.getTrashed(article.channel, page, pageLength) : //true
 
                     article.dapi.cfs.getTrashed(article.channel) //false
             );
@@ -109,7 +125,6 @@ function loadArticleContent() {
                     }).sort({birthDate: -1})//false
             );
         },
-
 
         getLatestWithTags: function*(tagsArg, page, pageLength) {
             var tagsSplit = tagsArg.split("&");
@@ -165,7 +180,6 @@ function loadArticleContent() {
             );
         },
 
-
         getByUrlRef: function*(urlRef) {
             return yield* article.dapi.findOne({urlRef: urlRef, channel: article.channel})
                 .populate("children")
@@ -189,26 +203,25 @@ function loadArticleContent() {
             return yield* article.dapi.cfs.untrash(id);
         },
 
-        generateAndSetUrlRef: function*(id) {
-            let article = yield* article.get(id);
-            let str = article.title;
 
-            str = str.replace(/^\s+|\s+$/g, '');
-            str = str.toLowerCase();
+        //todo: add eh function
 
-            var from = "ãàáäâẽèéëêìíïîõòóöôùúüûñç·/_,:;";
-            var to = "aaaaaeeeeeiiiiooooouuuunc------";
-            for (var i = 0, l = from.length; i < l; i++) {
-                str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
-            }
+        getComments: function*(id, page, pageLength){
+            var art = article.cfs.get(id);
+            pageLength++;
+            let offset = page * pageLength;
 
-            str = str.replace(/[^a-z0-9 -]/g, '')
-                .replace(/\s+/g, '-')
-                .replace(/-+/g, '-');
+            return yield* (
+                (typeof page == 'number' && pageLength) ?
 
-            return yield* article.updateProperty(id, article.properties.URL_REF, str);
+                    art.children.filter(elem => {elem.channel = "comment"}).substring(offset, offset + pageLength): //true
 
+                    art.children.filter(elem => {elem.channel = "comment"}) //false
+            );
+        },
 
+        addComment : function*(artId, commentId){
+            return yield* article.dapi.cfs.bind(artId, commentId);
         }
     };
 

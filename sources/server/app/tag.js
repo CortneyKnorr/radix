@@ -6,7 +6,7 @@ function loadTagContent() {
 
     tag.cfs = {
         create: function*(lightInstance) {
-            lightInstance.channel = category.channel;
+            lightInstance.channel = tag.channel;
             return yield* tag.dapi.cfs.create(lightInstance);
         },
 
@@ -23,7 +23,7 @@ function loadTagContent() {
         },
 
         getPaged: function*(page, pageLength) {
-            return yield* tag.dapi.cfs.getPaged(category.channel, page, pageLength);
+            return yield* tag.dapi.cfs.getPaged(tag.channel, page, pageLength);
         },
     }
     ;
