@@ -3,11 +3,16 @@ function stack_dapis_contents() {
 
     let thisDapi = {
         cfs: {
-            get: function*(id) {
-                return yield Contents.findById(id)
-                    .populate("children")
-                    .populate("tags")
-                    .populate("author");
+            get: function*(id, populated) {
+                return yield (
+                    (populated || typeof populated == "undefined") ?
+                        Contents.findById(id)
+                            .populate("children")
+                            .populate("tags")
+                            .populate("author") : //true
+                        Contents.findById(id)//false
+                );
+
             },
             getPaged: function*(channelArg, page, pageLength) {
                 let offset = page * pageLength;
@@ -139,7 +144,7 @@ function stack_dapis_contents() {
                 fy.child.save();
                 fy.parent.save();
 
-                return fy.child;
+                return yield fy.child;
             },
 
             getInChannel: function*(channel) {

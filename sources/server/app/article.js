@@ -10,7 +10,8 @@ function loadArticleContent() {
         NOTE: 2,
         COMMENT_ENABLE: 3,
         URL_REF: 4,
-        URL_PICTURE: 5
+        URL_PICTURE: 5,
+        DISLIKES: 6
     };
 
 
@@ -20,7 +21,7 @@ function loadArticleContent() {
             lightInstance.channel = article.channel;
 
             if (lightInstance.title) {
-                if(!lightInstance.properties)
+                if (!lightInstance.properties)
                     lightInstance.properties = [];
 
                 let str = lightInstance.title;
@@ -51,8 +52,8 @@ function loadArticleContent() {
             return yield* article.dapi.cfs.delete(id);
         },
 
-        get: function*(id) {
-            return yield* article.dapi.cfs.get(id);
+        get: function*(id, populated) {
+            return yield* article.dapi.cfs.get(id, populated);
         },
 
         getPaged: function*(page, pageLength) {
@@ -206,23 +207,78 @@ function loadArticleContent() {
 
         //todo: add eh function
 
-        getComments: function*(id, page, pageLength){
-            var art = article.cfs.get(id);
+        giveLike(articleId, peopleId){
+            var art = yield* article.cfs.get(articleId, false);
+
+            if (!art.properties) art.properties = [];
+            if (!art.properties[article.properties.LIKES]) art.properties[article.properties.LIKES] = [];
+            if (!art.properties[article.properties.DISLIKES]) art.properties[article.properties.DISLIKES] = [];
+
+            art.properties[article.properties.DISLIKES].map(elem => {
+                if (elem == peopleId) {
+                    let index = art.properties[article.properties.DISLIKES].indexOf(elem);
+                    art.properties[article.properties.DISLIKES].splice(index, 1);
+                }
+            });
+
+            for (let elem of art.properties[article.properties.LIKES]) {
+                if (elem == peopleId) {
+                    return false;
+                }
+            }
+            art.properties[article.properties.LIKES].push(peopleId);
+            return yield* art.save();
+
+
+        },
+
+        giveDislike(articleId, peopleId){
+            var art = yield* article.cfs.get(articleId, false);
+
+            if (!art.properties) art.properties = [];
+            if (!art.properties[article.properties.LIKES]) art.properties[article.properties.LIKES] = [];
+            if (!art.properties[article.properties.DISLIKES]) art.properties[article.properties.DISLIKES] = [];
+
+            art.properties[article.properties.LIKES].map(elem => {
+                if (elem == peopleId) {
+                    let index = art.properties[article.properties.LIKES].indexOf(elem);
+                    art.properties[article.properties.LIKES].splice(index, 1);
+                }
+            });
+
+            for (let elem of art.properties[article.properties.DISLIKES]) {
+                if (elem == peopleId) {
+                    return yield* art.save();
+                }
+            }
+            art.properties[article.properties.DISLIKES].push(peopleId);
+            return yield* art.save();
+
+
+        },
+
+        getComments: function*(id, page, pageLength) {
+            var art = yield* article.cfs.get(id);
             pageLength++;
             let offset = page * pageLength;
 
-            return yield* (
+            // console.log(art.children.filter(other => other == "comment"));
+
+            return(
                 (typeof page == 'number' && pageLength) ?
 
-                    art.children.filter(elem => {elem.channel = "comment"}).substring(offset, offset + pageLength): //true
+                    art.children.filter(elem =>
+                        elem.channel != "comment"
+                    ).substring(offset, offset + pageLength) : //true
 
-                    art.children.filter(elem => {elem.channel = "comment"}) //false
+                    art.children.filter(elem => elem.channel != "comment") //false
             );
         },
 
-        addComment : function*(artId, commentId){
+        addComment: function*(artId, commentId) {
             return yield* article.dapi.cfs.bind(artId, commentId);
-        }
+        },
+
     };
 
     article.ehgs = {
@@ -248,10 +304,11 @@ function loadArticleContent() {
             }
         },
 
-        get(idArg){
+        get(idArg, populatedArg){
             return function*(request, response, next) {
+                let populated = stack.dapis.wizards.standards.ehgf13Arg(populatedArg, request, false);
                 let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
-                response.send(yield* article.cfs.get(id));
+                response.send(yield* article.cfs.get(id, populated));
             }
         },
 

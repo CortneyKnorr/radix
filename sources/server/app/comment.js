@@ -22,8 +22,8 @@ function loadCommentContent() {
             return yield* comment.dapi.cfs.delete(id);
         },
 
-        get: function*(id) {
-            return yield* comment.dapi.cfs.get(id);
+        get: function*(id, populated) {
+            return yield* comment.dapi.cfs.get(id, populated);
         },
 
         getPaged: function*(page, pageLength) {
@@ -93,10 +93,11 @@ function loadCommentContent() {
                 response.send(yield* comment.cfs.delete(id));
             }
         },
-        get(idArg){
+        get(idArg, populatedArg){
             return function*(request, response, next) {
                 let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
-                response.send(yield* comment.cfs.get(id));
+                let populated = stack.dapis.wizards.standards.ehgf13Arg(populatedArg, request, false);
+                response.send(yield* comment.cfs.get(id, populated));
             }
         },
         getPaged(pageArg, pageLengthArg){
