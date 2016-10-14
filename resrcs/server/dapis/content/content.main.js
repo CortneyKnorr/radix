@@ -12,7 +12,6 @@ function stack_dapis_contents() {
                             .populate("author") : //true
                         Contents.findById(id)//false
                 );
-
             },
             getPaged: function*(channelArg, page, pageLength) {
                 let offset = page * pageLength;
@@ -20,6 +19,9 @@ function stack_dapis_contents() {
                     .populate("children")
                     .populate("tags")
                     .populate("author");
+            },
+            getElement: function*(channelArg, elementArg) {
+                return yield Contents.find({channel: channelArg}, elementArg);
             },
             create: function*(lightInstance) {
                 let content = new Contents(lightInstance);
@@ -214,6 +216,13 @@ function stack_dapis_contents() {
                     let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
                     let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
                     response.send(yield* thisDapi.cfs.getPaged(channel, page, pageLength));
+                }
+            },
+            getElement(channelArg, elementArg){
+                return function*(request, response, next) {
+                    let channel = stack.dapis.wizards.standards.ehgf13Arg(channelArg, request, false);
+                    let element = stack.dapis.wizards.standards.ehgf13Arg(elementArg, request, false);
+                    response.send(yield* thisDapi.cfs.getElement(channel, element));
                 }
             },
             create(leanInstanceArg){
