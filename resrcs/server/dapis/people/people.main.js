@@ -200,7 +200,7 @@ function stack_dapis_peoples() {
                 return ((yield Peoples.find({mail: mailArg})).length > 0)? true : false;
             },
 
-            creationWithUser: function*(peopleLightInstance, userLightInstance){
+            createWithUser: function*(peopleLightInstance, userLightInstance){
                 if (userLightInstance.username && userLightInstance.password && userLightInstance.rights){
                     let myUser = yield* stack.dapis.users.cfs.create(userLightInstance);
                     myUser.save();
@@ -330,11 +330,11 @@ function stack_dapis_peoples() {
                     response.send(yield* thisDapi.cfs.getPeopleOfUser(userId));
                 }
             },
-            creationWithUser(peopleLightInstanceArg, userLightInstanceArg){
+            createWithUser(peopleLightInstanceArg, userLightInstanceArg){
                 return function*(request, response, next) {
                     let peopleLightInstance = stack.dapis.wizards.standards.ehgf13Arg(peopleLightInstanceArg, request, false);
                     let userLightInstance = stack.dapis.wizards.standards.ehgf13Arg(userLightInstanceArg, request, false);
-                    response.send(yield* thisDapi.cfs.creationWithUser(peopleLightInstance, userLightInstance));
+                    response.send(yield* thisDapi.cfs.createWithUser(peopleLightInstance, userLightInstance));
                 }
             },
             getPeopleOfUser(userIdArg){
