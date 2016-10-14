@@ -115,7 +115,10 @@ function stack_dapis_wizards() {
             } else {
                 thePromise = func();
             }
-            return yield controlFlowCall(thePromise);
+            controlFlowCall(thePromise)
+                .then(data => response.send(data))
+                .catch(data => next(data))
+            ;
         };
     };
 
