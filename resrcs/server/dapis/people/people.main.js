@@ -1,5 +1,6 @@
 function stack_dapis_peoples() {
     let Peoples = getDependency(stack_models_peoples);
+    let User = getDependency(stack_models_users);
 
     let thisDapi = {
         cfs: {
@@ -195,15 +196,25 @@ function stack_dapis_peoples() {
                 }
             },
 
+            checkMail: function*(mailArg){
+                return ((yield Peoples.find({mail: mailArg})).length > 0)? true : false;
+            },
+
+            fullCreation: function*(lightInstance){
+                if (lightInstance.username && lightInstance.password && lightInstance.rights){
+                    let myUser = User.create(lightInstance);
+                    myUser.save();
+                    lightInstance.user = myUser._id;
+                    let myObject = new Peoples(lightInstance);
+                    return yield myObject.save();
+                }
+            },
 
         },
 
         ehgs: {
             get(idArg){
-                return function*(request, response, next) {
-                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
-                    response.send(yield* thisDapi.cfs.get(id));
-                }
+                return stack.dapis.wizards.cruds.simpleEhg(thisDapi.cfs.get, idArg);
             },
             getElement(idArg, enumStringArg){
                 return function*(request, response, next) {
@@ -295,6 +306,12 @@ function stack_dapis_peoples() {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     let siblingId = stack.dapis.wizards.standards.ehgf13Arg(siblingIdArg, request, false);
                     response.send(yield* thisDapi.cfs.removeSibling(id, siblingId));
+                }
+            },
+            checkMail(mailArg){
+                return function*(request, response, next) {
+                    let mail = stack.dapis.wizards.standards.ehgf13Arg(mailArg, request, false);
+                    response.send(yield* thisDapi.cfs.checkMail(mail));
                 }
             },
         }

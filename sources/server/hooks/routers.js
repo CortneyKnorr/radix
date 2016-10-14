@@ -4,6 +4,7 @@ var hooks_routers = {
         "/files": router_files,
         "/settings": router_settings,
         "/contents": router_contents,
+        "/people": router_people,
     },
     "/access": router_access,
     "/": router_test

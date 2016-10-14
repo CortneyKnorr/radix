@@ -3,7 +3,7 @@ function stack_models_peoples() {
     var Schema = mongoose.Schema;
 
     var peoples = new Schema({
-        user: {type: Schema.ObjectId, ref: "dapi_user", required: false},
+        user: {type: Schema.ObjectId, ref: "stack_users", required: false},
         surname: {type: String},
         firstnames: [{type: String}],
         phone: {type: String},
