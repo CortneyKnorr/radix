@@ -200,18 +200,18 @@ function stack_dapis_peoples() {
                 return ((yield Peoples.find({mail: mailArg})).length > 0)? true : false;
             },
 
-            creationWithUser: function*(lightInstance){
-                if (lightInstance.username && lightInstance.password && lightInstance.rights){
-                    let myUser = User.create(lightInstance);
+            creationWithUser: function*(peopleLightInstance, userLightInstance){
+                if (userLightInstance.username && userLightInstance.password && userLightInstance.rights){
+                    let myUser = yield* stack.dapis.users.cfs.create(userLightInstance);
                     myUser.save();
-                    lightInstance.user = myUser._id;
-                    let myObject = new Peoples(lightInstance);
+                    peopleLightInstance.user = myUser._id;
+                    let myObject = new Peoples(peopleLightInstance);
                     return yield myObject.save();
                 }
             },
 
             getPeopleOfUser: function*(userId){
-                return Peoples.find({user: userId});
+                return yield Peoples.find({user: userId});
             },
 
         },
@@ -322,6 +322,19 @@ function stack_dapis_peoples() {
                 return function*(request, response, next) {
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
                     response.send(yield* thisDapi.cfs.creationWithUser(leanInstance));
+                }
+            },
+            getPeopleOfUser(userIdArg){
+                return function*(request, response, next) {
+                    let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
+                    response.send(yield* thisDapi.cfs.getPeopleOfUser(userId));
+                }
+            },
+            creationWithUser(peopleLightInstanceArg, userLightInstanceArg){
+                return function*(request, response, next) {
+                    let peopleLightInstance = stack.dapis.wizards.standards.ehgf13Arg(peopleLightInstanceArg, request, false);
+                    let userLightInstance = stack.dapis.wizards.standards.ehgf13Arg(userLightInstanceArg, request, false);
+                    response.send(yield* thisDapi.cfs.creationWithUser(peopleLightInstance, userLightInstance));
                 }
             },
             getPeopleOfUser(userIdArg){
