@@ -4,7 +4,7 @@ function router_people() {
     let bodyExtractor = r => r.body;
     let identifierExtractor = r => r.params.identifier;
 
-    let peoplesEhgs = stack.dapis.peoples.ehgs;
+    let peoplesEhgs = stack.project.mapis.people.ehgs;
 
     router.onRoute("/")
         .onGet(peoplesEhgs.getAll())
