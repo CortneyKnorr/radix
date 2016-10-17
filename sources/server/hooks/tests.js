@@ -1,25 +1,37 @@
 function* hooks_tests() {
-    var Content = getDependency(stack_models_contents);
-    let log = stack.helpers.log;
+    // var Content = getDependency(stack_models_contents);
+    // let log = stack.helpers.log;
+    //
+    //
+    // loadArticleContent();
+    // loadCategoryContent();
+    // loadTagContent();
+    //
+    // let User = stack.models.users;
+    // let userLib = stack.dapis.users.cfs;
+    //
+    // // console.log(User);
+    // console.log(yield* userLib.create({
+    //     username: "CortneyKnorr",
+    //     rights: 2,
+    //     password: "Hello"
+    // }));
 
 
-    loadArticleContent();
-    loadCategoryContent();
-    loadTagContent();
 
-    log("============================================================================================================");
-
-    for (let i = 0; i < 20; i++) {
-        var cat = yield* article.create({
-            title: "article numéro - " + i,
-            content: " content article - " + i
-        });
-        console.log(cat);
-
-    }
-
-    // var a = yield article.getPaged(0,10);
-    // console.log(a);
+    // log("============================================================================================================");
+    //
+    // for (let i = 0; i < 20; i++) {
+    //     var cat = yield* article.create({
+    //         title: "article numéro - " + i,
+    //         content: " content article - " + i
+    //     });
+    //     console.log(cat);
+    //
+    // }
+    //
+    // // var a = yield article.getPaged(0,10);
+    // // console.log(a);
 
 
     // var l = yield* tag.getPaged(1,3);
@@ -46,6 +58,6 @@ function* hooks_tests() {
     //     }
     // );
 
-    log("============================================================================================================");
+    // log("============================================================================================================");
 
 }

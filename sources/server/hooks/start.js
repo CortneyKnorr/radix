@@ -1,8 +1,3 @@
 function* hooks_start(){
-
-    loadArticleContent();
-    loadCategoryContent();
-    loadTagContent();
-    loadCommentContent();
-
+    console.log();
 }
