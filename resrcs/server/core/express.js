@@ -63,20 +63,23 @@ function* stack_express() {
         app.use(logger("stack"));
     }
 
-
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({extended: false}));
-    app.use(cookieParser());
-
+    stack.helpers.log("Setting up redirections");
+    $project.redirects = yield* hooks_redirects();
+    console.log($project.redirects);
     app.use(function (request, response, next) {
-        var keys = Object.keys(hooks_redirections)
+        var keys = Object.keys($project.redirects)
             .filter(element => (new RegExp(element)).test(request.headers.host));
         if(keys.length){
-            response.status(301).redirect(hooks_redirections[keys[0]]);
+            controlFlowCall($project.redirects[keys[0]].ehg())(request, response, next)
         } else {
             next();
         }
     });
+
+
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({extended: false}));
+    app.use(cookieParser());
 
     stack.helpers.log("Setting up Public Folders");
     app.use(express.static(path.join(__dirname, 'public')));
@@ -96,13 +99,13 @@ function* stack_express() {
     }));
 
     //stack and stack dependencies
-    stack.helpers.log("Setting up Stacks Core Hooks").iLog();
+    stack.helpers.log("Setting up Stacks other core Hooks").iLog();
     stack.helpers.log("Loading custom middleware", 3).iLog();
 
     $project.middleware = hooks_middleware.map(eh => controlFlowCall(eh));
     for (let middleware of $project.middleware) {
         app.use(middleware);
-        stack.helpers.log("Added [" + middleware.name + "] to app.");
+    stack.helpers.log("Added [" + middleware.name + "] to app.");
     }
     stack.helpers.cLog("Middleware loaded");
     stack.globals.mongoose = mongoose;
