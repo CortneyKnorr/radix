@@ -68,6 +68,15 @@ function* stack_express() {
     app.use(bodyParser.urlencoded({extended: false}));
     app.use(cookieParser());
 
+    app.use(function (request, response, next) {
+        var keys = Object.keys(hooks_redirections)
+            .filter(element => (new RegExp(element)).test(request.headers.host));
+        if(keys.length){
+            response.status(301).redirect(hooks_redirections[keys[0]]);
+        } else {
+            next();
+        }
+    });
 
     stack.helpers.log("Setting up Public Folders");
     app.use(express.static(path.join(__dirname, 'public')));
