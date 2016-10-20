@@ -105,7 +105,7 @@ function* stack_express() {
     $project.middleware = hooks_middleware.map(eh => controlFlowCall(eh));
     for (let middleware of $project.middleware) {
         app.use(middleware);
-    stack.helpers.log("Added [" + middleware.name + "] to app.");
+        stack.helpers.log("Added [" + middleware.name + "] to app.");
     }
     stack.helpers.cLog("Middleware loaded");
     stack.globals.mongoose = mongoose;
@@ -156,20 +156,21 @@ function* stack_express() {
     });
     app.use(
         function (err, request, response, next) {
+            request.errors = err;
             if (response.statusCode) {
                 if (hooks_catch[response.statusCode.toString()]) {
                     controlFlowCall(hooks_catch[response.statusCode.toString()])(request, response, () => response.send(err))
                 } else if (hooks_catch.default) {
-                    controlFlowCall(hooks_catch.default)(request, response, () => response.send(err));
+                    controlFlowCall(hooks_catch.default)(request, response, () => response.send(err.toString()));
                 } else {
-                    response.status(500).send(err);
+                    response.status(500).send(err.toString());
                 }
             } else {
                 response.statusCode = 500;
                 if (hooks_catch.default) {
-                    controlFlowCall(hooks_catch.default)(request, response, () => response.send(err));
+                    controlFlowCall(hooks_catch.default)(request, response, () => response.send(err.toString()));
                 } else {
-                    response.send(err);
+                    response.send(err.toString());
                 }
             }
         }
