@@ -35,13 +35,13 @@ function controlFlowCall(controlFlow){
     };
     return (...args) => (new Promise((resolve, reject) => {
         let potentialIterator = controlFlow(...args);
-        if(potentialIterator.next && typeof potentialIterator.next === "function"){
+        if(potentialIterator && potentialIterator.next && typeof potentialIterator.next === "function"){
             next(potentialIterator, val => resolve(val), val => {
                 reject(val)
             });
         } else {
             resolve(potentialIterator);
         }
-    }));
+    })).catch(console.log);
 
 }
