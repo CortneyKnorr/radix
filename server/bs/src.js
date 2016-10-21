@@ -39,65 +39,6 @@ var mdir = function (path) {
     }
 };
 
-<<<<<<< HEAD
-function execute(command) {
-    return new Promise(function (resolve, reject) {
-        var pro = exec(command, function (error, stdout, stderr) {
-            resolve({
-                error,
-                stdout,
-                stderr
-            })
-        });
-    });
-}
-
-var writeToFile = function (filename, contents) {
-    return new Promise(function (resolve, reject) {
-        fs.writeFile(filename, contents, function (errors) {
-            if (errors) {
-                reject(errors);
-            } else {
-                resolve();
-            }
-        });
-    });
-};
-
-var readFile = function (path) {
-    return new Promise(function (resolve, reject) {
-        fs.readFile(path, 'utf8', function (err, data) {
-            if(err){
-                reject(err);
-            } else {
-                resolve(data);
-            }
-        });
-    });
-};
-
-var git = {
-    getLastHash(){
-        return execute(`git log -n 1 --pretty=format:"%H"`)
-            .then(data => data.stdout)
-            ;
-    },
-    getLocalBranch(){
-        return execute(`git rev-parse --abbrev-ref HEAD`)
-            .then(data => data.stdout.split("\n")[0])
-            ;
-    },
-    checkout(branch){
-        return execute(`git checkout ` + branch);
-    },
-    revert(hash){
-        return execute(`git revert ` + (hash || ""));
-    }
-
-};
-
-=======
->>>>>>> parent of e1ead5c... working on stashing and retrieval
 exports.arch = {};
 exports.arch.server = function () {
     mdir("server");
@@ -264,49 +205,8 @@ exports.nodemon = function (cb) {
     });
 };
 
-<<<<<<< HEAD
-exports.stash = function () {
-    git.getLastHash()
-        .then(hash => {
-            return writeToFile(path.join(prefix, ".hash"), hash)
-        })
-        .catch(console.log);
-    git.getLocalBranch()
-        .then(branch => {
-            return writeToFile(path.join(prefix, ".branch"), branch)
-        })
-        .catch(console.log);
-=======
 exports.stash = function() {
 
->>>>>>> parent of e1ead5c... working on stashing and retrieval
-};
-
-exports.revert = function () {
-    var myHash = false;
-    var myBranch = false;
-    readFile(path.join(prefix , "/.hash"))
-        .then(hash => {
-            if(hash){
-                myHash = hash;
-                return readFile(path.join(prefix , "/.branch"))
-            }
-            return false;
-        })
-        .then(branch => {
-            if(branch){
-                myBranch = branch;
-                return git.checkout(branch)
-            }
-            return false;
-        })
-        .then(results => {
-            console.log(results);
-            if(myHash){
-                return git.revert(myHash)
-            }
-            return "No hash";
-        })
 };
 
 exports.nodemondev = function (cb) {

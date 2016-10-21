@@ -3,14 +3,6 @@ var src = require('./src');
 
 module.exports = {
     "default": ['serve'],
-<<<<<<< HEAD
-<<<<<<< HEAD
-    'stash': src.stash,
-    'revert': src.revert,
-=======
->>>>>>> parent of e1ead5c... working on stashing and retrieval
-=======
->>>>>>> parent of e1ead5c... working on stashing and retrieval
     "arch-server": src.arch.server,
     'build-js': src.javascript.build,
     'build-serverPure': src.server.build,
