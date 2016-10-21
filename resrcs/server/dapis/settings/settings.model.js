@@ -3,6 +3,7 @@ function stack_models_settings() {
     var Schema = mongoose.Schema;
 
     var myShema = new Schema({
+        category: {type: String},
         key: {type: String},
         value: {type: String},
         default: {type: String},

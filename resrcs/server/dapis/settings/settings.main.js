@@ -24,6 +24,9 @@ function stack_dapis_settings() {
             getUsingKey: function*(key) {
                 return yield Settings.findOne({key});
             },
+            getUsingCategory: function*(category) {
+                return yield Settings.find({category});
+            },
             getPaged: function* (page, pageLength) {
                 let offset = page*pageLength;
                 return yield Settings.find().skip(offset).limit(pageLength);
@@ -63,6 +66,12 @@ function stack_dapis_settings() {
                 return function*(request, response, next) {
                     let key = stack.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
                     response.send(yield* thisDapi.cfs.reset(key));
+                }
+            },
+            getUsingCategory(categoryArg) {
+                return function*(request, response, next) {
+                    let category = stack.dapis.wizards.standards.ehgf13Arg(categoryArg, request, false);
+                    response.send(yield* thisDapi.cfs.getUsingKey(category));
                 }
             },
             getUsingKey(keyArg) {
