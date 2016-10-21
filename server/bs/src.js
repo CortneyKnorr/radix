@@ -91,8 +91,8 @@ var git = {
     checkout(branch){
         return execute(`git checkout ` + branch);
     },
-    revert(hash){
-        return execute(`git reset ` + hash );
+    rest(hash){
+        return execute(`git reset ` + hash);
     }
 
 };
@@ -297,7 +297,7 @@ exports.revert = function () {
         .then(results => {
             console.log(results);
             if(myHash){
-                return git.reset(myHash)
+                return git.revert(myHash)
             }
             return "No hash";
         })
