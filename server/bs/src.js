@@ -92,7 +92,9 @@ var git = {
         return execute(`git checkout ` + branch);
     },
     checkoutCommit(commit){
-        return execute(`git checkout ${commit} .`);
+        let command = `git checkout ${commit} .`;
+        console.log(command);
+        return execute(command);
     }
 
 };
@@ -276,7 +278,7 @@ exports.stash = function () {
         .catch(console.log);
 };
 
-exports.revert = function () {
+exports.reset = function () {
     var myHash = false;
     var myBranch = false;
     readFile(path.join(prefix , "/.hash"))
