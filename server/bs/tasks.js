@@ -4,6 +4,7 @@ var src = require('./src');
 module.exports = {
     "default": ['serve'],
     'stash': src.stash,
+    'revert': src.revert,
     "arch-server": src.arch.server,
     'build-js': src.javascript.build,
     'build-serverPure': src.server.build,
