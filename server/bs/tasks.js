@@ -15,6 +15,6 @@ module.exports = {
     'build-static': src.static.build,
     'build-front': ['arch-server', 'build-js', 'build-static', 'build-css', 'build-views', 'build-ts'],
     'build-all': ['build-front', 'build-server', 'stash'],
-    'ba': ['build-front', 'build-server'],
+    'ba': ['build-front', 'build-server', 'stash'],
     's': ['serve'],
 };
