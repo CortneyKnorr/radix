@@ -92,7 +92,7 @@ var git = {
         return execute(`git checkout ` + branch);
     },
     rest(hash){
-        return execute(`git reset ` + hash);
+        return execute(`git reset --soft ` + hash);
     }
 
 };
@@ -297,10 +297,11 @@ exports.revert = function () {
         .then(results => {
             console.log(results);
             if(myHash){
-                return git.revert(myHash)
+                return git.reset(myHash)
             }
             return "No hash";
         })
+        .then(console.log);
 };
 
 exports.nodemondev = function (cb) {
