@@ -99,7 +99,7 @@ function* stack_core_express() {
 
     $project.middleware = hooks_middleware.map(eh => controlFlowCall(eh));
     for (let middleware of $project.middleware) {
-        app.use(middleware);
+        app.use(controlFlowCall(middleware));
         stack.helpers.log("Added [" + middleware.name + "] to app.");
     }
     stack.helpers.cLog("Middleware loaded");
