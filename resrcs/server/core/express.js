@@ -1,4 +1,4 @@
-function* stack_express() {
+function* stack_core_express() {
     console.log();
     console.log("|-| Initializing express...");
     console.log(" | ");
@@ -17,17 +17,12 @@ function* stack_express() {
 
     stack.helpers.cLog("Dependencies imported");
 
-    //Import of configuration files
-    var config = {};
-    config.main = getDependency('../config/main.json');
-    config.mongo = getDependency('../config/mongo.json');
-
     stack.helpers.log("Setting up mongoDB and mongoose").iLog();
     stack.helpers.log("Connection to mongoDB initialized").iLog();
-    stack.helpers.log(config.mongo.url);
+    stack.helpers.log($project.config.mongo.url);
     // Connect to mongoDB
     yield new Promise((res, rej) => {
-        mongoose.connect(config.mongo.url, {user: config.mongo.user, pass: config.mongo.password}, function (err) {
+        mongoose.connect($project.config.mongo.url, {user: $project.config.mongo.user, pass: $project.config.mongo.password}, function (err) {
             if (err) {
                 stack.helpers.cLog("Failed to connect MongoDB: " + err);
                 rej("Failed to connect MongoDB: " + err);
@@ -110,7 +105,7 @@ function* stack_express() {
     stack.helpers.cLog("Middleware loaded");
     stack.globals.mongoose = mongoose;
     stack.helpers.log("Loading authentication", 3);
-    yield* stack_authentication();
+    yield* stack_core_authentication();
     stack.helpers.log("Adding app models", 3).iLog();
     for (let modelName in hooks_models){
         stack.helpers.log(`Model ${modelName} added`);

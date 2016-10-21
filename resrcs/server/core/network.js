@@ -1,4 +1,4 @@
-function* stack_bootstrapper(worker) {
+function* stack_core_network(worker) {
     stack.globals.WORKER = worker;
     var __env__ = $project.env.data;
     stack.globals.environment = __env__;
@@ -38,7 +38,7 @@ function* stack_bootstrapper(worker) {
         stack.globals.server = http.createServer(stack.globals.expressApp);
     }
 
-    yield* stack_express();
+    yield* stack_core_express();
 
     //Listen on provided port, on all network interfaces.
     stack.globals.server.listen(port);

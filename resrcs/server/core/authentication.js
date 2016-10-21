@@ -1,4 +1,4 @@
-function* stack_authentication() {
+function* stack_core_authentication() {
 
     var passport = getDependency('passport');
 

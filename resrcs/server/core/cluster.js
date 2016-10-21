@@ -1,4 +1,4 @@
-function* stack_main(){
+function* stack_core_cluster(){
     var cluster = require('cluster');
 
     process.on('SIGINT', function() {
@@ -69,6 +69,6 @@ function* stack_main(){
 
 // Code to run if we're in a worker process
     } else {
-        yield* stack_bootstrapper(cluster.worker);
+        yield* stack_core_network(cluster.worker);
     }
 }

@@ -22,7 +22,7 @@ var gulp = require('gulp'),
     cssnano = require('cssnano');
 
 
-var env = require('../../config/env.json');
+var env = require('../../config/environments.json');
 var node_env = process.env.NODE_ENV || 'development';
 
 var _ = env[node_env];

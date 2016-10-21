@@ -1,4 +1,4 @@
-function stack_requirements() {
+function stack_core_requirements() {
     console.log("|-| Requirements");
     stack.helpers.iLog().log();
     console.time("|-| Requirements");
@@ -8,7 +8,7 @@ function stack_requirements() {
             stack.helpers.cLog("Requirements checked out");
             console.timeEnd("|-| Requirements");
             console.log();
-            controlFlowCall(stack_main)()
+            controlFlowCall(stack_core_cluster)()
                 .catch(error => {
                     controlFlowCall(hooks_crash)(error)
                         .then(data => {
