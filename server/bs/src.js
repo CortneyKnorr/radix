@@ -10,7 +10,6 @@ var gulp = require('gulp'),
     rename = require("gulp-rename"),
     minifyCss = require('gulp-cssnano'),
     del = require('del'),
-    fs = require('fs'),
     browserSync = require('browser-sync'),
     nodemon = require('gulp-nodemon'),
     typescript = require('gulp-typescript'),
@@ -21,7 +20,6 @@ var gulp = require('gulp'),
     typescriptConfig = typescript.createProject('tsconfig.json'),
     postcss = require('gulp-postcss'),
     autoprefixer = require('autoprefixer'),
-    exec = require('child_process').exec,
     cssnano = require('cssnano');
 
 
@@ -41,6 +39,7 @@ var mdir = function (path) {
     }
 };
 
+<<<<<<< HEAD
 function execute(command) {
     return new Promise(function (resolve, reject) {
         var pro = exec(command, function (error, stdout, stderr) {
@@ -97,6 +96,8 @@ var git = {
 
 };
 
+=======
+>>>>>>> parent of e1ead5c... working on stashing and retrieval
 exports.arch = {};
 exports.arch.server = function () {
     mdir("server");
@@ -263,6 +264,7 @@ exports.nodemon = function (cb) {
     });
 };
 
+<<<<<<< HEAD
 exports.stash = function () {
     git.getLastHash()
         .then(hash => {
@@ -274,6 +276,10 @@ exports.stash = function () {
             return writeToFile(path.join(prefix, ".branch"), branch)
         })
         .catch(console.log);
+=======
+exports.stash = function() {
+
+>>>>>>> parent of e1ead5c... working on stashing and retrieval
 };
 
 exports.revert = function () {
