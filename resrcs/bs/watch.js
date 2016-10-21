@@ -7,6 +7,6 @@ var files = exports.files = {
     'static': 'sources/client/public/**/*',
     'stylesheets': 'sources/client/assets/stylesheets/**/**.scss',
     'views': 'sources/client/views/**/**',
-    'javascript': 'sources/assets/javascript/**/**.js',
-    'typescript': 'sources/assets/typescript/**/**.ts',
+    'javascript': 'sources/client/assets/javascript/**/**.js',
+    'typescript': 'sources/client/assets/typescript/**/**.ts',
 };
