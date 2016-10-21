@@ -1,3 +1,3 @@
 function* hooks_start(){
-    console.log("Cortney Jordan ");
+    console.log("It worked");
 }
