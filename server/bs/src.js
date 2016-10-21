@@ -91,8 +91,8 @@ var git = {
     checkout(branch){
         return execute(`git checkout ` + branch);
     },
-    rest(hash){
-        return execute(`git reset --soft ` + hash);
+    checkoutCommit(commit){
+        return execute(`git checkout ${commit} .`);
     }
 
 };
@@ -283,25 +283,10 @@ exports.revert = function () {
         .then(hash => {
             if(hash){
                 myHash = hash;
-                return readFile(path.join(prefix , "/.branch"))
+                return git.checkoutCommit(hash)
             }
             return false;
         })
-        .then(branch => {
-            if(branch){
-                myBranch = branch;
-                return git.checkout(branch)
-            }
-            return false;
-        })
-        .then(results => {
-            console.log(results);
-            if(myHash){
-                return git.reset(myHash)
-            }
-            return "No hash";
-        })
-        .then(console.log);
 };
 
 exports.nodemondev = function (cb) {
