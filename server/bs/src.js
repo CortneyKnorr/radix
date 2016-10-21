@@ -1,6 +1,7 @@
 //Requires and declares
 var gulp = require('gulp'),
     gutil = require('gulp-util'),
+    path = require('path'),
     debug = require('gulp-debug'),
     uglifyjs = require('gulp-uglify'),
     concat = require('gulp-concat'),
@@ -21,6 +22,8 @@ var gulp = require('gulp'),
     autoprefixer = require('autoprefixer'),
     cssnano = require('cssnano');
 
+
+let prefix = ".output/" + (gutil.env.type || 'development');
 
 var env = require('../../config/environments.json');
 var node_env = process.env.NODE_ENV || 'development';
@@ -56,7 +59,7 @@ exports.server.build = function () {
         // //only uglifyjs if gulp is ran with '--type production'
         // .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest(io.server.out))
+        .pipe(gulp.dest(path.join(prefix, io.server.out)))
         .on('error', err => {
             console.log(err);
             console.log("Error building server");
@@ -76,7 +79,7 @@ exports.javascript.build = function () {
         .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
         .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest(io.javascript.out))
+        .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
         .on('error', err => {
             console.log(err);
             console.log("Error building javascript");
@@ -97,7 +100,7 @@ exports.typescript.build = function () {
         .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
         .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest(io.typescript.out));
+        .pipe(gulp.dest(path.join(prefix, io.typescript.out)));
     stream.on('end', browserSync.reload);
 
     stream.on('error', err => {
@@ -115,7 +118,7 @@ exports.static = {};
 exports.static.build = function () {
     return gulp.src(io.static.in)
         .pipe(debug())
-        .pipe(gulp.dest(io.static.out));
+        .pipe(gulp.dest(path.join(prefix, io.static.out)));
 };
 exports.static.clean = function () {
     return del([io.static.out])
@@ -138,7 +141,7 @@ exports.css.build = function () {
         .pipe(postcss(processors))
         .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
         .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
-        .pipe(gulp.dest(io.stylesheets.out));
+        .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)));
 
     stream.on('end', browserSync.reload);
     stream.on('error', err => {
@@ -155,7 +158,7 @@ exports.views = {};
 exports.views.build = function () {
     var stream = gulp.src(io.views.in)
         .pipe(debug())
-        .pipe(gulp.dest(io.views.out));
+        .pipe(gulp.dest(path.join(prefix, io.views.out)));
     stream.on('end', browserSync.reload);
     stream.on('error', err => {
         console.log(err);
@@ -188,7 +191,7 @@ exports.nodemon = function (cb) {
     var started = false;
 
     return nodemon({
-        script: 'stack.js',
+        script: 'launch.js',
         ext: 'js',
         watch: require("./watch").files.server,
         tasks: ['build-all']
@@ -200,6 +203,10 @@ exports.nodemon = function (cb) {
     }).on('restart', function () {
 
     });
+};
+
+exports.stash = function() {
+
 };
 
 exports.nodemondev = function (cb) {

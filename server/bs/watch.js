@@ -3,7 +3,7 @@ var files = exports.files = {
         'sources/server/**/*.js',
         'sources/both/schemas/**/*.js'
     ],
-    'dev': 'resrcs/server/**/**.*',
+    'dev': 'server/server/**/**.*',
     'static': 'sources/client/public/**/*',
     'stylesheets': 'sources/client/assets/stylesheets/**/**.scss',
     'views': 'sources/client/views/**/**',

@@ -32,7 +32,6 @@ function* stack_core_express() {
             }
         });
     });
-
     stack.helpers.log("Injecting ES6 Promises into Mongoose");
     mongoose.Promise = Promise;
     stack.helpers.cLog("MongoDB set up");
@@ -60,7 +59,6 @@ function* stack_core_express() {
 
     stack.helpers.log("Setting up redirections");
     $project.redirects = yield* hooks_redirects();
-    console.log($project.redirects);
     app.use(function (request, response, next) {
         var keys = Object.keys($project.redirects)
             .filter(element => (new RegExp(element)).test(request.headers.host));
@@ -93,7 +91,7 @@ function* stack_core_express() {
         cookie: {secure: stack.globals.environment.https}
     }));
 
-    //stack and stack dependencies
+    //server and server dependencies
     stack.helpers.log("Setting up Stacks other core Hooks").iLog();
     stack.helpers.log("Loading custom middleware", 3).iLog();
 
@@ -119,8 +117,8 @@ function* stack_core_express() {
     stack.helpers.l87astLogLevel = 4;
     stack.helpers.cLog("Stack MAPIs Loaded");
 
-    //Adding stack routers onto app
-    stack.helpers.log("Loading stack routers", 3).iLog();
+    //Adding server routers onto app
+    stack.helpers.log("Loading server routers", 3).iLog();
     stack_loadRoutersOnto(app, stack_internal_routers);
     stack.helpers.cLog("Stack routers loaded");
 

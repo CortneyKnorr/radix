@@ -3,7 +3,7 @@ function stack_dapis_mailer() {
         sendMails(mails) {
             return new Promise(function (resolve, reject) {
                 var nodemail = getDependency("nodemailer");
-                var mailConfig = getDependency("../config/dapi/mailer.json");
+                var mailConfig = getDependency("../../config/dapi/mailer.json");
 
                 var transport = nodemail.createTransport(mailConfig);
                 var work = [];

@@ -12,7 +12,7 @@ function loadMapi(mapiArg) {
                     $project.mapisList.add(myDependency.__NAME);
                     myDependency.load(stack);
                 } else {
-                    throw "Dependency is not compatible with this stack version";
+                    throw "Dependency is not compatible with this server version";
                 }
             } else {
                 console.log(myDependency.__NAME + " " + myDependency.__VERSION + " " + myDependency.__AUTHOR + " " + myDependency.load);

@@ -1,1 +1,1 @@
-var bs = require('./resrcs/bs/main');
+var bs = require('./server/bs/main');
