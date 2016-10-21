@@ -3,6 +3,7 @@ var src = require('./src');
 
 module.exports = {
     "default": ['serve'],
+    'stash': src.stash,
     "arch-server": src.arch.server,
     'build-js': src.javascript.build,
     'build-serverPure': src.server.build,
@@ -12,7 +13,7 @@ module.exports = {
     'build-views': src.views.build,
     'build-static': src.static.build,
     'build-front': ['arch-server', 'build-js', 'build-static', 'build-css', 'build-views', 'build-ts'],
-    'build-all': ['build-front', 'build-server'],
+    'build-all': ['build-front', 'build-server', 'stash'],
     'ba': ['build-front', 'build-server'],
     's': ['serve'],
 };

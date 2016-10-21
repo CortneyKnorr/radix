@@ -10,6 +10,7 @@ var gulp = require('gulp'),
     rename = require("gulp-rename"),
     minifyCss = require('gulp-cssnano'),
     del = require('del'),
+    fs = require('fs'),
     browserSync = require('browser-sync'),
     nodemon = require('gulp-nodemon'),
     typescript = require('gulp-typescript'),
@@ -20,6 +21,7 @@ var gulp = require('gulp'),
     typescriptConfig = typescript.createProject('tsconfig.json'),
     postcss = require('gulp-postcss'),
     autoprefixer = require('autoprefixer'),
+    exec = require('child_process').exec,
     cssnano = require('cssnano');
 
 
@@ -38,6 +40,49 @@ var mdir = function (path) {
         //console.log(e);
     }
 };
+
+function execute(command) {
+    return new Promise(function (resolve, reject) {
+        var pro = exec(command, function (error, stdout, stderr) {
+            resolve({
+                error,
+                stdout,
+                stderr
+            })
+        });
+    });
+}
+
+var writeToFile = function (filename, contents) {
+    return new Promise(function(resolve, reject){
+        fs.writeFile(filename, contents, function(errors){
+            if(errors){
+                reject(errors);
+            } else {
+                resolve();
+            }
+        });
+    });
+};
+
+var git = {
+    getLastHash(){
+        return execute(`git log -n 1 --pretty=format:"%H"`)
+            .then(data => data.stdout)
+        ;
+    },
+    getLocalBranch(){
+        return execute(`git rev-parse --abbrev-ref HEAD`)
+            .then(data => data.stdout.split("\n")[0])
+        ;
+    },
+    checkout(branch){
+        return execute(`git checkout ` + branch);
+    }
+
+};
+
+git.checkout("master").then(console.log);
 
 exports.arch = {};
 exports.arch.server = function () {
@@ -206,7 +251,16 @@ exports.nodemon = function (cb) {
 };
 
 exports.stash = function() {
-
+    git.getLastHash()
+        .then(hash => {
+            return writeToFile(path.join(prefix, ".hash"), hash)
+        })
+        .catch(console.log);
+    git.getLocalBranch()
+        .then(branch => {
+            return writeToFile(path.join(prefix, ".branch"), branch)
+        })
+        .catch(console.log);
 };
 
 exports.nodemondev = function (cb) {
