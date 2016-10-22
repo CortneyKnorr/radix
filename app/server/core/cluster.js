@@ -45,7 +45,7 @@ function* stack_core_cluster(){
 
         // Listen for dying workers
         cluster.on('exit', function (worker) {
-            if (workerCount < wantedWorkers){
+            if (workerCount < wantedWorkers*2){
                 console.log(`Workers: ${workerCount}`);
                 // Replace the dead worker, we're not sentimental
                 console.log('Worker %d died :(', worker.id);
@@ -54,7 +54,7 @@ function* stack_core_cluster(){
                 setTimeout(function () {
                     workerCount = 0;
                     stack.helpers.aLog("Security buffer cleared");
-                }, 30000);
+                 }, 30000);
             } else {
                 console.log(`Workers: ${workerCount}`);
                 controlFlowCall(hooks_crash)();

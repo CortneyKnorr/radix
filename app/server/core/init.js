@@ -24,6 +24,7 @@ stack.project = {};
 exports.init = function init() {
     //Classes
     stack.classes.StackRouter = StackRouter;
+    stack.classes.Redirect = Redirect;
 
     //Dapis
     stack.dapis.wizards = stack_dapis_wizards();
