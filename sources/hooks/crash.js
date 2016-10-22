@@ -20,13 +20,13 @@ function* hooks_crash(error) {
             ca.push(fs.readFileSync(caPath, "utf8"));
         }
         var credentials = {key: privateKey, cert: certificate, secure: true, ca: ca};
-        crashApp.set('port', project.env.data.httpsPort);
+        crashApp.set('port', $project.env.data.httpsPort);
         var crashServer = https.createServer(credentials, crashApp);
-        crashServer.listen(project.env.data.httpsPort);
-        console.log((new Date()).toLocaleString() + " CATCH SERVER LAUNCHED ON PORT " + project.env.data.httpsPort);
+        crashServer.listen($project.env.data.httpsPort);
+        console.log((new Date()).toLocaleString() + " CATCH SERVER LAUNCHED ON PORT " + $project.env.data.httpsPort);
     } else {
-        console.log((new Date()).toLocaleString() + " CATCH SERVER LAUNCHED ON PORT " + project.env.data.httpPort);
-        crashApp.listen(project.env.data.httpPort);
+        console.log((new Date()).toLocaleString() + " CATCH SERVER LAUNCHED ON PORT " + $project.env.data.httpPort);
+        crashApp.listen($project.env.data.httpPort);
     }
 
 }

@@ -1,5 +1,6 @@
 var hooks_catch = {
-    "404": function*(request, response, next){
-        response.send("Noooooooooooooooooo page here");
+    default: function* (request, response, next) {
+        console.log(request.errors);
+        response.send(request.errors.toString());
     }
 };

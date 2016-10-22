@@ -57,6 +57,7 @@ function* stack_core_cluster(){
                 }, 30000);
             } else {
                 console.log(`Workers: ${workerCount}`);
+                controlFlowCall(hooks_crash)();
             }
 
 

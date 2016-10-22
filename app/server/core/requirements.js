@@ -8,17 +8,7 @@ function stack_core_requirements() {
             stack.helpers.cLog("Requirements checked out");
             console.timeEnd("|-| Requirements");
             console.log();
-            controlFlowCall(stack_core_cluster)()
-                .catch(error => {
-                    controlFlowCall(hooks_crash)(error)
-                        .then(data => {
-                            console.log(data);
-                        })
-                        .catch(errors => {
-                            console.log(errors);
-                        });
-                })
-            ;
+            controlFlowCall(stack_core_cluster)(); //Do not need to catch this because cluster manages the crashes;
         })
         .catch(error => {
             stack.helpers.cLog("Requirements could not be verified");
