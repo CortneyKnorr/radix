@@ -54,7 +54,6 @@ exports.init = function init() {
     stack.functions.isPromise = isPromise;
     stack.functions.loadRoutersOnto = stack_loadRoutersOnto;
 
-
     //Libraries
     stack_logging(stack.helpers);
 
