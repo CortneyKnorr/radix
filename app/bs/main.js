@@ -34,8 +34,8 @@ for(task in tasks){
 /* Watch these files for changes and run the task on update */
 gulp.task('watch-css', ()=> { gulp.watch(watch.files.stylesheets, ['build-css']); });
 gulp.task('watch-responsive', ()=> { gulp.watch(watch.files.responsive, ['arch-res-pages']); });
-gulp.task('watch-app', ()=> { gulp.watch(watch.files.server, ['build-server']); });
-gulp.task('watch-app-dev', ()=> { gulp.watch([...watch.files.server, watch.files.dev], ['build-server']); });
+gulp.task('watch-server', ()=> { gulp.watch(watch.files.server, ['build-server']); });
+gulp.task('watch-server-dev', ()=> { gulp.watch([...watch.files.server, watch.files.dev], ['build-server']); });
 gulp.task('watch-js', ()=> { gulp.watch(watch.files.javascript, ['build-js']); });
 gulp.task('watch-ts', ()=> { gulp.watch(watch.files.typescript, ['build-ts']); });
 gulp.task('watch-views', ()=> { gulp.watch(watch.files.views, ['build-views']); });
