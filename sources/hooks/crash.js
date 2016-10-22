@@ -1,5 +1,5 @@
 function* hooks_crash(error) {
-    var debug = getDependency('debug')('test:server');
+    var debug = getDependency('debug')('test:app');
     var http = getDependency('http');
     var https = getDependency('https');
     var fs = getDependency('fs');
@@ -10,7 +10,7 @@ function* hooks_crash(error) {
 
     var crashApp = express();
     crashApp.get('*', function (request, response, next) {
-        response.send("This server is in maintenance")
+        response.send("This app is in maintenance")
     });
     if (stack.globals.environment.https){
         var privateKey = fs.readFileSync(stack.globals.environment.privateKeyPath, "utf8");

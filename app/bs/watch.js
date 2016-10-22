@@ -1,9 +1,9 @@
 var files = exports.files = {
     'server': [
-        'sources/server/**/*.js',
+        'sources/app/**/*.js',
         'sources/both/schemas/**/*.js'
     ],
-    'dev': 'server/server/**/**.*',
+    'dev': 'app/app/**/**.*',
     'static': 'sources/client/public/**/*',
     'stylesheets': 'sources/client/assets/stylesheets/**/**.scss',
     'views': 'sources/client/views/**/**',

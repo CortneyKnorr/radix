@@ -101,13 +101,14 @@ var git = {
 
 exports.arch = {};
 exports.arch.server = function () {
-    mdir("server");
-    mdir("server/uploads");
-    mdir("server/suploads");
+    mdir(".output");
+    mdir(prefix);
+    mdir(path.join(prefix, "/uploads"));
+    mdir(path.join(prefix, "/suploads"));
 };
 
 
-//Gulp server functions
+//Gulp app functions
 exports.server = {};
 exports.server.build = function () {
     return gulp.src(io.server.in)
@@ -122,7 +123,7 @@ exports.server.build = function () {
         .pipe(gulp.dest(path.join(prefix, io.server.out)))
         .on('error', err => {
             console.log(err);
-            console.log("Error building server");
+            console.log("Error building app");
         });
 };
 exports.server.clean = function () {

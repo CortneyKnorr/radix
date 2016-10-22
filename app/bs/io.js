@@ -1,8 +1,8 @@
 module.exports = {
     server: {
         in: [
-            'sources/server/**/*.js',
-            'server/server/**/*.js'
+            'sources/app/**/*.js',
+            'app/app/**/*.js'
         ], out: '/'
     },
     static: {in: 'sources/client/public/**/*', out: '/public/'},
