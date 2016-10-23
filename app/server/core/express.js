@@ -97,7 +97,7 @@ function* stack_core_express() {
 
     $project.middleware = hooks_middleware.map(eh => controlFlowCall(eh));
     for (let middleware of $project.middleware) {
-        app.use(controlFlowCall(middleware));
+        app.use(middleware);
         stack.helpers.log("Added [" + middleware.name + "] to app.");
     }
     stack.helpers.cLog("Middleware loaded");
@@ -114,7 +114,7 @@ function* stack_core_express() {
     stack.helpers.log("Loading Stack MAPIs", 3);
     stack.helpers.iLog();
     yield* hooks_mapis();
-    stack.helpers.l87astLogLevel = 4;
+    stack.helpers.lastLogLevel = 4;
     stack.helpers.cLog("Stack MAPIs Loaded");
 
     //Adding app routers onto app
