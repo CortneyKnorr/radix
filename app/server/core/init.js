@@ -32,6 +32,7 @@ exports.init = function init() {
     stack.dapis.users = stack_dapis_users();
     stack.dapis.groups = stack_dapis_groups();
     stack.dapis.files = stack_dapis_files();
+    stack.dapis.mailer = stack_dapis_mailer();
     stack.dapis.useful = stack_dapis_useful();
     stack.dapis.settings = stack_dapis_settings();
     stack.dapis.contents = stack_dapis_contents();
