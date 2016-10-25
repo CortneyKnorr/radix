@@ -47,7 +47,7 @@ function stack_dapis_contents() {
                     if (leanInstance.hasParent) content.hasParent = leanInstance.hasParent;
                     if (leanInstance.properties) {
                         for (let key in leanInstance.properties) {
-                            content.properties[key] = leanInstance.properties[key];
+                            content.properties.set(content.properties[key], leanInstance.properties[key]);
                         }
                     }
 
