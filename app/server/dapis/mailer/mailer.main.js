@@ -35,5 +35,6 @@ function stack_dapis_mailer() {
             },
 
         }
-    }
+    };
+    return thisDapi;
 }
