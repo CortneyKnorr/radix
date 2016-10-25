@@ -3,7 +3,7 @@ function router_test() {
 
     router.onRoute("/")
         .onGet(function* (request, response, next) {
-            var dummyArray = yield project.models.dummy.find();
+            var dummyArray = yield $project.models.dummy.find();
             console.log(dummyArray);
             response.send(dummyArray);
         })

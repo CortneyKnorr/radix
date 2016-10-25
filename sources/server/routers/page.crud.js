@@ -8,12 +8,13 @@ function router_page() {
     let sectionEhgs = stack.project.mapis.page.section.ehgs;
 
     //Page
-    router.onRoute("/page/getPaged")
-        .onGet(pageEhgs.getPaged(0, 15))
-    ;
 
     router.onRoute("/page/")
         .onPost(pageEhgs.create(bodyExtractor))
+    ;
+
+    router.onRoute("/page/getPaged/")
+        .onGet(pageEhgs.getPaged(0, 15))
     ;
 
     router.onRoute("/page/getAllSeasonal/")
