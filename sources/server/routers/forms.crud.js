@@ -126,23 +126,23 @@ function router_forms() {
     ;
 
     router.onRoute("/multipleResults/addResult/:identifier")
-        .onPost(multipleResultEhgs.addResult(identifierExtractor, r => r.body.resultText, r => r.body.goodResponsesArray, r => r.body.badResponsesArray))
+        .onPut(multipleResultEhgs.addResult(identifierExtractor, r => r.body.resultText, r => r.body.goodResponsesArray, r => r.body.badResponsesArray))
     ;
 
     router.onRoute("/multipleResults/removeResult/:identifier")
-        .onPost(multipleResultEhgs.removeResult(identifierExtractor, r => r.body.index))
+        .onPut(multipleResultEhgs.removeResult(identifierExtractor, r => r.body.index))
     ;
 
     router.onRoute("/multipleResults/increaseResult/:identifier")
-        .onPost(multipleResultEhgs.increaseResult(identifierExtractor, r => r.body.index))
+        .onPut(multipleResultEhgs.increaseResult(identifierExtractor, r => r.body.index))
     ;
 
     router.onRoute("/multipleResults/decreaseResult/:identifier")
-        .onPost(multipleResultEhgs.decreaseResult(identifierExtractor, r => r.body.index))
+        .onPut(multipleResultEhgs.decreaseResult(identifierExtractor, r => r.body.index))
     ;
 
     router.onRoute("/multipleResults/getFinalResult/:identifier")
-        .onPost(multipleResultEhgs.getFinalResult(identifierExtractor))
+        .onGet(multipleResultEhgs.getFinalResult(identifierExtractor))
     ;
 
 
