@@ -2,6 +2,7 @@
 var gulp = require('gulp'),
     gutil = require('gulp-util'),
     path = require('path'),
+    rollup = require('gulp-rollup-mep'),
     debug = require('gulp-debug'),
     uglifyjs = require('gulp-uglify'),
     concat = require('gulp-concat'),
@@ -133,9 +134,26 @@ exports.server.clean = function () {
 //Gulp javascript functions
 exports.javascript = {};
 exports.javascript.build = function () {
-    return gulp.src(io.javascript.in)
+    gulp.src(io.javascript.in)
         .pipe(debug())
         .pipe(sourcemaps.init())
+        //only uglifyjs if gulp is ran with '--type production'
+        .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+        .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
+        .on('error', err => {
+            console.log(err);
+            console.log("Error building javascript");
+        });
+
+    return gulp.src(io.javascript.bundles)
+        .pipe(debug())
+        .pipe(sourcemaps.init())
+        .pipe(rollup({
+            format: "iife",
+            sourceMap: true
+        }))
         //only uglifyjs if gulp is ran with '--type production'
         .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
         .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())

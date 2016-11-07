@@ -72,6 +72,8 @@
     "gulp-newer": "^1.1.0",
     "gulp-nodemon": "^2.0.6",
     "gulp-rename": "^1.2.2",
+    "gulp-rollup": "^2.5.1",
+    "gulp-rollup-mep": "0.0.5",
     "gulp-sass": "^2.1.1",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-traceur": "^0.17.2",
