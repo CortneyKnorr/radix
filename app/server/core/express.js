@@ -76,7 +76,7 @@ function* stack_core_express() {
 
     stack.helpers.log("Setting up Public Folders");
     app.use(express.static(path.join(__dirname, 'public')));
-    app.use('/node_modules', express.static(path.join(__dirname, '../node_modules')));
+    app.use('/node_modules', express.static(path.join(__dirname, '../../node_modules')));
     app.use('/assets', express.static(path.join(__dirname, './assets')));
     app.use('/uploads', express.static(path.join(__dirname, './uploads')));
 
