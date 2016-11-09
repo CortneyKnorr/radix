@@ -21,7 +21,7 @@
     "domain": "localhost",
     "bsport": 9500,
     "browser": "",
-    "https": true,
+    "https": false,
     "privateKeyPath": "./sslcert/server.key",
     "certificatePath": "./sslcert/server.crt",
     "caPaths": [

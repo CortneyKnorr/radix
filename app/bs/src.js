@@ -134,7 +134,7 @@ exports.server.clean = function () {
 //Gulp javascript functions
 exports.javascript = {};
 exports.javascript.build = function () {
-    gulp.src(io.javascript.in)
+    let stream = gulp.src(io.javascript.in)
         .pipe(debug())
         .pipe(sourcemaps.init())
         //only uglifyjs if gulp is ran with '--type production'
@@ -145,24 +145,29 @@ exports.javascript.build = function () {
         .on('error', err => {
             console.log(err);
             console.log("Error building javascript");
-        });
+        })
+    ;
 
-    return gulp.src(io.javascript.bundles)
-        .pipe(debug())
-        .pipe(sourcemaps.init())
-        .pipe(rollup({
-            format: "iife",
-            sourceMap: true
-        }))
-        //only uglifyjs if gulp is ran with '--type production'
-        .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
-        .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
-        .on('error', err => {
-            console.log(err);
-            console.log("Error building javascript");
-        });
+    stream.on('end', function () {
+        let stream2 = gulp.src(io.javascript.bundles)
+            .pipe(debug())
+            .pipe(sourcemaps.init())
+            .pipe(rollup({
+                format: "amd",
+                sourceMap: true
+            }))
+            //only uglifyjs if gulp is ran with '--type production'
+            .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+            .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
+            .on('error', err => {
+                console.log(err);
+                console.log("Error building javascript");
+            });
+
+        stream2.on("end", browserSync.reload)
+    });
 };
 exports.javascript.clean = function () {
     return del([io.javascript.out])

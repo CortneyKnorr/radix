@@ -41,7 +41,7 @@ function stack_dapis_files() {
                 return function*(request, response, next) {
                     var storage = multer.diskStorage({
                         destination: function (request, file, callback) {
-                            callback(null, './app/uploads');
+                            callback(null, path.join(__dirname, './uploads'));
                         },
                         filename: function (request, file, callback) {
                             callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));

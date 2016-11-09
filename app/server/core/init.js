@@ -42,7 +42,6 @@ exports.init = function init() {
     stack.models.groups = getDependency(stack_models_groups);
     stack.models.files = getDependency(stack_models_files);
     stack.models.contents = getDependency(stack_models_contents);
-    stack.models.peoples = getDependency(stack_models_peoples);
     stack.models.settings = getDependency(stack_models_settings);
 
     //functions
