@@ -128,17 +128,6 @@ function* stack_core_express() {
     stack_loadRoutersOnto(app, hooks_routers);
     stack.helpers.cLog("App routers loaded");
 
-    if ($project.env.name === 'tests') {
-        stack.helpers.log("Executing Stack Tests").iLog();
-        yield* hooks_tests();
-        stack.helpers.log("Stack Tests executed", -3);
-        stack.helpers.log("", 3);
-    }
-
-    stack.helpers.log("Executing Stack Start").iLog();
-    yield* hooks_start();
-    stack.helpers.log("Stack start executed", -3);
-
     stack.helpers.log("", 3);
 
     stack.helpers.log("Loading Stack 404 and error handlers");

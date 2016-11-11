@@ -26,8 +26,8 @@ function* stack_core_network(worker) {
         var credentials = {key: privateKey, cert: certificate, secure: true, ca: ca};
 
         var redirectServer = express();
-        redirectServer.get('*',function(req,res){
-            res.redirect('https://'+__env__.domain+":"+port+req.url)
+        redirectServer.get('*', function (req, res) {
+            res.redirect('https://' + __env__.domain + ":" + port + req.url)
         });
 
         stack.globals.redirectServer = redirectServer.listen(__env__.httpPort);
@@ -69,5 +69,21 @@ function* stack_core_network(worker) {
             : 'port ' + addr.port;
         stack.helpers.aLog('\033[32mListening on ' + bind + "\033[0m");
         worker.process.send("done");
+
+        controlFlowCall(function*() {
+            stack.helpers.lastLogLevel = 1;
+            console.log(stack.globals.WORKER.id + " |-| Executing Stack Start");
+            yield* hooks_start();
+            console.log(stack.globals.WORKER.id + " |-| Stack start executed");
+
+
+            if ($project.env.name === 'tests') {
+                controlFlowCall(launchTestsHook)()
+                    .then(e => e)
+                    .catch(console.log)
+                ;
+            }
+        })()
+
     });
 }

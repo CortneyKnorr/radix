@@ -1,10 +1,11 @@
 function stack_dapis_useful() {
     let thisDapi = {
         ehgs: {
-            quickRender(pageArg){
+            quickRender(pageArg, injectorArg){
                 return function*(request, response, next) {
                     let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
-                    response.render(page, {user: request.user || false, page: page});
+                    let injector = stack.dapis.wizards.standards.ehgf13Arg(injectorArg, request, r => false);
+                    response.render(page, {user: request.user || false, page: page, data: injector});
                 }
             },
             plug(messageArg){
@@ -12,7 +13,7 @@ function stack_dapis_useful() {
                     let message = stack.dapis.wizards.standards.ehgf13Arg(messageArg, request, false);
                     response.send(message);
                 }
-            }
+            },
         },
         pehgs: {
             parseJson(arrayArg){
@@ -27,6 +28,12 @@ function stack_dapis_useful() {
                         }
                     }
                     next();
+                }
+            },
+            quickRedirect(urlArg){
+                return function*(request, response, next) {
+                    let url = stack.dapis.wizards.standards.ehgf13Arg(urlArg, request, false);
+                    response.send(message);
                 }
             },
             setHeader(fieldArg, valueArg){

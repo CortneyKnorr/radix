@@ -36,7 +36,7 @@ function* stack_core_cluster(){
 
         controlFlowCall(clusterGenerator)()
             .then(data => {
-                console.log("All generated")
+                console.log("\033[35mCLUSTER:: All generated\033[0m")
             })
             .catch(errors => {
                 console.log("Fatal Error")

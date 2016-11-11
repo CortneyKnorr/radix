@@ -278,7 +278,8 @@ exports.nodemon = function (cb) {
         script: 'launch.js',
         ext: 'js',
         watch: require("./watch").files.server,
-        tasks: ['build-all']
+        tasks: ['build-all'],
+        args: [gutil.env.type.toString()],
     }).on('start', function () {
         if (!started) {
             cb();
@@ -321,8 +322,9 @@ exports.nodemondev = function (cb) {
     var watchSrcs = require("./watch");
 
     return nodemon({
-        script: 'stack.js',
+        script: 'launch.js',
         ext: 'js',
+        args: [gutil.env.type.toString()],
         watch: [watchSrcs.files.server, watchSrcs.files.dev],
         tasks: ['build-all']
     }).on('start', function () {
