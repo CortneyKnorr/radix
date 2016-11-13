@@ -17,7 +17,7 @@
   "development": {
     "description": "Environment used while programming",
     "httpPort": 8888,
-    "nodeCluster": false,
+    "nodeCluster": true,
     "threads": 1,
     "httpsPort": 4443,
     "domain": "localhost",
