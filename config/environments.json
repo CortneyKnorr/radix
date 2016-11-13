@@ -2,6 +2,7 @@
   "tests": {
     "description": "Environment used to run the apps tests",
     "httpPort": 8888,
+    "nodeCluster": true,
     "threads": 3,
     "httpsPort": 4443,
     "domain": "localhost",
@@ -16,6 +17,7 @@
   "development": {
     "description": "Environment used while programming",
     "httpPort": 8888,
+    "nodeCluster": false,
     "threads": 1,
     "httpsPort": 4443,
     "domain": "localhost",
@@ -30,6 +32,7 @@
   "production": {
     "description": "Environment used for final product",
     "httpPort": 8888,
+    "nodeCluster": true,
     "threads": 8,
     "httpsPort": 4443,
     "domain": "localhost",

@@ -14,7 +14,7 @@ function* stack_core_cluster(){
         process.exit(0);
     });
 
-    if (cluster.isMaster) {
+    if (cluster.isMaster && $project.env.data.nodeCluster) {
 
         // Count the machine's CPUs
         var cpuCount = require('os').cpus().length;
@@ -92,6 +92,8 @@ function* stack_core_cluster(){
         }, 30000);
 
 // Code to run if we're in a worker process
+    } else if(!$project.env.data.nodeCluster) {
+        yield* stack_core_network(false);
     } else {
         yield* stack_core_workerReceive(cluster.worker);
     }

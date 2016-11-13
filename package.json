@@ -2,7 +2,7 @@
   "name": "kvmstack",
   "version": "1.0.0",
   "description": "Base architecture for KVM Stack based apps",
-  "main": "index.js",
+  "main": "launch.js",
   "scripts": {
     "start": "node index.js",
     "installg": "npm install -g nodemon browser-sync gulp",

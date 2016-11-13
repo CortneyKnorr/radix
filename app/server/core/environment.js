@@ -5,7 +5,7 @@ function stack_core_environment(){
     console.log(" | ");
     console.log(" | Fetching configuration data for [" + (process.env.NODE_ENV || process.argv[2]) + "] environment...");
 
-    let env = require('../../config/environments.json');
+    let env = require(require('path').join(__dirname, '/config/environments.json'));
     let node_env = process.argv[2] || process.env.NODE_ENV || 'development';
     if (env[node_env]) {
         $project.env.data = env[node_env];

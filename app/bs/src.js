@@ -106,6 +106,12 @@ exports.arch.server = function () {
     mdir(prefix);
     mdir(path.join(prefix, "/uploads"));
     mdir(path.join(prefix, "/suploads"));
+
+
+    var streamI = gulp.src(io.independent.in)
+        .pipe(gulp.dest(path.join(prefix, io.independent.out)));
+    var streamC = gulp.src(io.config.in)
+        .pipe(gulp.dest(path.join(prefix, io.config.out)));
 };
 
 

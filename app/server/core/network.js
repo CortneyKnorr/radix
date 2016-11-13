@@ -68,7 +68,9 @@ function* stack_core_network(worker) {
             ? 'pipe ' + addr
             : 'port ' + addr.port;
         stack.helpers.aLog('\033[32mListening on ' + bind + "\033[0m");
-        worker.process.send("done");
+        if(worker){
+            worker.process.send("done");
+        }
 
         controlFlowCall(function*() {
             stack.helpers.lastLogLevel = 1;

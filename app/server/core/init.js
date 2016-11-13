@@ -62,7 +62,7 @@ exports.init = function init() {
 
     //Project configuration
     $project.config = {
-        mongo: getDependency('../../config/mongo.json')
+        mongo: getDependency(require('path').join(__dirname, './config/mongo.json'))
     };
 
     stack_core_environment();
