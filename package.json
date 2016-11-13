@@ -27,6 +27,8 @@
     "autoprefixer": "latest",
     "body-parser": "^1.15.0",
     "browser-sync": "^2.11.1",
+    "chai": "^3.5.0",
+    "chai-webdriver": "^1.2.0",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^1.3.2",
     "connect-redis": "^3.1.0",

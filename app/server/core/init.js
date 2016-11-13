@@ -36,6 +36,7 @@ exports.init = function init() {
     stack.dapis.useful = stack_dapis_useful();
     stack.dapis.settings = stack_dapis_settings();
     stack.dapis.contents = stack_dapis_contents();
+    stack.dapis.e2e = stack_dapis_e2e();
 
     //Models
     stack.models.users = getDependency(stack_models_users);

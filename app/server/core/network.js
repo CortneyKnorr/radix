@@ -78,9 +78,12 @@ function* stack_core_network(worker) {
 
 
             if ($project.env.name === 'tests') {
+                stack.dapis.e2e.init();
                 controlFlowCall(launchTestsHook)()
                     .then(e => e)
-                    .catch(console.log)
+                    .catch(e => {
+                        console.log("\033[37m asd" + e + "\033[0m");
+                    })
                 ;
             }
         })()

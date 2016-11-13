@@ -4,4 +4,22 @@ html
 
     body
         p Hello World!!!
-        input(type="text")
+        form#inscription
+            input(type="text" name="username" placeholder="username")
+            br
+            input(type="text" name="name" placeholder="name")
+            br
+            input(type="text" name="lastname" placeholder="lastname")
+            br
+            input(type="radio" name="address" value="world" placeholder="address")
+            input(type="radio" name="address" value="!!!" placeholder="address")
+            br
+            input(type="checkbox" name="country")
+            br
+            select(name="state")
+                option Normandie
+                option Bretagne
+            br
+            input(type="text" name="description" placeholder="description")
+            br
+            input#submit(type="submit" style="margin-left: -1000px")

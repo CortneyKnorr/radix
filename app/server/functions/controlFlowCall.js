@@ -43,7 +43,7 @@ function controlFlowCall(controlFlow) {
             try {
                 resolve(potentialIterator);
             } catch (e) {
-                console.log(e)
+                console.log("\033[37m asd" + e + "\033[0m");
             }
         }
     })).catch(console.log);

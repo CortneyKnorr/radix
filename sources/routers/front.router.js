@@ -12,5 +12,9 @@ function frontRouter(){
             }
         );
 
+    router.onGet("/tests", function*(request, response, next){
+        launchTestsHook();
+    });
+
     return router;
 }
