@@ -279,7 +279,7 @@ exports.nodemon = function (cb) {
         ext: 'js',
         watch: require("./watch").files.server,
         tasks: ['build-all'],
-        args: [gutil.env.type.toString()],
+        args: [gutil.env.type || ""],
     }).on('start', function () {
         if (!started) {
             cb();
