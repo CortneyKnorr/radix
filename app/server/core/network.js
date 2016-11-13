@@ -76,15 +76,9 @@ function* stack_core_network(worker) {
             yield* hooks_start();
             console.log(stack.globals.WORKER.id + " |-| Stack start executed");
 
-
             if ($project.env.name === 'tests') {
-                stack.dapis.e2e.init();
-                controlFlowCall(launchTestsHook)()
-                    .then(e => e)
-                    .catch(e => {
-                        console.log("\033[37m asd" + e + "\033[0m");
-                    })
-                ;
+                yield stackCapture(stack.dapis.e2e.init, "e2eInit");
+                yield stackCapture(launchTestsHook, "tests");
             }
         })()
 

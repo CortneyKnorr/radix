@@ -324,7 +324,7 @@ exports.nodemondev = function (cb) {
     return nodemon({
         script: 'launch.js',
         ext: 'js',
-        args: [gutil.env.type.toString()],
+        args: [gutil.env.type || ""],
         watch: [watchSrcs.files.server, watchSrcs.files.dev],
         tasks: ['build-all']
     }).on('start', function () {

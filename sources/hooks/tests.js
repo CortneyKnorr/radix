@@ -31,6 +31,4 @@ function* hooks_tests() {
     ]);
 
     yield homePageTests.testFeature("Sign up");
-    console.log("Asdhijasdhlkjashlkj ashlasdhlk ");
-    homePageTests.review();
 }

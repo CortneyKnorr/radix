@@ -2,7 +2,7 @@
   "tests": {
     "description": "Environment used to run the apps tests",
     "httpPort": 8888,
-    "threads": 1,
+    "threads": 3,
     "httpsPort": 4443,
     "domain": "localhost",
     "bsport": 9500,

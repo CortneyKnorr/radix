@@ -21,13 +21,36 @@ function* stack_core_cluster(){
         var workerCount = 0;
         var wantedWorkers = cpuCount < $project.env.data.threads ? cpuCount : $project.env.data.threads || 1;
 
+        //Used to store
+        let clusterCaptureSystem = {};
 
         var clusterGenerator = function* () {
             for(let i = 0; i < wantedWorkers; i++) {
                 let worker = cluster.fork();
                 yield new Promise((resolve, reject) => {
                     worker.on('message', function (message) {
-                        workerCount += 1;
+                        let w = worker;
+                        //console.log(stack.helpers.colors.PURPLE + "MASTER: Recieved message from " + w.id);
+                        //console.log(" | " + message + stack.helpers.colors.RESET);
+                        if(message == "done") {
+                            workerCount += 1;
+                        }
+                        if(message.cmd && message.value){
+                            switch(message.cmd){
+                                case "canI":
+                                    let smes = {
+                                        cmd: "youCan",
+                                        value: !(clusterCaptureSystem[message.value]),
+                                        tag: message.value,
+                                    };
+                                    // console.log(smes);
+                                    worker.send(smes);
+                                    break;
+                                case "iHave":
+                                    clusterCaptureSystem[message.value] = true;
+                                    break;
+                            }
+                        }
                         resolve();
                     })
                 })
@@ -36,7 +59,7 @@ function* stack_core_cluster(){
 
         controlFlowCall(clusterGenerator)()
             .then(data => {
-                console.log("\033[35mCLUSTER:: All generated\033[0m")
+                console.log(stack.helpers.colors.PURPLE + "MASTER: All generated" + stack.helpers.colors.RESET)
             })
             .catch(errors => {
                 console.log("Fatal Error")
@@ -70,6 +93,6 @@ function* stack_core_cluster(){
 
 // Code to run if we're in a worker process
     } else {
-        yield* stack_core_network(cluster.worker);
+        yield* stack_core_workerReceive(cluster.worker);
     }
 }
