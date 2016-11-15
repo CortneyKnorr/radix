@@ -35,6 +35,9 @@ function* hooks_tests() {
         },
     ]);
 
+
     yield homePageBatch.testFeature("Sign up");
+    console.log("Hello world!");
+    // yield homePageBatch.testFeature("Log in");
     // yield homePageBatch.testAllFeatures();
 }

@@ -3,7 +3,7 @@
     "description": "Environment used to run the apps tests",
     "httpPort": 8888,
     "nodeCluster": true,
-    "threads": 3,
+    "threads": 1,
     "httpsPort": 4443,
     "domain": "localhost",
     "bsport": 9500,
