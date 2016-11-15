@@ -60,6 +60,9 @@ exports.init = function init() {
     //Project
     stack.project = $project;
 
+    //Routers: THe object containing them is initialized here but populated later
+    stack.routers = {};
+
     //Project configuration
     $project.config = {
         mongo: getDependency(require('path').join(__dirname, './config/mongo.json'))

@@ -1,8 +1,9 @@
-var hooks_routers = {
-    "/": frontRouter,
-    "/data": {
-        "/files": {},
+function* hooks_routers() {
+    return {
+        "/": frontRouter,
+        "/data": {
+            "/files": {},
 
-    }
-
-};
+        }
+    };
+}

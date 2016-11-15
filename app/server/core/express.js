@@ -119,13 +119,14 @@ function* stack_core_express() {
 
     //Adding app routers onto app
     stack.helpers.log("Loading app routers", 3).iLog();
-    stack_loadRoutersOnto(app, stack_internal_routers);
+    stack.globals.controllers = yield* stack_internal_routers();
+    stack_loadRoutersOnto(app, stack.globals.controllers);
     stack.helpers.cLog("Stack routers loaded");
 
     //Adding projects routers onto app
     stack.helpers.log("Loading app's routers", 3).iLog();
-    stack.globals.controllers = hooks_routers;
-    stack_loadRoutersOnto(app, hooks_routers);
+    $project.controllers = yield* hooks_routers();
+    stack_loadRoutersOnto(app, $project.controllers);
     stack.helpers.cLog("App routers loaded");
 
     stack.helpers.log("", 3);
