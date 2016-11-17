@@ -2,7 +2,8 @@
 var gulp = require('gulp'),
     gutil = require('gulp-util'),
     path = require('path'),
-    rollup = require('gulp-rollup-mep'),
+    rollup = require('gulp-rollup'),
+    rollupmep = require('gulp-rollup-mep'),
     debug = require('gulp-debug'),
     uglifyjs = require('gulp-uglify'),
     concat = require('gulp-concat'),
@@ -154,26 +155,43 @@ exports.javascript.build = function () {
         })
     ;
 
-    stream.on('end', function () {
-        let stream2 = gulp.src(io.javascript.bundles)
-            .pipe(debug())
-            .pipe(sourcemaps.init())
-            .pipe(rollup({
-                format: "amd",
-                sourceMap: true
-            }))
-            //only uglifyjs if gulp is ran with '--type production'
-            .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
-            .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
-            .pipe(sourcemaps.write('./'))
-            .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
-            .on('error', err => {
-                console.log(err);
-                console.log("Error building javascript");
-            });
-
-        stream2.on("end", browserSync.reload)
-    });
+    stream.on('end', browserSync.reload);
+};
+exports.javascript.bundle = function () {
+    for(let bundle of config.jsBundles){
+        let files = bundle.files.map(file => path.join(io.javascript.root, file));
+        if(bundle.async){
+            gulp.src(files)
+                .pipe(debug())
+                .pipe(sourcemaps.init())
+                .pipe(rollupmep({
+                    format: "amd",
+                    sourceMap: true
+                }))
+                .pipe(concat(bundle.output))
+                //only uglifyjs if gulp is ran with '--type production'
+                .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+                .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+                .pipe(sourcemaps.write('./'))
+                .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
+                .on('error', err => {
+                    console.log(err);
+                    console.log("Error building javascript bundles");
+                });
+        } else {
+            gulp.src(files)
+                .pipe(debug())
+                .pipe(sourcemaps.init())
+                .pipe(concat(bundle.output))
+                .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+                .pipe(sourcemaps.write('./'))
+                .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
+                .on('error', err => {
+                    console.log(err);
+                    console.log("Error building js bundles");
+                });
+        }
+    }
 };
 exports.javascript.clean = function () {
     return del([io.javascript.out])

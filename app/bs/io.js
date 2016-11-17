@@ -25,7 +25,8 @@ module.exports = {
     javascript: {
         in: "sources/assets/javascript/**/**.js",
         out: "/assets/javascript",
-        bundles: "sources/assets/javascript/**.esnext.js"
+        bundles: "sources/assets/javascript/**.esnext.js",
+        root: "sources/assets/javascript/"
     },
     typescript: {in: "sources/assets/typescript/**/**.ts", out: "/assets/javascript/compiled"}
 };
