@@ -4,8 +4,20 @@ function* hooks_tests() {
 
     let homePageBatch = new E2eFeatureBatch([
         {
+            name: "Log in",
+            url: "http://www.facebook.com/",
+            tests: [
+                new E2eTest("Click login", action.clickOn.element("#email")).essential(true),
+                new E2eTest("Enter login", action.sendKeys("cortneyknorr@gmail.com")),
+                new E2eTest("Click password", action.clickOn.element("#pass")),
+                new E2eTest("Enter password", action.sendKeys("fang1246")),
+                new E2eTest("Click log in", action.clickOn.element("#u_0_n"))
+            ]
+        },
+        {
             name: "Sign up",
             url: "http://www.facebook.com/",
+            essential: true,
             delay: 20,
             tests: [
                 new E2eTest("Sign up form", action.testForm("reg",  {
@@ -18,25 +30,15 @@ function* hooks_tests() {
                     "birthday_day": "17",
                     "birthday_year": "1995",
                     "sex": "2",
-                }, "#u_0_e")),
+                }, "#u_0_e")).invert(true),
                 new E2eTest("Check url", action.waitUntil.title.contains("Forgot Password", 5000)).tag("Url check"),
-            ]
-        },
-        {
-            name: "Log in",
-            url: "http://www.facebook.com/",
-            tests: [
-                new E2eTest("Click login", action.clickOn.element("#email")).essential(true),
-                new E2eTest("Enter login", action.sendKeys("cortneyknorr@gmail.com")),
-                new E2eTest("Click password", action.clickOn.element("#pass")),
-                new E2eTest("Enter password", action.sendKeys("fang1246")),
-                new E2eTest("Click log in", action.clickOn.element("#u_0_n")),
             ]
         },
     ]);
 
 
     yield homePageBatch.testAllFeatures();
+    yield* action.close();
     console.log("Hello world!");
     // yield homePageBatch.testFeature("Log in");
     // yield homePageBatch.testAllFeatures();

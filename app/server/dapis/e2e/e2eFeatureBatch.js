@@ -12,6 +12,10 @@ function E2eFeatureBatch(batchObj) {
             for (let featureName in self.features) {
                 let feature = self.features[featureName];
                 yield feature.testFeature(true);
+                let data = feature.getReviewData();
+                if(data.failedTests.length){
+                    break;
+                }
             }
             if (!mute) {
                 self.review();
@@ -32,8 +36,11 @@ function E2eFeatureBatch(batchObj) {
     };
 
     this.review = function review() {
+        let failedTaskCount = 0;
         for(let featureName in this.features){
             this.features[featureName].review();
+            failedTaskCount += this.features[featureName].getReviewData().failedTests.length;
         }
+        console.log(stack.helpers.colors.RED + "Total of failed tests: " + failedTaskCount + stack.helpers.colors.RESET);
     };
 }

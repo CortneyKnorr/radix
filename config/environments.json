@@ -1,7 +1,7 @@
 {
   "tests": {
     "description": "Environment used to run the apps tests",
-    "httpPort": 8888,
+    "httpPort": 8080,
     "nodeCluster": true,
     "threads": 1,
     "httpsPort": 4443,
@@ -16,7 +16,7 @@
   },
   "development": {
     "description": "Environment used while programming",
-    "httpPort": 8888,
+    "httpPort": 8080,
     "nodeCluster": true,
     "threads": 1,
     "httpsPort": 4443,
