@@ -10,7 +10,7 @@ function stack_models_contents() {
         tags: [{type: String, ref:"dapi_content"}],
         properties: [{type: Schema.Types.Mixed}],
         rights: {type: Number},
-        author: {type: Schema.ObjectId, ref: "dapi_people", required: false},
+        author: {type: Schema.ObjectId, required: false},
         children: [{type: Schema.ObjectId, ref: "dapi_content"}],
         birthDate: {type: Date, default: Date.now},
         publishDate: {type: Date},

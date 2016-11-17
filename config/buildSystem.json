@@ -6,7 +6,7 @@
         "fuck.js",
         "who.js"
       ],
-      "async": true
+      "async": false
     }
   ]
 }

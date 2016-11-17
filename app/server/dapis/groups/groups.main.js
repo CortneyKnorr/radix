@@ -21,8 +21,15 @@ function stack_dapis_groups() {
             getAll: function*(page, pageLength) {
                 return yield (
                     (typeof page == 'number' && pageLength) ?
-                        Groups.find({}).skip(page * pageLength).limit(pageLength) : //true
-                        Groups.find({}) //false
+                        Groups.find({}).populate("users").sort("_id").skip(page * pageLength).limit(pageLength) : //true
+                        Groups.find({}).populate("users").sort("_id") //false
+                );
+            },
+            getByName: function*(name, page, pageLength){
+                return yield (
+                    (typeof page == 'number' && pageLength) ?
+                        Groups.find({name: name}).populate("users").skip(page * pageLength).limit(pageLength) : //true
+                        Groups.find({name: name}).populate("users") //false
                 );
             },
             getEnabled: function*(page, pageLength) {
@@ -39,12 +46,13 @@ function stack_dapis_groups() {
                         Groups.find({rights: rights}) //false
                 );
             },
-            delete: function*() {
+            delete: function*(id) {
                 return yield Groups.findByIdAndRemove(id);
             },
 
             addUser: function*(parentId, userId) {
                 let parent = yield Groups.findById(parentId);
+
                 if (parent.users) {
                     parent.users.push(userId);
                     return yield parent.save();
@@ -82,7 +90,7 @@ function stack_dapis_groups() {
             removeUser: function*(parentId, userID) {
                 let parent = yield Groups.findById(parentId);
                 if (parent.users) {
-                    parent.users = parent.users.filter(admin => admin != userID);
+                    parent.users = parent.users.filter(users => users != userID);
                     return yield parent.save();
                 } else {
                     return {};
@@ -152,6 +160,14 @@ function stack_dapis_groups() {
                     response.send(yield* thisDapi.cfs.getAll(page, pageLength));
                 };
             },
+            getByName(nameArg, pageArg, pageLengthArg){
+                return function*(request, response, next) {
+                    let name = stack.dapis.wizards.standards.ehgf13Arg(nameArg, request, false);
+                    let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
+                    let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
+                    response.send(yield* thisDapi.cfs.getByName(name, page, pageLength));
+                };
+            },
             getEnabled(pageArg, pageLengthArg){
                 return function*(request, response, next) {
                     let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
@@ -206,7 +222,7 @@ function stack_dapis_groups() {
                 return function*(request, response, next) {
                     let parentId = stack.dapis.wizards.standards.ehgf13Arg(parentIdArg, request, false);
                     let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    response.send(yield* thisDapi.cfs.removeAdmin(parentId, userId));
+                    response.send(yield* thisDapi.cfs.removeUser(parentId, userId));
                 };
             },
             getUsersBestRights(userIdArg){

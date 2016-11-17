@@ -150,7 +150,7 @@ function stack_dapis_e2e() {
             },
             sleep: function*(time) {
                 return yield new Promise(function (resolve, reject) {
-                    setTimeout(resolve, time);
+                    setTimeout(_ => resolve({allGood: "all good"}), time);
                 });
             },
             waitUntil: {
@@ -303,6 +303,7 @@ function stack_dapis_e2e() {
                         );
                         let driver = thisDapi.driver;
                         let elem = yield driver.findElement(By.css(selector));
+                        console.log(yield elem.getAttribute("value"));
                         let result = yield driver.wait(function () {
                             return elem.getAttribute("value")
                                 .then(value => {

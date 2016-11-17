@@ -13,10 +13,27 @@ function stack_dapis_files() {
             get: function*(id) {
                 return yield File.findById(id);
             },
+
             getPaged: function*(page, pageLength) {
                 let offset = page * pageLength;
-                return yield File.find().skip(offset).limit(pageLength);
+                return yield File.find().sort("birthdate").skip(offset).limit(pageLength);
             },
+
+            getPagedByType: function*(typeName, page, pageLength) {
+                let offset = page * pageLength;
+                let reg = "";
+                if(typeName == "other"){
+                    reg = "^(?!(?:image|video)\/[A-z]*).*";
+                }else{
+                    reg = typeName+"\/[A-z]*";
+                }
+                return yield File.find({type: new RegExp(reg, 'g')}).sort("-birthdate").skip(offset).limit(pageLength);
+            },
+
+            getNumberOfFileFromType: function*(typeName) {
+                return yield File.count({type: new RegExp(typeName+"\/[A-z]*", 'g')});
+            },
+
             delete: function*(fileId) {
                 let file = yield File.findById(fileId).lean();
 
@@ -26,9 +43,10 @@ function stack_dapis_files() {
 
                 return yield File.findByIdAndRemove(fileId);
             },
+
             update: function*(fileId, leanInstance) {
                 let file = yield File.findById(fileId);
-                if (file){
+                if (file) {
                     stack.dapis.wizards.objects.update(file, leanInstance);
                     return yield file.save();
                 } else {
@@ -111,19 +129,36 @@ function stack_dapis_files() {
             }
         },
         ehgs: {
-            get: function(fileIdArg) {
+            get: function (fileIdArg) {
                 return function*(request, response, next) {
                     let fileId = stack.dapis.wizards.standards.ehgf13Arg(fileIdArg, request, false);
                     response.send(yield* thisDapi.cfs.get(fileId));
                 }
             },
-            getPaged: function(pageArg, pageLengthArg) {
+            getPaged: function (pageArg, pageLengthArg) {
                 return function*(request, response, next) {
                     let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
                     let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
                     response.send(yield* thisDapi.cfs.getPaged(page, pageLength));
                 }
             },
+            getPagedByType: function (typeNameArg, pageArg, pageLengthArg) {
+                return function*(request, response, next) {
+                    let typeName = stack.dapis.wizards.standards.ehgf13Arg(typeNameArg, request, false);
+                    let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
+                    let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
+                    response.send(yield* thisDapi.cfs.getPagedByType(typeName, page, pageLength));
+                }
+            },
+
+            getNumberOfFileFromType: function (typeNameArg) {
+                return function*(request, response, next) {
+                    let typeName = stack.dapis.wizards.standards.ehgf13Arg(typeNameArg, request, false);
+                    response.send(yield* thisDapi.cfs.getNumberOfFileFromType(typeName));
+                }
+
+            },
+
             delete(fileIdArg){
                 return function*(request, response, next) {
                     let fileId = stack.dapis.wizards.standards.ehgf13Arg(fileIdArg, request, false);

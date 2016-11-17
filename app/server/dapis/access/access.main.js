@@ -1,6 +1,33 @@
 function stack_dapis_access() {
     return {
         pehgs: {
+            lock(groupsArg){
+                return function*(request, response, next) {
+                    let groups = stack.dapis.wizards.standards.ehgf13Arg(groupsArg, request, false);
+
+                    if (request.user) {
+                        if (request.user.admin || !(limit || limit === 0)) {
+                            next();
+                        } else if (request.user._id && groups && typeof groups.map == "function") {
+                            let groupRights = yield groups.map(group => {
+                                return yield* stack.dapis.groups.cfs.isUserInAGroupNamed(request.user._id, group)
+                            });
+                            if (groupRights.filter(b => b).length) {
+                                next();
+                            } else {
+                                response.statusCode = 401;
+                                next(401);
+                            }
+                        } else {
+                            response.statusCode = 401;
+                            next(401);
+                        }
+                    } else {
+                        response.statusCode = 401;
+                        next(401);
+                    }
+                }
+            },
             restrictToGroup(groupNameArg, failureRedirectArg) {
                 return function*(request, response, next) {
                     let groupName = stack.dapis.wizards.standards.ehgf13Arg(groupNameArg, request, false);
@@ -9,7 +36,7 @@ function stack_dapis_access() {
                     if (request.user) {
                         if (request.user.admin || !(limit || limit === 0)) {
                             next();
-                        } else if (request.user._id && stack.dapis.groups.cfs.isUserInAGroupNamed(request.user._id, groupNameArg)) {
+                        } else if (request.user._id && (yield* stack.dapis.groups.cfs.isUserInAGroupNamed(request.user._id, groupNameArg))) {
                             next();
                         } else {
                             response.statusCode = 401;

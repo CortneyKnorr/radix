@@ -33,7 +33,7 @@ function stack_dapis_useful() {
             quickRedirect(urlArg){
                 return function*(request, response, next) {
                     let url = stack.dapis.wizards.standards.ehgf13Arg(urlArg, request, false);
-                    response.status(301).redirect(url);
+                    response.send(message);
                 }
             },
             setHeader(fieldArg, valueArg){

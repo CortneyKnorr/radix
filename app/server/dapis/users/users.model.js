@@ -3,6 +3,7 @@ function stack_models_users(){
     var mongoose = getDependency('mongoose');
     var Schema = mongoose.Schema;
     var Hash = require('password-hash');
+    var conf = getDependency("../../config/dapi/access.json");
 
     var users = new Schema({
         username: {type: String, required: true, unique: true},
