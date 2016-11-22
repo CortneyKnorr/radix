@@ -158,7 +158,7 @@ exports.javascript.build = function () {
     stream.on('end', browserSync.reload);
 };
 exports.javascript.bundle = function () {
-    for(let bundle of config.jsBundles){
+    for(let bundle of config.bundes.js){
         let files = bundle.files.map(file => path.join(io.javascript.root, file));
         if(bundle.async){
             gulp.src(files)
@@ -250,6 +250,23 @@ exports.css.build = function () {
         .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
         .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
         .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)));
+
+    for(let bundle of config.bundes.css) {
+        let files = bundle.files.map(file => path.join(io.css.root, file));
+        gulp.src(files)
+            .pipe(debug())
+            .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
+            .pipe(sass())
+            .pipe(concat(bundle.output))
+            .pipe(postcss(processors))
+            .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
+            .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
+            .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)))
+            .on('error', err => {
+            console.log(err);
+            console.log("Error building css");
+        });
+    }
 
     stream.on('end', browserSync.reload);
     stream.on('error', err => {

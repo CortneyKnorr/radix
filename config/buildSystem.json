@@ -1,12 +1,17 @@
 {
-  "jsBundles": [
-    {
-      "output": "angularBundle.js",
-      "files": [
-        "fuck.js",
-        "who.js"
-      ],
-      "async": false
-    }
-  ]
+  "bundes": {
+    "js": [
+      {
+        "output": "angularBundle.js",
+        "files": [
+          "fuck.js",
+          "who.js"
+        ],
+        "async": false
+      }
+    ],
+    "css": [
+
+    ]
+  }
 }

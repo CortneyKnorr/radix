@@ -116,7 +116,7 @@ function stack_dapis_e2e() {
                     console.log("");
                     console.log(`Checking if (${selector}) is visible`);
                     let driver = thisDapi.driver;
-                    let result = yield driver.findElement(By.css(selector)).isDisplayed();
+                    let result = typeof (yield driver.findElement(By.css(selector)).isDisplayed().catch(eHandler)) == "object";
                     if (result) {
                         console.log(`(${selector}) is visible`);
                     } else {
