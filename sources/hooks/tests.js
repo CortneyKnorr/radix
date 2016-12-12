@@ -36,7 +36,6 @@ function* hooks_tests() {
         },
     ]);
 
-
     yield homePageBatch.testFeature("Sign up");
     yield* action.close();
     console.log("Hello world!");

@@ -12,7 +12,7 @@ function* stack_core_express() {
         logger = getDependency('morgan'),
         cookieParser = getDependency('cookie-parser'),
         bodyParser = getDependency('body-parser'),
-        MongoStore = require('connect-mongo')(session),
+        MongoStore = getDependency('connect-mongo')(session),
         mongoose = getDependency('mongoose');
 
     stack.helpers.cLog("Dependencies imported");

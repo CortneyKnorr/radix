@@ -1,5 +1,5 @@
 {
-  "bundes": {
+  "bundles": {
     "js": [
       {
         "output": "angularBundle.js",
