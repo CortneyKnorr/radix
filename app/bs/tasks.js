@@ -6,8 +6,11 @@ module.exports = {
     "arch-server": src.arch.server,
     "stash": src.stash,
     "reset": src.reset,
-    'build-js': src.javascript.build,
     'bundle-js': src.javascript.bundle,
+    'build-js': [
+        'bundle-js',
+        src.javascript.build
+    ],
     'build-serverPure': src.server.build,
     'build-css': src.css.build,
     'build-server': ['arch-server', 'build-serverPure'],

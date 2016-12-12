@@ -7,8 +7,14 @@ var files = exports.files = {
     ],
     'dev': 'app/server/**/**.*',
     'static': 'sources/public/**/*',
-    'stylesheets': 'sources/assets/stylesheets/**/**.scss',
+    'stylesheets': [
+        'sources/assets/stylesheets/**/**.scss',
+        "config/buildSystem.json"
+    ],
     'views': 'sources/views/**/**',
-    'javascript': 'sources/assets/javascript/**/**.js',
+    'javascript': [
+        'sources/assets/javascript/**/**.js',
+        "config/buildSystem.json"
+    ],
     'typescript': 'sources/assets/typescript/**/**.ts',
 };
