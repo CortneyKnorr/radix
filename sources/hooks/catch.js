@@ -1,6 +1,5 @@
-var hooks_catch = {
-    default: function* (request, response, next) {
-        console.log(request.errors);
-        response.send(request.errors.toString());
+function* hooks_catch() {
+    return {
+        default: stack.dapis.useful.ehgs.plug(r => r.errors.toString()),
     }
-};
+}

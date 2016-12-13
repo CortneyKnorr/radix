@@ -7,9 +7,10 @@ module.exports = {
     "stash": src.stash,
     "reset": src.reset,
     'bundle-js': src.javascript.bundle,
+    'build-not-bundle-js': src.javascript.build,
     'build-js': [
         'bundle-js',
-        src.javascript.build
+        'build-not-bundle-js'
     ],
     'build-serverPure': src.server.build,
     'build-css': src.css.build,
