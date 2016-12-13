@@ -43,6 +43,24 @@ function stack_dapis_useful() {
                     response.set(field, value);
                     next();
                 }
+            },
+            ternary(boolArg, ehgIfTrue, ehgIfFalse){
+                return function* (request, response, next) {
+                    let bool = stack.dapis.wizards.standards.ehgf13Arg(boolArg, request, false);
+                    if(bool){
+                        if(ehgIfFalse) {
+                            yield* ehgIfTrue(request, response, next);
+                        } else {
+                            next();
+                        }
+                    } else {
+                        if(ehgIfFalse) {
+                            yield* ehgIfFalse(request, response, next);
+                        } else {
+                            next();
+                        }
+                    }
+                }
             }
         }
     };
