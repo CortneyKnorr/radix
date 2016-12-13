@@ -143,6 +143,15 @@ function stack_dapis_users() {
                     response.send(results);
                 };
             }
+        },
+        pehgs: {
+            create: function (leanInstanceArg) {
+                return function*(request, response, next){
+                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    request.peh = yield* stack.dapis.users.cfs.create(leanInstance);
+                    next();
+                };
+            },
         }
     }
 }
