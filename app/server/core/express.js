@@ -142,17 +142,29 @@ function* stack_core_express() {
         function (err, request, response, next) {
             request.errors = err;
             if (response.statusCode) {
+<<<<<<< HEAD:app/server/core/express.js
                 if (catches[response.statusCode.toString()]) {
                     controlFlowCall(catches[response.statusCode.toString()])(request, response, () => response.send(err))
                 } else if (catches.default) {
                     controlFlowCall(catches.default)(request, response, () => response.send(err.toString()));
+=======
+                if (hooks_catch[response.statusCode.toString()]) {
+                    controlFlowCall(hooks_catch[response.statusCode.toString()])(request, response, () => response.send(err))
+                } else if (hooks_catch.default) {
+                    controlFlowCall(hooks_catch.default)(request, response, () => response.send(err.toString()));
+>>>>>>> master:resrcs/server/core/express.js
                 } else {
                     response.status(500).send(err.toString());
                 }
             } else {
                 response.statusCode = 500;
+<<<<<<< HEAD:app/server/core/express.js
                 if (catches.default) {
                     controlFlowCall(catches.default)(request, response, () => response.send(err.toString()));
+=======
+                if (hooks_catch.default) {
+                    controlFlowCall(hooks_catch.default)(request, response, () => response.send(err.toString()));
+>>>>>>> master:resrcs/server/core/express.js
                 } else {
                     response.send(err.toString());
                 }

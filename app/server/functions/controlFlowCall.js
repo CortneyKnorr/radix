@@ -35,7 +35,11 @@ function controlFlowCall(controlFlow) {
     };
     return (...args) => (new Promise((resolve, reject) => {
         let potentialIterator = controlFlow(...args);
+<<<<<<< HEAD:app/server/functions/controlFlowCall.js
         if (potentialIterator && potentialIterator.next && typeof potentialIterator.next === "function") {
+=======
+        if(potentialIterator && potentialIterator.next && typeof potentialIterator.next === "function"){
+>>>>>>> master:resrcs/server/functions/controlFlowCall.js
             next(potentialIterator, val => resolve(val), val => {
                 reject(val)
             });
