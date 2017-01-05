@@ -1,0 +1,3 @@
+function* hooks_mapis() {
+
+}

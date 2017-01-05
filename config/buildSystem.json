@@ -1,3 +1,14 @@
 {
-  "advanced_responsive":false
+  "bundles": {
+    "js": [
+      {
+        "output": "angularBundle.js",
+        "files": [],
+        "async": false
+      }
+    ],
+    "css": [
+
+    ]
+  }
 }
