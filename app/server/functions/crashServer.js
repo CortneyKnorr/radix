@@ -5,8 +5,6 @@ function stack_crashServer() {
     var fs = getDependency('fs');
     var express = getDependency('express');
 
-    console.log(error);
-
     var crashApp = express();
     crashApp.get('*', function (request, response, next) {
         response.send("This app is in maintenance")

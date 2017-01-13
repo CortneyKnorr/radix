@@ -1,7 +1,7 @@
-function* stack_core_cluster(){
+function* stack_core_cluster() {
     var cluster = require('cluster');
 
-    process.on('SIGINT', function() {
+    process.on('SIGINT', function () {
         console.log("Caught interrupt signal");
         console.log("[-] Shutting down app");
         console.time("[-] Shut down");
@@ -24,19 +24,19 @@ function* stack_core_cluster(){
         //Used to store
         let clusterCaptureSystem = {};
 
-        var clusterGenerator = function* () {
-            for(let i = 0; i < wantedWorkers; i++) {
+        var clusterGenerator = function*() {
+            for (let i = 0; i < wantedWorkers; i++) {
                 let worker = cluster.fork();
                 yield new Promise((resolve, reject) => {
                     worker.on('message', function (message) {
                         let w = worker;
                         //console.log(stack.helpers.colors.PURPLE + "MASTER: Recieved message from " + w.id);
                         //console.log(" | " + message + stack.helpers.colors.RESET);
-                        if(message == "done") {
+                        if (message == "done") {
                             workerCount += 1;
                         }
-                        if(message.cmd && message.value){
-                            switch(message.cmd){
+                        if (message.cmd && message.value) {
+                            switch (message.cmd) {
                                 case "canI":
                                     let smes = {
                                         cmd: "youCan",
@@ -68,7 +68,7 @@ function* stack_core_cluster(){
 
         // Listen for dying workers
         cluster.on('exit', function (worker) {
-            if (workerCount < wantedWorkers*2){
+            if (workerCount < wantedWorkers * 2) {
                 console.log(`Workers: ${workerCount}`);
                 // Replace the dead worker, we're not sentimental
                 console.log('Worker %d died :(', worker.id);
@@ -77,7 +77,8 @@ function* stack_core_cluster(){
                 setTimeout(function () {
                     workerCount = 0;
                     stack.helpers.aLog("Security buffer cleared");
-                 }, 30000);
+                    crashTimer = false;
+                }, 30000);
             } else {
                 console.log(`Workers: ${workerCount}`);
                 controlFlowCall(hooks_crash)();
@@ -92,7 +93,7 @@ function* stack_core_cluster(){
         }, 30000);
 
 // Code to run if we're in a worker process
-    } else if(!$project.env.data.nodeCluster) {
+    } else if (!$project.env.data.nodeCluster) {
         yield* stack_core_network(false);
     } else {
         yield* stack_core_workerReceive(cluster.worker);

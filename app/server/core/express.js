@@ -22,7 +22,10 @@ function* stack_core_express() {
     stack.helpers.log($project.config.mongo.url);
     // Connect to mongoDB
     yield new Promise((res, rej) => {
-        mongoose.connect($project.config.mongo.url, {user: $project.config.mongo.user, pass: $project.config.mongo.password}, function (err) {
+        mongoose.connect($project.config.mongo.url, {
+            user: $project.config.mongo.user,
+            pass: $project.config.mongo.password
+        }, function (err) {
             if (err) {
                 stack.helpers.cLog("Failed to connect MongoDB: " + err);
                 rej("Failed to connect MongoDB: " + err);
@@ -62,7 +65,7 @@ function* stack_core_express() {
     app.use(function (request, response, next) {
         var keys = Object.keys($project.redirects)
             .filter(element => (new RegExp(element)).test(request.headers.host));
-        if(keys.length){
+        if (keys.length) {
             controlFlowCall($project.redirects[keys[0]].ehg())(request, response, next)
         } else {
             next();
@@ -83,7 +86,7 @@ function* stack_core_express() {
 
     stack.helpers.log("Setting up Express session");
     app.use(session({
-        store: new MongoStore({ mongooseConnection: mongoose.connection }),
+        store: new MongoStore({mongooseConnection: mongoose.connection}),
         secret: 'a4f8071f-c873-4447-8ee2',
         proxy: true,
         resave: false,
@@ -105,7 +108,7 @@ function* stack_core_express() {
     stack.helpers.log("Loading authentication", 3);
     yield* stack_core_authentication();
     stack.helpers.log("Adding app models", 3).iLog();
-    for (let modelName in hooks_models){
+    for (let modelName in hooks_models) {
         stack.helpers.log(`Model ${modelName} added`);
         $project.models[modelName] = hooks_models[modelName]();
     }
@@ -142,35 +145,31 @@ function* stack_core_express() {
         function (err, request, response, next) {
             request.errors = err;
             if (response.statusCode) {
-<<<<<<< HEAD:app/server/core/express.js
                 if (catches[response.statusCode.toString()]) {
                     controlFlowCall(catches[response.statusCode.toString()])(request, response, () => response.send(err))
                 } else if (catches.default) {
                     controlFlowCall(catches.default)(request, response, () => response.send(err.toString()));
-=======
-                if (hooks_catch[response.statusCode.toString()]) {
-                    controlFlowCall(hooks_catch[response.statusCode.toString()])(request, response, () => response.send(err))
-                } else if (hooks_catch.default) {
-                    controlFlowCall(hooks_catch.default)(request, response, () => response.send(err.toString()));
->>>>>>> master:resrcs/server/core/express.js
+                    if (hooks_catch[response.statusCode.toString()]) {
+                        controlFlowCall(hooks_catch[response.statusCode.toString()])(request, response, () => response.send(err))
+                    } else if (hooks_catch.default) {
+                        controlFlowCall(hooks_catch.default)(request, response, () => response.send(err.toString()));
+                    } else {
+                        response.status(500).send(err.toString());
+                    }
                 } else {
-                    response.status(500).send(err.toString());
-                }
-            } else {
-                response.statusCode = 500;
-<<<<<<< HEAD:app/server/core/express.js
-                if (catches.default) {
-                    controlFlowCall(catches.default)(request, response, () => response.send(err.toString()));
-=======
-                if (hooks_catch.default) {
-                    controlFlowCall(hooks_catch.default)(request, response, () => response.send(err.toString()));
->>>>>>> master:resrcs/server/core/express.js
-                } else {
-                    response.send(err.toString());
+                    response.statusCode = 500;
+                    if (catches.default) {
+                        controlFlowCall(catches.default)(request, response, () => response.send(err.toString()));
+                        if (hooks_catch.default) {
+                            controlFlowCall(hooks_catch.default)(request, response, () => response.send(err.toString()));
+                        } else {
+                            response.send(err.toString());
+                        }
+                    }
                 }
             }
-        }
-    );
+        });
+    ;
 
     stack.helpers.cLog("Stacks Core Hooks called");
     stack.helpers.cLog("Express app configured");

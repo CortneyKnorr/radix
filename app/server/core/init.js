@@ -1,3 +1,5 @@
+var crashTimer = {};
+
 var $project = {};
 $project.models = {};
 $project.env = {};

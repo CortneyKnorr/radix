@@ -35,11 +35,7 @@ function controlFlowCall(controlFlow) {
     };
     return (...args) => (new Promise((resolve, reject) => {
         let potentialIterator = controlFlow(...args);
-<<<<<<< HEAD:app/server/functions/controlFlowCall.js
         if (potentialIterator && potentialIterator.next && typeof potentialIterator.next === "function") {
-=======
-        if(potentialIterator && potentialIterator.next && typeof potentialIterator.next === "function"){
->>>>>>> master:resrcs/server/functions/controlFlowCall.js
             next(potentialIterator, val => resolve(val), val => {
                 reject(val)
             });
@@ -50,6 +46,13 @@ function controlFlowCall(controlFlow) {
                 console.log("\033[37m asd" + e + "\033[0m");
             }
         }
-    })).catch(console.log);
+    })).catch(e => {
+        if(stack.globals.WORKER){
+            console.log(stack.helpers.colors.RED + "Error");
+            console.log(e.toString());
+            console.log(stack.helpers.colors.RESET);
+            stack.globals.WORKER.kill();
+        }
+    });
 
 }
