@@ -43,7 +43,7 @@ function stack_dapis_users() {
             },
             update: function*(userId, leanInstance) {
                 let oldUser = yield Users.findById(userId);
-                let newUser = stack.dapis.wizards.objects.update(oldUser, leanInstance);
+                let newUser = radix.dapis.wizards.objects.update(oldUser, leanInstance);
                 return yield newUser.save();
             },
             remove: function*(userId) {
@@ -67,79 +67,79 @@ function stack_dapis_users() {
         ehgs: {
             create: function (leanInstanceArg) {
                 return function*(request, response){
-                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
-                    let results = yield* stack.dapis.users.fcs.create(leanInstance);
+                    let leanInstance = radix.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    let results = yield* radix.dapis.users.fcs.create(leanInstance);
                     response.send(results);
                 };
             },
             get: function (userIdArg) {
                 return function*(request, response){
-                    let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    let results = yield* stack.dapis.users.fcs.get(userId);
+                    let userId = radix.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
+                    let results = yield* radix.dapis.users.fcs.get(userId);
                     response.send(results);
                 };
             },
             getPaged: function (pageArg, pageLengthArg) {
                 return function*(request, response){
-                    let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
-                    let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
-                    let results = yield* stack.dapis.users.fcs.getPaged(page, pageLength);
+                    let page = radix.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
+                    let pageLength = radix.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
+                    let results = yield* radix.dapis.users.fcs.getPaged(page, pageLength);
                     response.send(results);
                 };
             },
             count: function () {
                 return function*(request, response){
-                    response.send(yield* stack.dapis.users.fcs.count());
+                    response.send(yield* radix.dapis.users.fcs.count());
                 };
             },
             getWithoutPassword: function (userIdArg) {
                 return function*(request, response){
-                    let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    let results = yield* stack.dapis.users.fcs.getWithoutPassword(userId);
+                    let userId = radix.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
+                    let results = yield* radix.dapis.users.fcs.getWithoutPassword(userId);
                     response.send(results);
                 };
             },
             getAllByRights: function (rightsArg) {
                 return function*(request, response){
-                    let rights = stack.dapis.wizards.standards.ehgf13Arg(rightsArg, request, false);
-                    let results = yield* stack.dapis.users.fcs.getAllByRights(rights);
+                    let rights = radix.dapis.wizards.standards.ehgf13Arg(rightsArg, request, false);
+                    let results = yield* radix.dapis.users.fcs.getAllByRights(rights);
                     response.send(results);
                 };
             },
             exists: function (userIdArg) {
                 return function*(request, response){
-                    let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    let results = yield* stack.dapis.users.fcs.exists(userId);
+                    let userId = radix.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
+                    let results = yield* radix.dapis.users.fcs.exists(userId);
                     response.send(results);
                 };
             },
             update: function (userIdArg, leanInstanceArg) {
                 return function*(request, response){
-                    let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
-                    let results = yield* stack.dapis.users.fcs.update(userId, leanInstance);
+                    let userId = radix.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
+                    let leanInstance = radix.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    let results = yield* radix.dapis.users.fcs.update(userId, leanInstance);
                     response.send(results);
                 };
             },
             remove: function (userIdArg) {
                 return function*(request, response){
-                    let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    let results = yield* stack.dapis.users.fcs.remove(userId);
+                    let userId = radix.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
+                    let results = yield* radix.dapis.users.fcs.remove(userId);
                     response.send(results);
                 };
             },
             getRealRights: function (userIdArg) {
                 return function*(request, response){
-                    let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    let results = yield* stack.dapis.users.fcs.getRealRights(userId);
+                    let userId = radix.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
+                    let results = yield* radix.dapis.users.fcs.getRealRights(userId);
                     response.send(results);
                 };
             },
             checkCredentials: function (usernameArg, passwordArg) {
                 return function*(request, response){
-                    let username = stack.dapis.wizards.standards.ehgf13Arg(usernameArg, request, false);
-                    let password = stack.dapis.wizards.standards.ehgf13Arg(passwordArg, request, false);
-                    let results = yield* stack.dapis.users.fcs.checkCredentials(username, password);
+                    let username = radix.dapis.wizards.standards.ehgf13Arg(usernameArg, request, false);
+                    let password = radix.dapis.wizards.standards.ehgf13Arg(passwordArg, request, false);
+                    let results = yield* radix.dapis.users.fcs.checkCredentials(username, password);
                     response.send(results);
                 };
             }
@@ -147,8 +147,8 @@ function stack_dapis_users() {
         pehgs: {
             create: function (leanInstanceArg) {
                 return function*(request, response, next){
-                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
-                    request.peh = yield* stack.dapis.users.fcs.create(leanInstance);
+                    let leanInstance = radix.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    request.peh = yield* radix.dapis.users.fcs.create(leanInstance);
                     next();
                 };
             },

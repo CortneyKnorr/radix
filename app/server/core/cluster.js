@@ -6,7 +6,7 @@ function* stack_core_cluster() {
         console.log("[-] Shutting down app");
         console.time("[-] Shut down");
         for (var id in cluster.workers) {
-            stack.helpers.log(`Killing worker ${id}`, 1);
+            radix.helpers.log(`Killing worker ${id}`, 1);
             cluster.workers[id].kill();
         }
         console.timeEnd("[-] Shut down");
@@ -30,8 +30,8 @@ function* stack_core_cluster() {
                 yield new Promise((resolve, reject) => {
                     worker.on('message', function (message) {
                         let w = worker;
-                        //console.log(stack.helpers.colors.PURPLE + "MASTER: Recieved message from " + w.id);
-                        //console.log(" | " + message + stack.helpers.colors.RESET);
+                        //console.log(radix.helpers.colors.PURPLE + "MASTER: Recieved message from " + w.id);
+                        //console.log(" | " + message + radix.helpers.colors.RESET);
                         if (message == "done") {
                             workerCount += 1;
                         }
@@ -59,7 +59,7 @@ function* stack_core_cluster() {
 
         controlFlowCall(clusterGenerator)()
             .then(data => {
-                console.log(stack.helpers.colors.PURPLE + "MASTER: All generated" + stack.helpers.colors.RESET)
+                console.log(radix.helpers.colors.PURPLE + "MASTER: All generated" + radix.helpers.colors.RESET)
             })
             .catch(errors => {
                 console.log("Fatal Error")
@@ -76,7 +76,7 @@ function* stack_core_cluster() {
                 workerCount += 1;
                 setTimeout(function () {
                     workerCount = 0;
-                    stack.helpers.aLog("Security buffer cleared");
+                    radix.helpers.aLog("Security buffer cleared");
                     crashTimer = false;
                 }, 30000);
             } else {
@@ -89,7 +89,7 @@ function* stack_core_cluster() {
 
         setTimeout(function () {
             workerCount = 0;
-            stack.helpers.aLog("Security buffer cleared");
+            radix.helpers.aLog("Security buffer cleared");
         }, 30000);
 
 // Code to run if we're in a worker process

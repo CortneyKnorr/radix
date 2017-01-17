@@ -47,7 +47,7 @@ function stack_dapis_files() {
             update: function*(fileId, leanInstance) {
                 let file = yield File.findById(fileId);
                 if (file) {
-                    stack.dapis.wizards.objects.update(file, leanInstance);
+                    radix.dapis.wizards.objects.update(file, leanInstance);
                     return yield file.save();
                 } else {
                     return {};
@@ -119,7 +119,7 @@ function stack_dapis_files() {
                         newFile.filename = file.filename;
                         newFile.type = file.mimetype;
                         newFile.name = file.originalname;
-                        newFile.token = stack.dapis.wizards.standards.ehgf13Arg(tokenArg, request, null);
+                        newFile.token = radix.dapis.wizards.standards.ehgf13Arg(tokenArg, request, null);
                         return newFile.save();
                     });
 
@@ -131,29 +131,29 @@ function stack_dapis_files() {
         ehgs: {
             get: function (fileIdArg) {
                 return function*(request, response, next) {
-                    let fileId = stack.dapis.wizards.standards.ehgf13Arg(fileIdArg, request, false);
+                    let fileId = radix.dapis.wizards.standards.ehgf13Arg(fileIdArg, request, false);
                     response.send(yield* thisDapi.fcs.get(fileId));
                 }
             },
             getPaged: function (pageArg, pageLengthArg) {
                 return function*(request, response, next) {
-                    let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
-                    let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
+                    let page = radix.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
+                    let pageLength = radix.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
                     response.send(yield* thisDapi.fcs.getPaged(page, pageLength));
                 }
             },
             getPagedByType: function (typeNameArg, pageArg, pageLengthArg) {
                 return function*(request, response, next) {
-                    let typeName = stack.dapis.wizards.standards.ehgf13Arg(typeNameArg, request, false);
-                    let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
-                    let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
+                    let typeName = radix.dapis.wizards.standards.ehgf13Arg(typeNameArg, request, false);
+                    let page = radix.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
+                    let pageLength = radix.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
                     response.send(yield* thisDapi.fcs.getPagedByType(typeName, page, pageLength));
                 }
             },
 
             getNumberOfFileFromType: function (typeNameArg) {
                 return function*(request, response, next) {
-                    let typeName = stack.dapis.wizards.standards.ehgf13Arg(typeNameArg, request, false);
+                    let typeName = radix.dapis.wizards.standards.ehgf13Arg(typeNameArg, request, false);
                     response.send(yield* thisDapi.fcs.getNumberOfFileFromType(typeName));
                 }
 
@@ -161,7 +161,7 @@ function stack_dapis_files() {
 
             delete(fileIdArg){
                 return function*(request, response, next) {
-                    let fileId = stack.dapis.wizards.standards.ehgf13Arg(fileIdArg, request, false);
+                    let fileId = radix.dapis.wizards.standards.ehgf13Arg(fileIdArg, request, false);
                     let deletedFile = yield* thisDapi.fcs.delete(fileId);
                     console.log(deletedFile);
                     response.send(deletedFile);
@@ -169,15 +169,15 @@ function stack_dapis_files() {
             },
             update(fileIdArg, leanInstanceArg){
                 return function*(request, response, next) {
-                    let fileId = stack.dapis.wizards.standards.ehgf13Arg(fileIdArg, request, false);
-                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    let fileId = radix.dapis.wizards.standards.ehgf13Arg(fileIdArg, request, false);
+                    let leanInstance = radix.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
                     response.send(yield* thisDapi.fcs.update(fileId, leanInstance));
                 }
             },
             serve(fileIdArg, tokenArg){
                 return function*(request, response, next) {
-                    var fileId = stack.dapis.wizards.standards.ehgf13Arg(fileIdArg, request, false);
-                    var token = stack.dapis.wizards.standards.ehgf13Arg(tokenArg, request, false);
+                    var fileId = radix.dapis.wizards.standards.ehgf13Arg(fileIdArg, request, false);
+                    var token = radix.dapis.wizards.standards.ehgf13Arg(tokenArg, request, false);
                     let fileToServe = yield File.findById(fileId);
 
                     if (!fileToServe.token || fileToServe.token == token) {

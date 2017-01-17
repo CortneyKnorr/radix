@@ -1,7 +1,7 @@
 function* stack_core_network(worker) {
-    stack.globals.WORKER = worker;
+    radix.globals.WORKER = worker;
     var __env__ = $project.env.data;
-    stack.globals.environment = __env__;
+    radix.globals.environment = __env__;
     //Module dependencies.
     var debug = getDependency('debug')('test:app');
     var http = getDependency('http');
@@ -9,13 +9,13 @@ function* stack_core_network(worker) {
     var fs = getDependency('fs');
     var express = getDependency('express');
 
-    stack.globals.expressApp = express();
+    radix.globals.expressApp = express();
     var port;
     //Create HTTP app.
     if (__env__.https) {
         let path = getDependency("path");
         port = __env__.httpsPort;
-        stack.globals.expressApp.set('port', port);
+        radix.globals.expressApp.set('port', port);
 
         var privateKey = fs.readFileSync(path.join("./config", __env__.privateKeyPath), "utf8");
         var certificate = fs.readFileSync(path.join("./config", __env__.certificatePath), "utf8");
@@ -30,20 +30,20 @@ function* stack_core_network(worker) {
             res.redirect('https://' + __env__.domain + ":" + port + req.url)
         });
 
-        stack.globals.redirectServer = redirectServer.listen(__env__.httpPort);
+        radix.globals.redirectServer = redirectServer.listen(__env__.httpPort);
 
-        stack.globals.server = https.createServer(credentials, stack.globals.expressApp);
+        radix.globals.server = https.createServer(credentials, radix.globals.expressApp);
     } else {
         port = __env__.httpPort;
-        stack.globals.expressApp.set('port', port);
-        stack.globals.server = http.createServer(stack.globals.expressApp);
+        radix.globals.expressApp.set('port', port);
+        radix.globals.server = http.createServer(radix.globals.expressApp);
     }
 
     yield* stack_core_express();
 
     //Listen on provided port, on all network interfaces.
-    stack.globals.server.listen(port);
-    stack.globals.server.on('error', function (error) {
+    radix.globals.server.listen(port);
+    radix.globals.server.on('error', function (error) {
         if (error.syscall !== 'listen') {
             throw error;
         }
@@ -62,24 +62,24 @@ function* stack_core_network(worker) {
                 throw error;
         }
     });
-    stack.globals.server.on('listening', function () {
-        var addr = stack.globals.server.address();
+    radix.globals.server.on('listening', function () {
+        var addr = radix.globals.server.address();
         var bind = typeof addr === 'string'
             ? 'pipe ' + addr
             : 'port ' + addr.port;
-        stack.helpers.aLog('\033[32mListening on ' + bind + "\033[0m");
+        radix.helpers.aLog('\033[32mListening on ' + bind + "\033[0m");
         if(worker){
             worker.process.send("done");
         }
 
         controlFlowCall(function*() {
-            stack.helpers.lastLogLevel = 1;
-            console.log(stack.globals.WORKER.id + " |-| Executing Stack Start");
+            radix.helpers.lastLogLevel = 1;
+            console.log(radix.globals.WORKER.id + " |-| Executing Stack Start");
             yield* hooks_start();
-            console.log(stack.globals.WORKER.id + " |-| Stack start executed");
+            console.log(radix.globals.WORKER.id + " |-| Stack start executed");
 
             if ($project.env.name === 'tests') {
-                yield stackCapture(stack.dapis.e2e.init, "e2eInit");
+                yield stackCapture(radix.dapis.e2e.init, "e2eInit");
                 yield stackCapture(launchTestsHook, "tests");
             }
         })()

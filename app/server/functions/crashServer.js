@@ -9,11 +9,11 @@ function stack_crashServer() {
     crashApp.get('*', function (request, response, next) {
         response.send("This app is in maintenance")
     });
-    if (stack.globals.environment.https){
-        var privateKey = fs.readFileSync(stack.globals.environment.privateKeyPath, "utf8");
-        var certificate = fs.readFileSync(stack.globals.environment.certificatePath, "utf8");
+    if (radix.globals.environment.https){
+        var privateKey = fs.readFileSync(radix.globals.environment.privateKeyPath, "utf8");
+        var certificate = fs.readFileSync(radix.globals.environment.certificatePath, "utf8");
         var ca = [];
-        for (var caPath of stack.globals.environment.caPaths) {
+        for (var caPath of radix.globals.environment.caPaths) {
             ca.push(fs.readFileSync(caPath, "utf8"));
         }
         var credentials = {key: privateKey, cert: certificate, secure: true, ca: ca};

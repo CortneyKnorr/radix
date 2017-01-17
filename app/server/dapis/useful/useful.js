@@ -3,14 +3,14 @@ function stack_dapis_useful() {
         ehgs: {
             quickRender(pageArg, injectorArg){
                 return function*(request, response, next) {
-                    let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
-                    let injector = stack.dapis.wizards.standards.ehgf13Arg(injectorArg, request, r => false);
+                    let page = radix.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
+                    let injector = radix.dapis.wizards.standards.ehgf13Arg(injectorArg, request, r => false);
                     response.render(page, {user: request.user || false, page: page, data: injector});
                 }
             },
             plug(messageArg){
                 return function*(request, response, next) {
-                    let message = stack.dapis.wizards.standards.ehgf13Arg(messageArg, request, false);
+                    let message = radix.dapis.wizards.standards.ehgf13Arg(messageArg, request, false);
                     response.send(message);
                 }
             },
@@ -18,7 +18,7 @@ function stack_dapis_useful() {
         pehgs: {
             parseJson(arrayArg){
                 return function*(request, response, next) {
-                    let array = stack.dapis.wizards.standards.ehgf13Arg(arrayArg, request, "body");
+                    let array = radix.dapis.wizards.standards.ehgf13Arg(arrayArg, request, "body");
                     for (var index in request[array]) {
                         try {
                             request[array][index] = JSON.parse(request[array][index])
@@ -32,21 +32,21 @@ function stack_dapis_useful() {
             },
             quickRedirect(urlArg){
                 return function*(request, response, next) {
-                    let url = stack.dapis.wizards.standards.ehgf13Arg(urlArg, request, false);
+                    let url = radix.dapis.wizards.standards.ehgf13Arg(urlArg, request, false);
                     response.redirect(url);
                 }
             },
             setHeader(fieldArg, valueArg){
                 return function* (request, response, next) {
-                    let field = stack.dapis.wizards.standards.ehgf13Arg(fieldArg, request, false);
-                    let value = stack.dapis.wizards.standards.ehgf13Arg(valueArg, request, false);
+                    let field = radix.dapis.wizards.standards.ehgf13Arg(fieldArg, request, false);
+                    let value = radix.dapis.wizards.standards.ehgf13Arg(valueArg, request, false);
                     response.set(field, value);
                     next();
                 }
             },
             ternary(boolArg, ehgIfTrue, ehgIfFalse){
                 return function* (request, response, next) {
-                    let bool = stack.dapis.wizards.standards.ehgf13Arg(boolArg, request, false);
+                    let bool = radix.dapis.wizards.standards.ehgf13Arg(boolArg, request, false);
                     if(bool){
                         if(ehgIfFalse) {
                             yield* ehgIfTrue(request, response, next);

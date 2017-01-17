@@ -33,14 +33,14 @@ function stack_dapis_e2e() {
                 return errors;
             },
             testFormOnce: function*(formId, obj, submitSelector, delayBeforeSubmit) {
-                stack.helpers.lastLogLevel = 1;
+                radix.helpers.lastLogLevel = 1;
                 console.log("");
                 console.log(`Testing form (${formId}) on ${currentUrl}`);
-                stack.helpers.log("Populating fields").iLog();
+                radix.helpers.log("Populating fields").iLog();
                 let driver = thisDapi.driver;
                 let prefix = "#" + formId;
                 for (let key in obj) {
-                    stack.helpers.log(`Populating [${key}] with "${obj[key]}"`);
+                    radix.helpers.log(`Populating [${key}] with "${obj[key]}"`);
                     try {
                         let elem = yield driver.findElement(By.css(prefix + " [name=\"" + key + "\"]"));
                         let tag = yield elem.getTagName();
@@ -82,9 +82,9 @@ function stack_dapis_e2e() {
                         console.log("\033[31m" + e + "\033[0m");
                     }
                 }
-                stack.helpers.cLog("Fields populated");
+                radix.helpers.cLog("Fields populated");
                 yield* thisDapi.fcs.sleep(delayBeforeSubmit);
-                stack.helpers.log("Submitting form");
+                radix.helpers.log("Submitting form");
                 let element = driver.findElement(By.css(submitSelector));
                 let submitted;
                 submitted = (typeof (yield driver.wait(until.elementIsEnabled(element), 4000).catch(eHandler)) == "object");
@@ -92,9 +92,9 @@ function stack_dapis_e2e() {
                     submitted = (typeof (yield element.click().catch(eHandler)) == "object");
                 }
                 if (!submitted) {
-                    stack.helpers.log("\033[37m" + `Error on the element identified by css selector "${submitSelector}"` + "\033[0m");
+                    radix.helpers.log("\033[37m" + `Error on the element identified by css selector "${submitSelector}"` + "\033[0m");
                 }
-                stack.helpers.cLog(`Form submitted: ${submitted}`);
+                radix.helpers.cLog(`Form submitted: ${submitted}`);
                 console.log("Form tested");
                 return submitted;
             },
@@ -112,7 +112,7 @@ function stack_dapis_e2e() {
                     return typeof (yield driver.wait(until.urlContains(substr))) == "object";
                 },
                 elementVisible: function*(selector) {
-                    stack.helpers.lastLogLevel = 1;
+                    radix.helpers.lastLogLevel = 1;
                     console.log("");
                     console.log(`Checking if (${selector}) is visible`);
                     let driver = thisDapi.driver;
@@ -127,7 +127,7 @@ function stack_dapis_e2e() {
             },
             clickOn: {
                 element: function*(selector) {
-                    stack.helpers.lastLogLevel = 1;
+                    radix.helpers.lastLogLevel = 1;
                     console.log("");
                     console.log(`Trying to click on (${selector})`);
                     let driver = thisDapi.driver;

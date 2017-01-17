@@ -20,7 +20,7 @@ function stack_logging(helpers){
     };
 
     helpers.aLog = function (toBeLogged) {
-        var prefix = stack.globals.WORKER ? (stack.globals.WORKER.id || "") : "";
+        var prefix = radix.globals.WORKER ? (radix.globals.WORKER.id || "") : "";
         console.log(prefix+"\033[96m | ASYNC|-> \033[0m" + toBeLogged);
         return helpers;
     };
@@ -29,7 +29,7 @@ function stack_logging(helpers){
         if (level) {
             helpers.lastLogLevel = level;
         }
-        var prefix = stack.globals.WORKER ? (stack.globals.WORKER.id || "") : "";
+        var prefix = radix.globals.WORKER ? (radix.globals.WORKER.id || "") : "";
         if (helpers.lastLogLevel > 0) {
             for (let i = 0; i < helpers.lastLogLevel; i++) {
                 prefix += "\033[3" + (i < 6 ? 2+i : 2).toString() + "m | \033[0m"

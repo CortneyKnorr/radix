@@ -1,20 +1,20 @@
 function stack_core_requirements() {
     console.log("|-| Requirements");
-    stack.helpers.iLog().log();
+    radix.helpers.iLog().log();
     console.time("|-| Requirements");
-    stack.helpers.log("Starting verification").iLog();
+    radix.helpers.log("Starting verification").iLog();
     controlFlowCall(hooks_requirements)()
         .then(data => {
-            stack.helpers.cLog("Requirements checked out");
+            radix.helpers.cLog("Requirements checked out");
             console.timeEnd("|-| Requirements");
             console.log();
             controlFlowCall(stack_core_cluster)(); //Do not need to catch this because cluster manages the crashes;
         })
         .catch(error => {
-            stack.helpers.cLog("Requirements could not be verified");
-            stack.helpers.log("Results being");
-            stack.helpers.iLog().log(error);
-            stack.helpers.cLog("End of results");
+            radix.helpers.cLog("Requirements could not be verified");
+            radix.helpers.log("Results being");
+            radix.helpers.iLog().log(error);
+            radix.helpers.cLog("End of results");
             console.timeEnd("|-| Requirements");
             console.log();
             controlFlowCall(hooks_crash)(error)

@@ -3,7 +3,7 @@ function E2eFeatureBatch(batchObj) {
     this.features = {};
 
     for(let featureData of batchObj){
-        this.features[featureData.name || "unnamed"] = stack.dapis.e2e.featureFactory(featureData);
+        this.features[featureData.name || "unnamed"] = radix.dapis.e2e.featureFactory(featureData);
     }
 
     this.testAllFeatures = function testAllFeatures(mute) {
@@ -41,6 +41,6 @@ function E2eFeatureBatch(batchObj) {
             this.features[featureName].review();
             failedTaskCount += this.features[featureName].getReviewData().failedTests.length;
         }
-        console.log(stack.helpers.colors.RED + "Total of failed tests: " + failedTaskCount + stack.helpers.colors.RESET);
+        console.log(radix.helpers.colors.RED + "Total of failed tests: " + failedTaskCount + radix.helpers.colors.RESET);
     };
 }

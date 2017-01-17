@@ -7,7 +7,7 @@ function loadMapi(mapiArg) {
             dependencies[mapiArg] = require(mapiArg);
             var myDependency = dependencies[mapiArg];
             if (myDependency.__NAME && myDependency.__VERSION && myDependency.__AUTHOR && myDependency.__STACKVERSIONS && myDependency.load) {
-                if (myDependency.__STACKVERSIONS.indexOf(stack.globals.version) > -1){
+                if (myDependency.__STACKVERSIONS.indexOf(radix.globals.version) > -1){
                     $project.mapis[myDependency.__NAME] = myDependency;
                     $project.mapisList.add(myDependency.__NAME);
                     myDependency.load(stack);

@@ -3,14 +3,14 @@ function stack_dapis_access() {
         pehgs: {
             lock(groupsArg){
                 return function*(request, response, next) {
-                    let groups = stack.dapis.wizards.standards.ehgf13Arg(groupsArg, request, false);
+                    let groups = radix.dapis.wizards.standards.ehgf13Arg(groupsArg, request, false);
 
                     if (request.user) {
                         if (request.user.admin || !(limit || limit === 0)) {
                             next();
                         } else if (request.user._id && groups && typeof groups.map == "function") {
                             let groupRights = yield groups.map(group => {
-                                return yield* stack.dapis.groups.fcs.isUserInAGroupNamed(request.user._id, group)
+                                return yield* radix.dapis.groups.fcs.isUserInAGroupNamed(request.user._id, group)
                             });
                             if (groupRights.filter(b => b).length) {
                                 next();
@@ -30,13 +30,13 @@ function stack_dapis_access() {
             },
             restrictToGroup(groupNameArg, failureRedirectArg) {
                 return function*(request, response, next) {
-                    let groupName = stack.dapis.wizards.standards.ehgf13Arg(groupNameArg, request, false);
-                    let failureRedirect = stack.dapis.wizards.standards.ehgf13Arg(failureRedirectArg, request, false);
+                    let groupName = radix.dapis.wizards.standards.ehgf13Arg(groupNameArg, request, false);
+                    let failureRedirect = radix.dapis.wizards.standards.ehgf13Arg(failureRedirectArg, request, false);
 
                     if (request.user) {
                         if (request.user.admin || !(limit || limit === 0)) {
                             next();
-                        } else if (request.user._id && (yield* stack.dapis.groups.fcs.isUserInAGroupNamed(request.user._id, groupNameArg))) {
+                        } else if (request.user._id && (yield* radix.dapis.groups.fcs.isUserInAGroupNamed(request.user._id, groupNameArg))) {
                             next();
                         } else {
                             response.statusCode = 401;
@@ -50,13 +50,13 @@ function stack_dapis_access() {
             },
             restrictTo(limitArg, failureRedirectArg) {
                 return function*(request, response, next) {
-                    let limit = stack.dapis.wizards.standards.ehgf13Arg(limitArg, request, false);
-                    let failureRedirect = stack.dapis.wizards.standards.ehgf13Arg(failureRedirectArg, request, false);
+                    let limit = radix.dapis.wizards.standards.ehgf13Arg(limitArg, request, false);
+                    let failureRedirect = radix.dapis.wizards.standards.ehgf13Arg(failureRedirectArg, request, false);
 
                     if (request.user) {
                         if (request.user.admin || !(limit || limit === 0)) {
                             next();
-                        } else if ((yield* stack.dapis.groups.fcs.getUsersBestRights(request.user._id)) <= limit) {
+                        } else if ((yield* radix.dapis.groups.fcs.getUsersBestRights(request.user._id)) <= limit) {
                             next();
                         } else {
                             response.statusCode = 401;

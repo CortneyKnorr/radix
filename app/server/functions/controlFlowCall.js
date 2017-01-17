@@ -47,11 +47,11 @@ function controlFlowCall(controlFlow) {
             }
         }
     })).catch(e => {
-        if(stack.globals.WORKER){
-            console.log(stack.helpers.colors.RED + "Error");
+        if(radix.globals.WORKER){
+            console.log(radix.helpers.colors.RED + "Error");
             console.log(e.toString());
-            console.log(stack.helpers.colors.RESET);
-            stack.globals.WORKER.kill();
+            console.log(radix.helpers.colors.RESET);
+            radix.globals.WORKER.kill();
         }
     });
 

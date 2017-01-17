@@ -36,7 +36,7 @@ function stack_dapis_settings() {
             },
             update: function*(id, leanInstance) {
                 let settings = yield Settings.findById(id);
-                stack.dapis.wizards.objects.update(settings, leanInstance);
+                radix.dapis.wizards.objects.update(settings, leanInstance);
                 return yield settings.save();
             },
             delete: function*(id) {
@@ -46,7 +46,7 @@ function stack_dapis_settings() {
         ehgs: {
             create(leanInstanceArg) {
                 return function*(request, response, next) {
-                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, {});
+                    let leanInstance = radix.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, {});
                     try {
                         let createdSetting = yield* thisDapi.fcs.create(leanInstance);
                         response.send(createdSetting);
@@ -57,53 +57,53 @@ function stack_dapis_settings() {
             },
             set(keyArg, valueArg) {
                 return function*(request, response, next) {
-                    let key = stack.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
-                    let value = stack.dapis.wizards.standards.ehgf13Arg(valueArg, request, false);
+                    let key = radix.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
+                    let value = radix.dapis.wizards.standards.ehgf13Arg(valueArg, request, false);
                     response.send(yield* thisDapi.fcs.set(key, value));
                 }
             },
             reset(keyArg) {
                 return function*(request, response, next) {
-                    let key = stack.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
+                    let key = radix.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
                     response.send(yield* thisDapi.fcs.reset(key));
                 }
             },
             getUsingCategory(categoryArg) {
                 return function*(request, response, next) {
-                    let category = stack.dapis.wizards.standards.ehgf13Arg(categoryArg, request, false);
+                    let category = radix.dapis.wizards.standards.ehgf13Arg(categoryArg, request, false);
                     response.send(yield* thisDapi.fcs.getUsingKey(category));
                 }
             },
             getUsingKey(keyArg) {
                 return function*(request, response, next) {
-                    let key = stack.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
+                    let key = radix.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
                     response.send(yield* thisDapi.fcs.getUsingKey(key));
                 }
             },
             getPaged(pageArg, pageLengthArg) {
                 return function*(request, response){
-                    let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
-                    let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
+                    let page = radix.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
+                    let pageLength = radix.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
                     let results = yield* thisDapi.fcs.getPaged(page, pageLength);
                     response.send(results);
                 };
             },
             get(idArg) {
                 return function*(request, response, next) {
-                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    let id = radix.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     response.send(yield* thisDapi.fcs.get(id));
                 }
             },
             update(id, leanInstanceArg) {
                 return function*(request, response, next) {
-                    let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
-                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    let leanInstance = radix.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
+                    let id = radix.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     response.send(yield* thisDapi.fcs.update(id, leanInstance));
                 }
             },
             delete(idArg) {
                 return function*(request, response, next) {
-                    let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
+                    let id = radix.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     response.send(yield* thisDapi.fcs.delete(id));
                 }
             },
