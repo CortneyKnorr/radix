@@ -1,4 +1,4 @@
-function loadMapi(mapiArg) {
+function loadMapi(mapiArg, settings) {
     if (!dependencies) {
         dependencies = {};
     }
@@ -6,11 +6,11 @@ function loadMapi(mapiArg) {
         if (!dependencies[mapiArg]) {
             dependencies[mapiArg] = require(mapiArg);
             var myDependency = dependencies[mapiArg];
-            if (myDependency.__NAME && myDependency.__VERSION && myDependency.__AUTHOR && myDependency.__STACKVERSIONS && myDependency.load) {
-                if (myDependency.__STACKVERSIONS.indexOf(radix.globals.version) > -1){
+            if (myDependency.__NAME && myDependency.__VERSION && myDependency.__AUTHOR && myDependency.__RADIXVERSIONS && myDependency.load) {
+                if (myDependency.__RADIXVERSIONS.indexOf(radix.globals.version) > -1){
                     $project.mapis[myDependency.__NAME] = myDependency;
                     $project.mapisList.add(myDependency.__NAME);
-                    myDependency.load(stack);
+                    myDependency.load(stack, settings);
                 } else {
                     throw "Dependency is not compatible with this app version";
                 }

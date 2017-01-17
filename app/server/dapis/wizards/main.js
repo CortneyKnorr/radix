@@ -21,6 +21,21 @@ function stack_dapis_wizards() {
         return value;
     };
 
+    standards.ehgf14Arg = function ehgf13Arg(arg, request, defaultValue) {
+        if (Object.getPrototypeOf(arg) == Object.getPrototypeOf(function*(){})) {
+            return controlFlowCall(arg)(request);
+        } else {
+            return new Promise((resolve, reject) => {
+                if (typeof arg == "function") {
+                    resolve(arg(request));
+                } else if (typeof arg == "undefined") {
+                    resolve(defaultValue);
+                } else {
+                    resolve(arg);
+                }
+            });
+        }
+    };
     /*
      Objects
      Wizards for objects are a set of awesome function that can be used on

@@ -16,7 +16,7 @@ var gulp = require('gulp'),
     browserSync = require('browser-sync'),
     nodemon = require('gulp-nodemon'),
     typescript = require('gulp-typescript'),
-    config = require('../../config/buildSystem.json'),
+    fullconfig = require('../../config/buildSystem.json'),
     jade = require('gulp-jade'),
     traceur = require('gulp-traceur'),
     io = require('./io'),
@@ -26,8 +26,13 @@ var gulp = require('gulp'),
     exec = require('child_process').exec,
     cssnano = require('cssnano');
 
+let ENV = (gutil.env.type || 'development');
+let config = fullconfig[ENV] ? fullconfig[ENV] : fullconfig.default;
 
-let prefix = ".output/" + (gutil.env.type || 'development');
+console.log(config);
+process.exit();
+
+let prefix = ".output/" + ENV;
 
 var env = require('../../config/environments.json');
 var node_env = process.env.NODE_ENV || 'development';

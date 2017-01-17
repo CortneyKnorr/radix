@@ -1,14 +1,28 @@
 {
-  "bundles": {
-    "js": [
-      {
-        "output": "angularBundle.js",
-        "files": [],
-        "async": false
-      }
-    ],
-    "css": [
-
-    ]
+  "default": {
+    "bundles": {
+      "js": [
+        {
+          "output": "angularBundle.js",
+          "files": [],
+          "async": false
+        }
+      ],
+      "css": [
+      ]
+    }
+  },
+  "development": {
+    "bundles": {
+      "css": [
+      ],
+      "js": [
+        {
+          "output": "angularBundle.js",
+          "files": [],
+          "async": false
+        }
+      ]
+    }
   }
 }
