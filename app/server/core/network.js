@@ -74,9 +74,9 @@ function* stack_core_network(worker) {
 
         controlFlowCall(function*() {
             radix.helpers.lastLogLevel = 1;
-            console.log(radix.globals.WORKER.id + " |-| Executing Stack Start");
+            console.log(radix.globals.WORKER.id + " |-| Executing Radix start hook");
             yield* hooks_start();
-            console.log(radix.globals.WORKER.id + " |-| Stack start executed");
+            console.log(radix.globals.WORKER.id + " |-| Radix start hook executed");
 
             if ($project.env.name === 'tests') {
                 yield stackCapture(radix.dapis.e2e.init, "e2eInit");

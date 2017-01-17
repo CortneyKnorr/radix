@@ -56,8 +56,8 @@ function* stack_core_express() {
     app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
     if ($project.env.name === 'development' || $project.env.name === 'tests') {
         var prefix = radix.globals.WORKER ? (radix.globals.WORKER.id || "") : "";
-        logger.format('stack', prefix + '\033[96m | ASYNC|->\033[0m :remote-addr - :remote-user [:date[clf]] \033[95m":method :url HTTP/:http-version" :status :res[content-length]\033[0m');
-        app.use(logger("stack"));
+        logger.format('radix', prefix + '\033[96m | ASYNC|->\033[0m :remote-addr - :remote-user [:date[clf]] \033[95m":method :url HTTP/:http-version" :status :res[content-length]\033[0m');
+        app.use(logger("radix"));
     }
 
     radix.helpers.log("Setting up redirections");
@@ -95,7 +95,7 @@ function* stack_core_express() {
     }));
 
     //app and app dependencies
-    radix.helpers.log("Setting up Stacks other core Hooks").iLog();
+    radix.helpers.log("Setting up Radix other core Hooks").iLog();
     radix.helpers.log("Loading custom middleware", 3).iLog();
 
     $project.middleware = hooks_middleware.map(eh => controlFlowCall(eh));
@@ -113,12 +113,12 @@ function* stack_core_express() {
         $project.models[modelName] = hooks_models[modelName]();
     }
     radix.helpers.cLog("Models added");
-    radix.helpers.log("Loading Stack DAPIs", 3);
-    radix.helpers.log("Loading Stack MAPIs", 3);
+    radix.helpers.log("Loading Radix DAPIs", 3);
+    radix.helpers.log("Loading Radix MAPIs", 3);
     radix.helpers.iLog();
     yield* hooks_mapis();
     radix.helpers.lastLogLevel = 4;
-    radix.helpers.cLog("Stack MAPIs Loaded");
+    radix.helpers.cLog("Radix MAPIs Loaded");
 
     //Adding projects routers onto app
     radix.helpers.log("Loading app's routers", 3).iLog();
@@ -128,7 +128,7 @@ function* stack_core_express() {
 
     radix.helpers.log("", 3);
 
-    radix.helpers.log("Loading Stack 404 and error handlers");
+    radix.helpers.log("Loading Radix's 404 and error handlers");
     // catch 404 and forward to error handler
     app.use(function (request, response, next) {
         response.statusCode = 404;
@@ -157,7 +157,7 @@ function* stack_core_express() {
         }
     );
 
-    radix.helpers.cLog("Stacks Core Hooks called");
+    radix.helpers.cLog("Radix Core Hooks called");
     radix.helpers.cLog("Express app configured");
 
     console.timeEnd("|-| Express init");
