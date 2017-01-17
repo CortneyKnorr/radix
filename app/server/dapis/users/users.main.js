@@ -1,7 +1,7 @@
 function stack_dapis_users() {
     var Users = getDependency(stack_models_users);
     return {
-        cfs: {
+        fcs: {
             create: function*(leanInstance) {
                 if (leanInstance.username && leanInstance.password) {
                     //Retrieve users with same name
@@ -68,14 +68,14 @@ function stack_dapis_users() {
             create: function (leanInstanceArg) {
                 return function*(request, response){
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
-                    let results = yield* stack.dapis.users.cfs.create(leanInstance);
+                    let results = yield* stack.dapis.users.fcs.create(leanInstance);
                     response.send(results);
                 };
             },
             get: function (userIdArg) {
                 return function*(request, response){
                     let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    let results = yield* stack.dapis.users.cfs.get(userId);
+                    let results = yield* stack.dapis.users.fcs.get(userId);
                     response.send(results);
                 };
             },
@@ -83,33 +83,33 @@ function stack_dapis_users() {
                 return function*(request, response){
                     let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
                     let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
-                    let results = yield* stack.dapis.users.cfs.getPaged(page, pageLength);
+                    let results = yield* stack.dapis.users.fcs.getPaged(page, pageLength);
                     response.send(results);
                 };
             },
             count: function () {
                 return function*(request, response){
-                    response.send(yield* stack.dapis.users.cfs.count());
+                    response.send(yield* stack.dapis.users.fcs.count());
                 };
             },
             getWithoutPassword: function (userIdArg) {
                 return function*(request, response){
                     let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    let results = yield* stack.dapis.users.cfs.getWithoutPassword(userId);
+                    let results = yield* stack.dapis.users.fcs.getWithoutPassword(userId);
                     response.send(results);
                 };
             },
             getAllByRights: function (rightsArg) {
                 return function*(request, response){
                     let rights = stack.dapis.wizards.standards.ehgf13Arg(rightsArg, request, false);
-                    let results = yield* stack.dapis.users.cfs.getAllByRights(rights);
+                    let results = yield* stack.dapis.users.fcs.getAllByRights(rights);
                     response.send(results);
                 };
             },
             exists: function (userIdArg) {
                 return function*(request, response){
                     let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    let results = yield* stack.dapis.users.cfs.exists(userId);
+                    let results = yield* stack.dapis.users.fcs.exists(userId);
                     response.send(results);
                 };
             },
@@ -117,21 +117,21 @@ function stack_dapis_users() {
                 return function*(request, response){
                     let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
-                    let results = yield* stack.dapis.users.cfs.update(userId, leanInstance);
+                    let results = yield* stack.dapis.users.fcs.update(userId, leanInstance);
                     response.send(results);
                 };
             },
             remove: function (userIdArg) {
                 return function*(request, response){
                     let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    let results = yield* stack.dapis.users.cfs.remove(userId);
+                    let results = yield* stack.dapis.users.fcs.remove(userId);
                     response.send(results);
                 };
             },
             getRealRights: function (userIdArg) {
                 return function*(request, response){
                     let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    let results = yield* stack.dapis.users.cfs.getRealRights(userId);
+                    let results = yield* stack.dapis.users.fcs.getRealRights(userId);
                     response.send(results);
                 };
             },
@@ -139,7 +139,7 @@ function stack_dapis_users() {
                 return function*(request, response){
                     let username = stack.dapis.wizards.standards.ehgf13Arg(usernameArg, request, false);
                     let password = stack.dapis.wizards.standards.ehgf13Arg(passwordArg, request, false);
-                    let results = yield* stack.dapis.users.cfs.checkCredentials(username, password);
+                    let results = yield* stack.dapis.users.fcs.checkCredentials(username, password);
                     response.send(results);
                 };
             }
@@ -148,7 +148,7 @@ function stack_dapis_users() {
             create: function (leanInstanceArg) {
                 return function*(request, response, next){
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
-                    request.peh = yield* stack.dapis.users.cfs.create(leanInstance);
+                    request.peh = yield* stack.dapis.users.fcs.create(leanInstance);
                     next();
                 };
             },

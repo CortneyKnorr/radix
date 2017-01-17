@@ -9,7 +9,7 @@ function stack_dapis_files() {
     var File = getDependency(stack_models_files);
 
     let thisDapi = {
-        cfs: {
+        fcs: {
             get: function*(id) {
                 return yield File.findById(id);
             },
@@ -132,14 +132,14 @@ function stack_dapis_files() {
             get: function (fileIdArg) {
                 return function*(request, response, next) {
                     let fileId = stack.dapis.wizards.standards.ehgf13Arg(fileIdArg, request, false);
-                    response.send(yield* thisDapi.cfs.get(fileId));
+                    response.send(yield* thisDapi.fcs.get(fileId));
                 }
             },
             getPaged: function (pageArg, pageLengthArg) {
                 return function*(request, response, next) {
                     let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
                     let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
-                    response.send(yield* thisDapi.cfs.getPaged(page, pageLength));
+                    response.send(yield* thisDapi.fcs.getPaged(page, pageLength));
                 }
             },
             getPagedByType: function (typeNameArg, pageArg, pageLengthArg) {
@@ -147,14 +147,14 @@ function stack_dapis_files() {
                     let typeName = stack.dapis.wizards.standards.ehgf13Arg(typeNameArg, request, false);
                     let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
                     let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
-                    response.send(yield* thisDapi.cfs.getPagedByType(typeName, page, pageLength));
+                    response.send(yield* thisDapi.fcs.getPagedByType(typeName, page, pageLength));
                 }
             },
 
             getNumberOfFileFromType: function (typeNameArg) {
                 return function*(request, response, next) {
                     let typeName = stack.dapis.wizards.standards.ehgf13Arg(typeNameArg, request, false);
-                    response.send(yield* thisDapi.cfs.getNumberOfFileFromType(typeName));
+                    response.send(yield* thisDapi.fcs.getNumberOfFileFromType(typeName));
                 }
 
             },
@@ -162,7 +162,7 @@ function stack_dapis_files() {
             delete(fileIdArg){
                 return function*(request, response, next) {
                     let fileId = stack.dapis.wizards.standards.ehgf13Arg(fileIdArg, request, false);
-                    let deletedFile = yield* thisDapi.cfs.delete(fileId);
+                    let deletedFile = yield* thisDapi.fcs.delete(fileId);
                     console.log(deletedFile);
                     response.send(deletedFile);
                 }
@@ -171,7 +171,7 @@ function stack_dapis_files() {
                 return function*(request, response, next) {
                     let fileId = stack.dapis.wizards.standards.ehgf13Arg(fileIdArg, request, false);
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
-                    response.send(yield* thisDapi.cfs.update(fileId, leanInstance));
+                    response.send(yield* thisDapi.fcs.update(fileId, leanInstance));
                 }
             },
             serve(fileIdArg, tokenArg){

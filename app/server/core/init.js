@@ -25,7 +25,7 @@ stack.project = {};
 
 exports.init = function init() {
     //Classes
-    stack.classes.StackRouter = StackRouter;
+    stack.classes.RadixRouter = RadixRouter;
     stack.classes.Redirect = Redirect;
 
     //Dapis

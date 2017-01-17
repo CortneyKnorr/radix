@@ -120,12 +120,6 @@ function* stack_core_express() {
     stack.helpers.lastLogLevel = 4;
     stack.helpers.cLog("Stack MAPIs Loaded");
 
-    //Adding app routers onto app
-    stack.helpers.log("Loading app routers", 3).iLog();
-    stack.globals.controllers = yield* stack_internal_routers();
-    stack_loadRoutersOnto(app, stack.globals.controllers);
-    stack.helpers.cLog("Stack routers loaded");
-
     //Adding projects routers onto app
     stack.helpers.log("Loading app's routers", 3).iLog();
     $project.controllers = yield* hooks_routers();

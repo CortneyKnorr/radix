@@ -17,7 +17,7 @@ function stack_dapis_e2e() {
             thisDapi.driver = new webdriver.Builder().withCapabilities(thisDapi.selenium.Capabilities.chrome()).build();
             return thisDapi;
         },
-        cfs: {
+        fcs: {
             on: function*(url) {
                 let driver = thisDapi.driver;
                 currentUrl = url;
@@ -27,8 +27,8 @@ function stack_dapis_e2e() {
                 let url = currentUrl;
                 let errors = [];
                 for (let obj of array) {
-                    yield* thisDapi.cfs.on(url);
-                    errors.push(yield* thisDapi.cfs.testFormOnce(formId, obj, submitSelector));
+                    yield* thisDapi.fcs.on(url);
+                    errors.push(yield* thisDapi.fcs.testFormOnce(formId, obj, submitSelector));
                 }
                 return errors;
             },
@@ -83,7 +83,7 @@ function stack_dapis_e2e() {
                     }
                 }
                 stack.helpers.cLog("Fields populated");
-                yield* thisDapi.cfs.sleep(delayBeforeSubmit);
+                yield* thisDapi.fcs.sleep(delayBeforeSubmit);
                 stack.helpers.log("Submitting form");
                 let element = driver.findElement(By.css(submitSelector));
                 let submitted;
@@ -100,8 +100,8 @@ function stack_dapis_e2e() {
             },
             testForm: function*(formId, obj, submitSelector, delayBeforeSubmit) {
                 return Array.isArray(obj) ?
-                    yield* thisDapi.cfs.testFormMulti(formId, obj, submitSelector, delayBeforeSubmit) :
-                    yield* thisDapi.cfs.testFormOnce(formId, obj, submitSelector, delayBeforeSubmit)
+                    yield* thisDapi.fcs.testFormMulti(formId, obj, submitSelector, delayBeforeSubmit) :
+                    yield* thisDapi.fcs.testFormOnce(formId, obj, submitSelector, delayBeforeSubmit)
             },
             sendKeys: function*(txt) {
                 return yield thisDapi.driver.switchTo().activeElement().sendKeys(txt);
@@ -141,9 +141,9 @@ function stack_dapis_e2e() {
                 },
                 elements: function*(selectorArray, delay) {
                     for (let selector of selectorArray) {
-                        yield* thisDapi.cfs.clickOnElement(selector);
+                        yield* thisDapi.fcs.clickOnElement(selector);
                         if (delay) {
-                            yield* thisDapi.cfs.sleep(delay)
+                            yield* thisDapi.fcs.sleep(delay)
                         }
                     }
                 }
@@ -173,7 +173,7 @@ function stack_dapis_e2e() {
                             `Waiting for (${selector}) to be enabled` :
                             `Waiting for (${selector}) to be enabled but will continue after ${delay}`
                         );
-                        let result = yield* thisDapi.cfs.waitUntil._gen("elementIsEnabled", selector, delay);
+                        let result = yield* thisDapi.fcs.waitUntil._gen("elementIsEnabled", selector, delay);
                         result = Boolean(result);
                         console.log(`Success: ${result}`);
                         return result;
@@ -184,7 +184,7 @@ function stack_dapis_e2e() {
                             `Waiting for (${selector}) to be disabled` :
                             `Waiting for (${selector}) to be disabled but will continue after ${delay}`
                         );
-                        let result = yield* thisDapi.cfs.waitUntil._gen("elementIsDisabled", selector, delay);
+                        let result = yield* thisDapi.fcs.waitUntil._gen("elementIsDisabled", selector, delay);
                         result = Boolean(result);
                         console.log(`Success: ${result}`);
                         return result;
@@ -195,7 +195,7 @@ function stack_dapis_e2e() {
                             `Waiting for (${selector}) to be visible but will continue after ${delay}` :
                             `Waiting for (${selector}) to be visible`
                         );
-                        let result = yield* thisDapi.cfs.waitUntil._gen("elementIsVisible", selector, delay);
+                        let result = yield* thisDapi.fcs.waitUntil._gen("elementIsVisible", selector, delay);
                         result = Boolean(result);
                         console.log(`Success: ${result}`);
                         return result;
@@ -206,7 +206,7 @@ function stack_dapis_e2e() {
                             `Waiting for (${selector}) to not be visible` :
                             `Waiting for (${selector}) to not be visible but will continue after ${delay}`
                         );
-                        let result = yield* thisDapi.cfs.waitUntil._gen("elementIsVisible", selector, delay);
+                        let result = yield* thisDapi.fcs.waitUntil._gen("elementIsVisible", selector, delay);
                         result = Boolean(result);
                         console.log(`Success: ${result}`);
                         return result;
@@ -217,7 +217,7 @@ function stack_dapis_e2e() {
                             `Waiting for (${selector}) to be selected` :
                             `Waiting for (${selector}) to be selected but will continue after ${delay}`
                         );
-                        let result = yield* thisDapi.cfs.waitUntil._gen("elementIsVisible", selector, delay);
+                        let result = yield* thisDapi.fcs.waitUntil._gen("elementIsVisible", selector, delay);
                         result = Boolean(result);
                         console.log(`Success: ${result}`);
                         return result;
@@ -228,7 +228,7 @@ function stack_dapis_e2e() {
                             `Waiting for (${selector}) to not be selected` :
                             `Waiting for (${selector}) to not be selected but will continue after ${delay}`
                         );
-                        let result = yield* thisDapi.cfs.waitUntil._gen("elementIsNotSelected", selector, delay);
+                        let result = yield* thisDapi.fcs.waitUntil._gen("elementIsNotSelected", selector, delay);
                         result = Boolean(result);
                         console.log(`Success: ${result}`);
                         return result;
@@ -241,7 +241,7 @@ function stack_dapis_e2e() {
                             `Waiting for (${selector})'s text to contain |${text}| but will continue after ${delay}` :
                             `Waiting for (${selector})'s text to contain |${text}|.`
                         );
-                        let result = yield* thisDapi.cfs.waitUntil._genWithParam("elementTextContains", selector, text, delay);
+                        let result = yield* thisDapi.fcs.waitUntil._genWithParam("elementTextContains", selector, text, delay);
                         result = Boolean(result);
                         console.log(`Success: ${result}`);
                         return result;
@@ -252,7 +252,7 @@ function stack_dapis_e2e() {
                             `Waiting for (${selector})'s text to equals |${text}|.` :
                             `Waiting for (${selector})'s text to equals |${text}| but will continue after ${delay}`
                         );
-                        let result = yield* thisDapi.cfs.waitUntil._genWithParam("elementTextIs", selector, text, delay);
+                        let result = yield* thisDapi.fcs.waitUntil._genWithParam("elementTextIs", selector, text, delay);
                         result = Boolean(result);
                         console.log(`Success: ${result}`);
                         return result;
@@ -263,7 +263,7 @@ function stack_dapis_e2e() {
                             `Waiting for (${selector})'s text to match |${regex}|` :
                             `Waiting for (${selector})'s text to match |${regex}| but will continue after ${delay}`
                         );
-                        let result = yield* thisDapi.cfs.waitUntil._genWithParam("elementTextMatches", selector, regex, delay);
+                        let result = yield* thisDapi.fcs.waitUntil._genWithParam("elementTextMatches", selector, regex, delay);
                         result = Boolean(result);
                         console.log(`Success: ${result}`);
                         return result;

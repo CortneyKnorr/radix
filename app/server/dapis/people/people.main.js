@@ -3,7 +3,7 @@ function stack_dapis_peoples() {
     let User = getDependency(stack_models_users);
 
     let thisDapi = {
-        cfs: {
+        fcs: {
             get: function*(id) {
                 return yield Peoples.findById(id);
             },
@@ -202,7 +202,7 @@ function stack_dapis_peoples() {
 
             createWithUser: function*(peopleLightInstance, userLightInstance){
                 if (userLightInstance.username && userLightInstance.password && userLightInstance.rights){
-                    let myUser = yield* stack.dapis.users.cfs.create(userLightInstance);
+                    let myUser = yield* stack.dapis.users.fcs.create(userLightInstance);
                     myUser.save();
                     peopleLightInstance.user = myUser._id;
                     let myObject = new Peoples(peopleLightInstance);
@@ -218,30 +218,30 @@ function stack_dapis_peoples() {
 
         ehgs: {
             get(idArg){
-                return stack.dapis.wizards.cruds.simpleEhg(thisDapi.cfs.get, idArg);
+                return stack.dapis.wizards.cruds.simpleEhg(thisDapi.fcs.get, idArg);
             },
             getElement(idArg, enumStringArg){
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     let enumArg = stack.dapis.wizards.standards.ehgf13Arg(enumStringArg, request, false);
-                    response.send(yield* thisDapi.cfs.getElement(id, enumArg));
+                    response.send(yield* thisDapi.fcs.getElement(id, enumArg));
                 }
             },
             getAll(){
                 return function*(request, response, next) {
-                    response.send(yield* thisDapi.cfs.getAll());
+                    response.send(yield* thisDapi.fcs.getAll());
                 }
             },
             create(leanInstanceArg){
                 return function*(request, response, next) {
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
-                    response.send(yield* thisDapi.cfs.create(leanInstance));
+                    response.send(yield* thisDapi.fcs.create(leanInstance));
                 }
             },
             delete(idArg){
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
-                    let deletedFile = yield* thisDapi.cfs.delete(id);
+                    let deletedFile = yield* thisDapi.fcs.delete(id);
                     response.send(deletedFile);
                 }
             },
@@ -249,98 +249,98 @@ function stack_dapis_peoples() {
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
-                    response.send(yield* thisDapi.cfs.update(id, leanInstance));
+                    response.send(yield* thisDapi.fcs.update(id, leanInstance));
                 }
             },
             makeIndependent(idArg){
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
-                    response.send(yield* thisDapi.cfs.makeIndependent(id));
+                    response.send(yield* thisDapi.fcs.makeIndependent(id));
                 }
             },
             setChildren(idArg, childrenIdArg){
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     let childrenId = stack.dapis.wizards.standards.ehgf13Arg(childrenIdArg, request, false);
-                    response.send(yield* thisDapi.cfs.setChildren(id, childrenId));
+                    response.send(yield* thisDapi.fcs.setChildren(id, childrenId));
                 }
             },
             setSpouse(idArg, spouseIdArg){
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     let spouseId = stack.dapis.wizards.standards.ehgf13Arg(spouseIdArg, request, false);
-                    response.send(yield* thisDapi.cfs.setSpouse(id, spouseId));
+                    response.send(yield* thisDapi.fcs.setSpouse(id, spouseId));
                 }
             },
             makeDivorced(idArg){
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
-                    response.send(yield* thisDapi.cfs.makeDivorced(id));
+                    response.send(yield* thisDapi.fcs.makeDivorced(id));
                 }
             },
             desactivateOrReactivate(idArg){
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
-                    response.send(yield* thisDapi.cfs.desactivateOrReactivate(id));
+                    response.send(yield* thisDapi.fcs.desactivateOrReactivate(id));
                 }
             },
             addFriend(idArg, friendIdArg){
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     let friendId = stack.dapis.wizards.standards.ehgf13Arg(friendIdArg, request, false);
-                    response.send(yield* thisDapi.cfs.addFriend(id, friendId));
+                    response.send(yield* thisDapi.fcs.addFriend(id, friendId));
                 }
             },
             removeFriend(idArg, friendIdArg){
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     let friendId = stack.dapis.wizards.standards.ehgf13Arg(friendIdArg, request, false);
-                    response.send(yield* thisDapi.cfs.removeFriend(id, friendId));
+                    response.send(yield* thisDapi.fcs.removeFriend(id, friendId));
                 }
             },
             addSibling(idArg, siblingIdArg){
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     let siblingId = stack.dapis.wizards.standards.ehgf13Arg(siblingIdArg, request, false);
-                    response.send(yield* thisDapi.cfs.addSibling(id, siblingId));
+                    response.send(yield* thisDapi.fcs.addSibling(id, siblingId));
                 }
             },
             removeSibling(idArg, siblingIdArg){
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
                     let siblingId = stack.dapis.wizards.standards.ehgf13Arg(siblingIdArg, request, false);
-                    response.send(yield* thisDapi.cfs.removeSibling(id, siblingId));
+                    response.send(yield* thisDapi.fcs.removeSibling(id, siblingId));
                 }
             },
             checkMail(mailArg){
                 return function*(request, response, next) {
                     let mail = stack.dapis.wizards.standards.ehgf13Arg(mailArg, request, false);
-                    response.send(yield* thisDapi.cfs.checkMail(mail));
+                    response.send(yield* thisDapi.fcs.checkMail(mail));
                 }
             },
             creationWithUser(leanInstanceArg){
                 return function*(request, response, next) {
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
-                    response.send(yield* thisDapi.cfs.creationWithUser(leanInstance));
+                    response.send(yield* thisDapi.fcs.creationWithUser(leanInstance));
                 }
             },
             getPeopleOfUser(userIdArg){
                 return function*(request, response, next) {
                     let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    response.send(yield* thisDapi.cfs.getPeopleOfUser(userId));
+                    response.send(yield* thisDapi.fcs.getPeopleOfUser(userId));
                 }
             },
             createWithUser(peopleLightInstanceArg, userLightInstanceArg){
                 return function*(request, response, next) {
                     let peopleLightInstance = stack.dapis.wizards.standards.ehgf13Arg(peopleLightInstanceArg, request, false);
                     let userLightInstance = stack.dapis.wizards.standards.ehgf13Arg(userLightInstanceArg, request, false);
-                    response.send(yield* thisDapi.cfs.createWithUser(peopleLightInstance, userLightInstance));
+                    response.send(yield* thisDapi.fcs.createWithUser(peopleLightInstance, userLightInstance));
                 }
             },
             getPeopleOfUser(userIdArg){
                 return function*(request, response, next) {
                     let userId = stack.dapis.wizards.standards.ehgf13Arg(userIdArg, request, false);
-                    response.send(yield* thisDapi.cfs.getPeopleOfUser(userId));
+                    response.send(yield* thisDapi.fcs.getPeopleOfUser(userId));
                 }
             },
         }

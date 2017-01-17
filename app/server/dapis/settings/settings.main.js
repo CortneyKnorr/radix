@@ -2,7 +2,7 @@ function stack_dapis_settings() {
     let Settings = getDependency(stack_models_settings);
 
     let thisDapi = {
-        cfs: {
+        fcs: {
             create: function*(leanInstance) {
                 let numberOfKeys = yield Settings.count({key: leanInstance.key});
                 if (numberOfKeys) {
@@ -48,7 +48,7 @@ function stack_dapis_settings() {
                 return function*(request, response, next) {
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, {});
                     try {
-                        let createdSetting = yield* thisDapi.cfs.create(leanInstance);
+                        let createdSetting = yield* thisDapi.fcs.create(leanInstance);
                         response.send(createdSetting);
                     } catch(e) {
                         response.send(e);
@@ -59,52 +59,52 @@ function stack_dapis_settings() {
                 return function*(request, response, next) {
                     let key = stack.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
                     let value = stack.dapis.wizards.standards.ehgf13Arg(valueArg, request, false);
-                    response.send(yield* thisDapi.cfs.set(key, value));
+                    response.send(yield* thisDapi.fcs.set(key, value));
                 }
             },
             reset(keyArg) {
                 return function*(request, response, next) {
                     let key = stack.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
-                    response.send(yield* thisDapi.cfs.reset(key));
+                    response.send(yield* thisDapi.fcs.reset(key));
                 }
             },
             getUsingCategory(categoryArg) {
                 return function*(request, response, next) {
                     let category = stack.dapis.wizards.standards.ehgf13Arg(categoryArg, request, false);
-                    response.send(yield* thisDapi.cfs.getUsingKey(category));
+                    response.send(yield* thisDapi.fcs.getUsingKey(category));
                 }
             },
             getUsingKey(keyArg) {
                 return function*(request, response, next) {
                     let key = stack.dapis.wizards.standards.ehgf13Arg(keyArg, request, false);
-                    response.send(yield* thisDapi.cfs.getUsingKey(key));
+                    response.send(yield* thisDapi.fcs.getUsingKey(key));
                 }
             },
             getPaged(pageArg, pageLengthArg) {
                 return function*(request, response){
                     let page = stack.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
                     let pageLength = stack.dapis.wizards.standards.ehgf13Arg(pageLengthArg, request, false);
-                    let results = yield* thisDapi.cfs.getPaged(page, pageLength);
+                    let results = yield* thisDapi.fcs.getPaged(page, pageLength);
                     response.send(results);
                 };
             },
             get(idArg) {
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
-                    response.send(yield* thisDapi.cfs.get(id));
+                    response.send(yield* thisDapi.fcs.get(id));
                 }
             },
             update(id, leanInstanceArg) {
                 return function*(request, response, next) {
                     let leanInstance = stack.dapis.wizards.standards.ehgf13Arg(leanInstanceArg, request, false);
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
-                    response.send(yield* thisDapi.cfs.update(id, leanInstance));
+                    response.send(yield* thisDapi.fcs.update(id, leanInstance));
                 }
             },
             delete(idArg) {
                 return function*(request, response, next) {
                     let id = stack.dapis.wizards.standards.ehgf13Arg(idArg, request, false);
-                    response.send(yield* thisDapi.cfs.delete(id));
+                    response.send(yield* thisDapi.fcs.delete(id));
                 }
             },
         }
