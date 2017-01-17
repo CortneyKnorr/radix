@@ -1,5 +1,5 @@
 
-class StackRouter extends getDependency("express").Router {
+class RadixRouter extends getDependency("express").Router {
     constructor() {
         super();
     }

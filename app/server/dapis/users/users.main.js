@@ -3,7 +3,7 @@ function stack_dapis_users() {
     return {
         cfs: {
             create: function*(leanInstance) {
-                if (leanInstance.username && leanInstance.password && leanInstance.rights) {
+                if (leanInstance.username && leanInstance.password) {
                     //Retrieve users with same name
                     var usersWithSameName = yield Users.count({username: leanInstance.username});
 
@@ -12,7 +12,7 @@ function stack_dapis_users() {
                         var myUser = new Users();
                         myUser.username = leanInstance.username;
                         myUser.password = leanInstance.password;
-                        myUser.rights = leanInstance.rights;
+                        myUser.rights = leanInstance.rights || 5;
                         return yield myUser.save();
                     } else {
                         return false;
