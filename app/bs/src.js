@@ -257,7 +257,7 @@ exports.css.build = function () {
         .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)));
 
     for(let bundle of config.bundles.css) {
-        let files = bundle.files.map(file => path.join(io.css.root, file));
+        let files = bundle.files.map(file => path.join(io.stylesheets.root, file));
         gulp.src(files)
             .pipe(debug())
             .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
