@@ -5,7 +5,7 @@ function stack_loadRoutersOnto(parentRouter, routersAsObj) {
         // console.log(router);
         if (typeof router == 'object'){
             radix.helpers.log("Loading onto " + routerBase).iLog();
-            let myNewRouter = new StackRouter();
+            let myNewRouter = new RadixRouter();
             stack_loadRoutersOnto(myNewRouter, router);
             parentRouter.use(routerBase, myNewRouter);
             radix.helpers.dLog();
