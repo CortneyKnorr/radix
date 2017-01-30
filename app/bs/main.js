@@ -40,6 +40,7 @@ gulp.task('watch-js', ()=> { gulp.watch(watch.files.javascript, ['build-js']); }
 gulp.task('watch-ts', ()=> { gulp.watch(watch.files.typescript, ['build-ts']); });
 gulp.task('watch-views', ()=> { gulp.watch(watch.files.views, ['build-views']); });
 gulp.task('watch-static', ()=> { gulp.watch(watch.files.static, ['build-static']); });
+gulp.task('watch-multiple', ()=> {gulp.watch(watch.files.multiple, ["build-multiple"]) });
 
 gulp.task('watch-front', ['watch-static', 'watch-views', 'watch-js', 'watch-ts', 'watch-css']);
 

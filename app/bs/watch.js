@@ -11,6 +11,7 @@ var files = exports.files = {
         'sources/assets/stylesheets/**/**.scss',
         "config/buildSystem.json"
     ],
+    'multiple': "sources/assets/mutilple/**/**",
     'views': 'sources/views/**/**',
     'javascript': [
         'sources/assets/javascript/**/**.js',

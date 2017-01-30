@@ -16,6 +16,7 @@ var gulp = require('gulp'),
     browserSync = require('browser-sync'),
     nodemon = require('gulp-nodemon'),
     typescript = require('gulp-typescript'),
+    pug = require('gulp-pug'),
     fullconfig = require('../../config/buildSystem.json'),
     jade = require('gulp-jade'),
     traceur = require('gulp-traceur'),
@@ -28,9 +29,6 @@ var gulp = require('gulp'),
 
 let ENV = (gutil.env.type || 'development');
 let config = fullconfig[ENV] ? fullconfig[ENV] : fullconfig.default;
-
-console.log(config);
-process.exit();
 
 let prefix = ".output/" + ENV;
 
@@ -235,6 +233,60 @@ exports.static.build = function () {
 };
 exports.static.clean = function () {
     return del([io.static.out])
+};
+
+//Gulp multiple functions
+exports.multiple = {};
+exports.multiple.build_static = function () {
+    return gulp.src(io.multiple.in_static)
+        .pipe(debug())
+        .pipe(gulp.dest(path.join(prefix, io.multiple.out)));
+};
+exports.multiple.build_views = function () {
+    var stream = gulp.src(io.multiple.in_pug)
+        .pipe(debug())
+        .pipe(pug())
+        .pipe(gulp.dest(path.join(prefix, io.multiple.out)));
+    stream.on('end', browserSync.reload);
+    stream.on('error', err => {
+        console.log(err);
+        console.log("Error building pug");
+    });
+};
+exports.multiple.build_ts = function () {
+    var stream = gulp.src(io.multiple.in_ts)
+        .pipe(debug())
+        .pipe(sourcemaps.init())
+        .pipe(typescript(typescriptConfig))
+        //only uglifyjs if gulp is ran with '--type production'
+        .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+        .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(path.join(prefix, io.multiple.out)));
+    stream.on('end', browserSync.reload);
+
+    stream.on('error', err => {
+        console.log(err);
+        console.log("Error building MultipleTs");
+    });
+    return stream;
+};
+exports.multiple.build_js = function () {
+    let stream = gulp.src(io.multiple.in_js)
+            .pipe(debug())
+            .pipe(sourcemaps.init())
+            //only uglifyjs if gulp is ran with '--type production'
+            .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+            .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest(path.join(prefix, io.multiple.out)))
+            .on('error', err => {
+                console.log(err);
+                console.log("Error building javascript");
+            })
+        ;
+
+    stream.on('end', browserSync.reload);
 };
 
 //Gulp css functions

@@ -32,5 +32,17 @@ module.exports = {
         bundles: "sources/assets/javascript/**.esnext.js",
         root: "sources/"
     },
+    multiple: {
+        in_js: "sources/assets/multiple/**/**.js",
+        in_ts: "sources/assets/multiple/**/**.ts",
+        in_pug: "sources/assets/multiple/**/**.pug",
+        in_static: [
+            "sources/assets/multiple/**/**.**",
+            "!sources/assets/multiple/**/**.pug",
+            "!sources/assets/multiple/**/**.ts",
+            "!sources/assets/multiple/**/**.js"
+        ],
+        out: "/assets/multiple/"
+    },
     typescript: {in: "sources/assets/typescript/**/**.ts", out: "/assets/javascript/compiled"}
 };
