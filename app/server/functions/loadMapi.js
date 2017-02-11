@@ -10,7 +10,7 @@ function loadMapi(mapiArg, settings) {
                 if (myDependency.__RADIXVERSIONS.indexOf(radix.globals.version) > -1){
                     $project.mapis[myDependency.__NAME] = myDependency;
                     $project.mapisList.add(myDependency.__NAME);
-                    myDependency.load(stack, settings);
+                    myDependency.load(radix, settings);
                 } else {
                     throw "Dependency is not compatible with this app version";
                 }

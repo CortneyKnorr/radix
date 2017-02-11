@@ -51,6 +51,16 @@ function* stack_core_express() {
     app.set('views', path.join(__dirname, './views'));
     app.set('view engine', 'pug');
 
+    radix.helpers.log("Loading Radix MAPIs", 3);
+    radix.helpers.iLog();
+    let mapis = yield* hooks_mapis();
+    
+    for(let i in mapis){
+        loadMapi(i, mapis[i]);
+    };
+    
+    radix.helpers.lastLogLevel = 4;
+    radix.helpers.cLog("Radix MAPIs Loaded");
 
     radix.helpers.log("Setting up default Middleware");
     app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -97,8 +107,9 @@ function* stack_core_express() {
     //app and app dependencies
     radix.helpers.log("Setting up Radix other core Hooks").iLog();
     radix.helpers.log("Loading custom middleware", 3).iLog();
-
-    $project.middleware = hooks_middleware.map(eh => controlFlowCall(eh));
+    
+    let midlwr = yield* hooks_middleware(); 
+    $project.middleware = midlwr.map(eh => controlFlowCall(eh));
     for (let middleware of $project.middleware) {
         app.use(middleware);
         radix.helpers.log("Added [" + middleware.name + "] to app.");
@@ -114,11 +125,6 @@ function* stack_core_express() {
     }
     radix.helpers.cLog("Models added");
     radix.helpers.log("Loading Radix DAPIs", 3);
-    radix.helpers.log("Loading Radix MAPIs", 3);
-    radix.helpers.iLog();
-    yield* hooks_mapis();
-    radix.helpers.lastLogLevel = 4;
-    radix.helpers.cLog("Radix MAPIs Loaded");
 
     //Adding projects routers onto app
     radix.helpers.log("Loading app's routers", 3).iLog();
@@ -134,7 +140,7 @@ function* stack_core_express() {
         response.statusCode = 404;
         throw "404";
     });
-    let catches = $project.catches = yield * hooks_catch();
+    let catches = $project.catches = yield* hooks_catch();
     app.use(
         function (err, request, response, next) {
             request.errors = err;
