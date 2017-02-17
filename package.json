@@ -61,7 +61,7 @@
     "sha256": "^0.2.0",
     "socket.io": "^1.4.8",
     "uglify-js": "^2.6.2",
-    "winston": "^2.1.1",
+    "winston": "^2.1.1"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
