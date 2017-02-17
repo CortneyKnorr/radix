@@ -27,6 +27,7 @@ exports.init = function init() {
     //Classes
     radix.classes.RadixRouter = RadixRouter;
     radix.classes.Redirect = Redirect;
+    radix.classes.Injector = Injector;
 
     //Dapis
     radix.dapis.wizards = stack_dapis_wizards();
@@ -72,4 +73,3 @@ exports.init = function init() {
 
     stack_core_environment();
 };
-

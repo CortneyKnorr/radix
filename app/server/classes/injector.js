@@ -3,17 +3,17 @@ function Injector(){
 	this.funList = [];
 
 	this.merge = function(injector){
-		this.funList.concat(injector.funList);	
+		this.funList = this.funList.concat(injector.funList);
 		return this;
 	};
 
-	@.use = function(arg){
+	this.use = function(arg){
 		let fu = typeof arg == "function" ? arg : dyn => arg;
 		this.funList.push(fu);
 		return this;
 	}
 
-	@.add = function(child, arg){
+	this.add = function(child, arg){
 		let fu = typeof arg == "function" ? arg : dyn => ({child: arg});
 		this.funList.push(fu);
 		return this;

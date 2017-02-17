@@ -54,11 +54,11 @@ function* stack_core_express() {
     radix.helpers.log("Loading Radix MAPIs", 3);
     radix.helpers.iLog();
     let mapis = yield* hooks_mapis();
-    
+
     for(let i in mapis){
         loadMapi(i, mapis[i]);
     };
-    
+
     radix.helpers.lastLogLevel = 4;
     radix.helpers.cLog("Radix MAPIs Loaded");
 
@@ -107,8 +107,8 @@ function* stack_core_express() {
     //app and app dependencies
     radix.helpers.log("Setting up Radix other core Hooks").iLog();
     radix.helpers.log("Loading custom middleware", 3).iLog();
-    
-    let midlwr = yield* hooks_middleware(); 
+
+    let midlwr = yield* hooks_middleware();
     $project.middleware = midlwr.map(eh => controlFlowCall(eh));
     for (let middleware of $project.middleware) {
         app.use(middleware);
@@ -119,7 +119,8 @@ function* stack_core_express() {
     radix.helpers.log("Loading authentication", 3);
     yield* stack_core_authentication();
     radix.helpers.log("Adding app models", 3).iLog();
-    for (let modelName in hooks_models) {
+    let modelList = yield* hooks_models();
+    for (let modelName in modelList) {
         radix.helpers.log(`Model ${modelName} added`);
         $project.models[modelName] = hooks_models[modelName]();
     }
