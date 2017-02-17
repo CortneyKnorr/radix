@@ -30,23 +30,19 @@ exports.init = function init() {
     radix.classes.Injector = Injector;
 
     //Dapis
-    radix.dapis.wizards = stack_dapis_wizards();
-    radix.dapis.access = stack_dapis_access();
+    radix.dapis.wizards = radix_dapis_wizards();
+    radix.dapis.access = radix_dapis_access();
     radix.dapis.users = radix_dapis_users();
     radix.dapis.groups = radix_dapis_groups();
-    radix.dapis.files = stack_dapis_files();
-    radix.dapis.mailer = stack_dapis_mailer();
-    radix.dapis.useful = stack_dapis_useful();
-    radix.dapis.settings = stack_dapis_settings();
-    radix.dapis.contents = stack_dapis_contents();
-    radix.dapis.e2e = stack_dapis_e2e();
+    radix.dapis.files = radix_dapis_files();
+    radix.dapis.mailer = radix_dapis_mailer();
+    radix.dapis.useful = radix_dapis_useful();
+    radix.dapis.e2e = radix_dapis_e2e();
 
     //Models
     radix.models.users = getDependency(radix_models_users);
     radix.models.groups = getDependency(radix_models_groups);
-    radix.models.files = getDependency(stack_models_files);
-    radix.models.contents = getDependency(stack_models_contents);
-    radix.models.settings = getDependency(stack_models_settings);
+    radix.models.files = getDependency(radix_models_files);
 
     //functions
     radix.functions.controlFlowCall = controlFlowCall;
@@ -55,7 +51,8 @@ exports.init = function init() {
     radix.functions.getDependency = getDependency;
     radix.functions.updateDependency = updateDependency;
     radix.functions.isPromise = isPromise;
-    radix.functions.loadRoutersOnto = stack_loadRoutersOnto;
+    radix.functions.loadRoutersOnto = radix_loadRoutersOnto;
+    radix.functions.capture = radixCapture;
 
     //Libraries
     stack_logging(radix.helpers);

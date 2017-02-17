@@ -1,3 +1,5 @@
-var hooks_models = {
+function* hooks_models() {
+	return {
 
-};
+	}
+}

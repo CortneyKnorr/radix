@@ -1,4 +1,4 @@
-function stack_models_groups() {
+function radix_models_groups() {
     var mongoose = getDependency('mongoose');
     var Schema = mongoose.Schema;
     var id = Schema.ObjectId;

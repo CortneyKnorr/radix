@@ -1,4 +1,4 @@
-function stack_dapis_mailer() {
+function radix_dapis_mailer() {
     let thisDapi = {
         sendMails(mails) {
             return new Promise(function (resolve, reject) {

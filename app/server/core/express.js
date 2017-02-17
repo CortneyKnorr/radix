@@ -130,7 +130,7 @@ function* stack_core_express() {
     //Adding projects routers onto app
     radix.helpers.log("Loading app's routers", 3).iLog();
     $project.controllers = yield* hooks_routers();
-    stack_loadRoutersOnto(app, $project.controllers);
+    radix_loadRoutersOnto(app, $project.controllers);
     radix.helpers.cLog("App routers loaded");
 
     radix.helpers.log("", 3);

@@ -1,12 +1,12 @@
-function stack_dapis_files() {
+function radix_dapis_files() {
     var express = getDependency('express'),
         fs = getDependency('fs'),
         multer = getDependency('multer'),
         path = getDependency('path'),
         glob = getDependency("glob");
 
-    var User = getDependency(stack_models_users);
-    var File = getDependency(stack_models_files);
+    var User = getDependency(radix_models_users);
+    var File = getDependency(radix_models_files);
 
     let thisDapi = {
         fcs: {

@@ -1,4 +1,4 @@
-function stack_dapis_e2e() {
+function radix_dapis_e2e() {
     let webdriver = require('selenium-webdriver');
     let By = webdriver.By;
     let until = webdriver.until;

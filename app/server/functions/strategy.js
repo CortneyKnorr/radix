@@ -1,6 +1,7 @@
 function stack_authentication_strategy(){
-    var User = getDependency(stack_models_users);
+    var User = getDependency(radix_models_users);
     var PassportLocalStrategy = getDependency('passport-local');
+
 
     return new PassportLocalStrategy({
         usernameField: 'username',

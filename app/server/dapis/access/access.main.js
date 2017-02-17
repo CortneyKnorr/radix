@@ -1,4 +1,4 @@
-function stack_dapis_access() {
+function radix_dapis_access() {
     return {
         pehgs: {
             lock(groupsArg){

@@ -1,4 +1,4 @@
-function stack_loadRoutersOnto(parentRouter, routersAsObj) {
+function radix_loadRoutersOnto(parentRouter, routersAsObj) {
     for (var routerBase in routersAsObj) {
         let router = routersAsObj[routerBase];
         // console.log("router");

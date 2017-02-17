@@ -1,4 +1,4 @@
-function stack_models_files(){
+function radix_models_files(){
     var mongoose = getDependency('mongoose'),
         Promise = getDependency('es6-promise').Promise,
         fs = getDependency('fs'),
@@ -18,5 +18,5 @@ function stack_models_files(){
         birthdate: { type : Date, default: Date.now }
     });
 
-    return mongoose.model('stack_files', model);
+    return mongoose.model('radix_files', model);
 }

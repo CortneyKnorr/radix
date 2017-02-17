@@ -1,4 +1,4 @@
-function stack_dapis_useful() {
+function radix_dapis_useful() {
     let thisDapi = {
         ehgs: {
             quickRender(pageArg, injectorArg){
