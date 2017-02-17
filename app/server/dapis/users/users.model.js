@@ -1,5 +1,5 @@
 
-function stack_models_users(){
+function radix_models_users(){
     var mongoose = getDependency('mongoose');
     var Schema = mongoose.Schema;
     var Hash = require('password-hash');
@@ -31,5 +31,5 @@ function stack_models_users(){
         }
     };
 
-    return mongoose.model('stack_users', users);
+    return mongoose.model('radix_users', users);
 }

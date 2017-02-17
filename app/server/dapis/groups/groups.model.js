@@ -15,10 +15,10 @@ function stack_models_groups() {
         power: {type: Boolean},
 
         //arrays
-        users: [{type: id, ref: "stack_users"}],
-        admins: [{type: id, ref: "stack_users"}],
+        users: [{type: id, ref: "radix_users"}],
+        admins: [{type: id, ref: "radix_users"}],
 
     });
 
-    return mongoose.model('stack_groups', myShema);
+    return mongoose.model('radix_groups', myShema);
 }

@@ -1,6 +1,6 @@
-function stack_dapis_groups() {
-    let Groups = getDependency(stack_models_groups);
-    let Users = getDependency(stack_models_users);
+function radix_dapis_groups() {
+    let Groups = getDependency(radix_models_groups);
+    let Users = getDependency(radix_models_users);
     let thisDapi = {
         actions: {
             ENABLE: 1,

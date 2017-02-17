@@ -32,8 +32,8 @@ exports.init = function init() {
     //Dapis
     radix.dapis.wizards = stack_dapis_wizards();
     radix.dapis.access = stack_dapis_access();
-    radix.dapis.users = stack_dapis_users();
-    radix.dapis.groups = stack_dapis_groups();
+    radix.dapis.users = radix_dapis_users();
+    radix.dapis.groups = radix_dapis_groups();
     radix.dapis.files = stack_dapis_files();
     radix.dapis.mailer = stack_dapis_mailer();
     radix.dapis.useful = stack_dapis_useful();
@@ -42,8 +42,8 @@ exports.init = function init() {
     radix.dapis.e2e = stack_dapis_e2e();
 
     //Models
-    radix.models.users = getDependency(stack_models_users);
-    radix.models.groups = getDependency(stack_models_groups);
+    radix.models.users = getDependency(radix_models_users);
+    radix.models.groups = getDependency(radix_models_groups);
     radix.models.files = getDependency(stack_models_files);
     radix.models.contents = getDependency(stack_models_contents);
     radix.models.settings = getDependency(stack_models_settings);

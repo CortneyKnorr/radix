@@ -1,5 +1,5 @@
-function stack_dapis_users() {
-    var Users = getDependency(stack_models_users);
+function radix_dapis_users() {
+    var Users = getDependency(radix_models_users);
     return {
         fcs: {
             create: function*(leanInstance) {
