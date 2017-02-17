@@ -1,3 +1,3 @@
 function* hooks_strategy(){
-    return stack_authentication_strategy();
+    return radix_authentication_strategy();
 }
