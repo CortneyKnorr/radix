@@ -40,6 +40,18 @@ function* stack_core_express() {
     radix.helpers.cLog("MongoDB set up");
 
 
+    let sessionOpt = {};
+    if($project.env.data.nodeCluster){
+        sessionOpt = {
+            store: new MongoStore({mongooseConnection: mongoose.connection}),
+            secret: 'a4f8071f-c873-4447-8ee2',
+            proxy: true,
+            resave: false,
+            saveUninitialized: true,
+            cookie: {secure: radix.globals.environment.https || radix.globals.environment.http2}
+        };
+    }
+
     radix.helpers.log("Setting up Express app").iLog();
 
     radix.helpers.log("Extracting app from global");
@@ -95,14 +107,7 @@ function* stack_core_express() {
 
 
     radix.helpers.log("Setting up Express session");
-    app.use(session({
-        store: new MongoStore({mongooseConnection: mongoose.connection}),
-        secret: 'a4f8071f-c873-4447-8ee2',
-        proxy: true,
-        resave: false,
-        saveUninitialized: true,
-        cookie: {secure: radix.globals.environment.https}
-    }));
+    app.use(session(sessionOpt));
 
     //app and app dependencies
     radix.helpers.log("Setting up Radix other core Hooks").iLog();
