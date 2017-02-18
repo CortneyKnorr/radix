@@ -44,7 +44,7 @@ gulp.task('watch-multiple', ()=> {gulp.watch(watch.files.multiple, ["build-multi
 
 gulp.task('watch-front', ['watch-static', 'watch-views', 'watch-js', 'watch-ts', 'watch-css']);
 
-gulp.task('watch-all', ['watch-front', 'watch-server']);
+gulp.task('watch-all', ['watch-front', 'watch-server', 'watch-multiple']);
 gulp.task('watch-dev', ['watch-front', 'watch-server', 'watch-server-dev']);
 
 

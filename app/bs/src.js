@@ -21,7 +21,8 @@ var gulp = require('gulp'),
     jade = require('gulp-jade'),
     traceur = require('gulp-traceur'),
     io = require('./io'),
-    typescriptConfig = typescript.createProject('tsconfig.json'),
+    typescriptMainConfig = typescript.createProject('tsconfig.json'),
+    typescriptMultipleConfig = typescript.createProject('tsconfig.json'),
     postcss = require('gulp-postcss'),
     autoprefixer = require('autoprefixer'),
     exec = require('child_process').exec,
@@ -73,7 +74,7 @@ var writeToFile = function (filename, contents) {
 var readFile = function (path) {
     return new Promise(function (resolve, reject) {
         fs.readFile(path, 'utf8', function (err, data) {
-            if(err){
+            if (err) {
                 reject(err);
             } else {
                 resolve(data);
@@ -145,25 +146,25 @@ exports.server.clean = function () {
 exports.javascript = {};
 exports.javascript.build = function () {
     let stream = gulp.src(io.javascript.in)
-        .pipe(debug())
-        .pipe(sourcemaps.init())
-        //only uglifyjs if gulp is ran with '--type production'
-        .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
-        .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
-        .on('error', err => {
-            console.log(err);
-            console.log("Error building javascript");
-        })
-    ;
+            .pipe(debug())
+            .pipe(sourcemaps.init())
+            //only uglifyjs if gulp is ran with '--type production'
+            .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+            .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
+            .on('error', err => {
+                console.log(err);
+                console.log("Error building javascript");
+            })
+        ;
 
     stream.on('end', browserSync.reload);
 };
 exports.javascript.bundle = function () {
-    for(let bundle of config.bundles.js){
+    for (let bundle of config.bundles.js) {
         let files = bundle.files.map(file => path.join(io.javascript.root, file));
-        if(bundle.async){
+        if (bundle.async) {
             gulp.src(files)
                 .pipe(debug())
                 .pipe(sourcemaps.init())
@@ -206,7 +207,7 @@ exports.typescript.build = function () {
     var stream = gulp.src(io.typescript.in)
         .pipe(debug())
         .pipe(sourcemaps.init())
-        .pipe(typescript(typescriptConfig))
+        .pipe(typescript(typescriptMainConfig))
         //only uglifyjs if gulp is ran with '--type production'
         .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
         .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
@@ -257,7 +258,7 @@ exports.multiple.build_ts = function () {
     var stream = gulp.src(io.multiple.in_ts)
         .pipe(debug())
         .pipe(sourcemaps.init())
-        .pipe(typescript(typescriptConfig))
+        .pipe(typescript(typescriptMultipleConfig))
         //only uglifyjs if gulp is ran with '--type production'
         .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
         .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
@@ -295,38 +296,44 @@ exports.css.build = function () {
     var processors = [
         autoprefixer(),
     ];
-    var stream = gulp.src(io.stylesheets.in)
-        .pipe(debug())
-        .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
-        .pipe(sass())
-        .on('error', err => {
-            console.log(err);
-            console.log("Error building css");
-        })
-        .pipe(postcss(processors))
-        .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
-        .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
-        .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)));
+    let streams = [];
+    streams.push(new Promise((res, rej) => {
+            gulp.src(io.stylesheets.in)
+                .on('error', rej)
+                .on('end', res)
+                .pipe(debug())
+                .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
+                .pipe(sass())
+                .pipe(postcss(processors))
+                .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
+                .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
+                .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)))
+        }
+    ));
 
-    for(let bundle of config.bundles.css) {
+    for (let bundle of config.bundles.css) {
         let files = bundle.files.map(file => path.join(io.stylesheets.root, file));
-        gulp.src(files)
-            .pipe(debug())
-            .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
-            .pipe(bundle.lang == "sass" ? sass() : gutil.noop())
-            .pipe(concat(bundle.output))
-            .pipe(postcss(processors))
-            .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
-            .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
-            .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)))
-            .on('error', err => {
-            console.log(err);
-            console.log("Error building css");
-        });
+
+        streams.push(new Promise((res, rej) => {
+            gulp.src(files)
+                .on('error', rej)
+                .on('end', res)
+                .pipe(debug())
+                .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
+                .pipe(sass())
+                .pipe(concat(bundle.output))
+                .pipe(postcss(processors))
+                .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
+                .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
+                .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)))
+            ;
+        }));
     }
 
-    stream.on('end', browserSync.reload);
-    stream.on('error', err => {
+    Promise.all(streams).then(_ => {
+        console.log("All css built");
+        browserSync.reload()
+    }).catch(err => {
         console.log(err);
         console.log("Error building css");
     });
@@ -404,9 +411,9 @@ exports.stash = function () {
 exports.reset = function () {
     var myHash = false;
     var myBranch = false;
-    readFile(path.join(prefix , "/.hash"))
+    readFile(path.join(prefix, "/.hash"))
         .then(hash => {
-            if(hash){
+            if (hash) {
                 myHash = hash;
                 return git.checkoutCommit(hash)
             }
