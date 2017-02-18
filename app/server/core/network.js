@@ -5,17 +5,17 @@ function* stack_core_network(worker) {
     //Module dependencies.
     var debug = getDependency('debug')('test:app');
     var http = getDependency('http');
+    var http2 = getDependency('spdy');
     var https = getDependency('https');
     var fs = getDependency('fs');
     var express = getDependency('express');
+    var path = getDependency("path");
 
     radix.globals.expressApp = express();
-    var port;
-    //Create HTTP app.
-    if (__env__.https) {
-        let path = getDependency("path");
-        port = __env__.httpsPort;
-        radix.globals.expressApp.set('port', port);
+    var port = __env__.port;
+    radix.globals.expressApp.set('port', port);
+
+    if(__env__.http2){
 
         var privateKey = fs.readFileSync(path.join("./config", __env__.privateKeyPath), "utf8");
         var certificate = fs.readFileSync(path.join("./config", __env__.certificatePath), "utf8");
@@ -30,12 +30,29 @@ function* stack_core_network(worker) {
             res.redirect('https://' + __env__.domain + ":" + port + req.url)
         });
 
-        radix.globals.redirectServer = redirectServer.listen(__env__.httpPort);
+        radix.globals.redirectServer = redirectServer.listen(__env__.rport);
+
+        radix.globals.server = http2.createServer(credentials, radix.globals.expressApp);
+
+    } else if (__env__.https) {
+
+        var privateKey = fs.readFileSync(path.join("./config", __env__.privateKeyPath), "utf8");
+        var certificate = fs.readFileSync(path.join("./config", __env__.certificatePath), "utf8");
+        var ca = [];
+        for (var caPath of __env__.caPaths) {
+            ca.push(fs.readFileSync(path.join("./config", caPath), "utf8"));
+        }
+        var credentials = {key: privateKey, cert: certificate, secure: true, ca: ca};
+
+        var redirectServer = express();
+        redirectServer.get('*', function (req, res) {
+            res.redirect('https://' + __env__.domain + ":" + port + req.url)
+        });
+
+        radix.globals.redirectServer = redirectServer.listen(__env__.rport);
 
         radix.globals.server = https.createServer(credentials, radix.globals.expressApp);
     } else {
-        port = __env__.httpPort;
-        radix.globals.expressApp.set('port', port);
         radix.globals.server = http.createServer(radix.globals.expressApp);
     }
 
