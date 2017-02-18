@@ -14,7 +14,7 @@ radix.globals.expressApp = {};
 radix.globals.redirectServer = {};
 radix.globals.environment = {};
 radix.globals.mongoose = {};
-radix.globals.version = "2.0.0@beta";
+radix.globals.version = "2.0.0-beta.2";
 
 radix.dapis = {};
 radix.models = {};
