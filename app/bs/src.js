@@ -17,7 +17,7 @@ var gulp = require('gulp'),
     nodemon = require('gulp-nodemon'),
     typescript = require('gulp-typescript'),
     pug = require('gulp-pug'),
-    fullconfig = require('../../config/buildSystem.json'),
+    bundling = require('../../config/bundling.json'),
     jade = require('gulp-jade'),
     traceur = require('gulp-traceur'),
     io = require('./io'),
@@ -29,7 +29,13 @@ var gulp = require('gulp'),
     cssnano = require('cssnano');
 
 let ENV = (gutil.env.type || 'development');
-let config = fullconfig[ENV] ? fullconfig[ENV] : fullconfig.default;
+let bundles = bundling[ENV] ? bundling[ENV] : bundling.default || {};
+if(bundling.global){
+    bundles.js = bundles.js.concat(bundling.global.js || []);
+    bundles.css = bundles.css.concat(bundling.global.css || []);
+}
+
+console.log(bundles);
 
 let prefix = ".output/" + ENV;
 
@@ -162,7 +168,7 @@ exports.javascript.build = function () {
     stream.on('end', browserSync.reload);
 };
 exports.javascript.bundle = function () {
-    for (let bundle of config.bundles.js) {
+    for (let bundle of (bundles.js || [])) {
         let files = bundle.files.map(file => path.join(io.javascript.root, file));
         if (bundle.async) {
             gulp.src(files)
@@ -311,7 +317,7 @@ exports.css.build = function () {
         }
     ));
 
-    for (let bundle of config.bundles.css) {
+    for (let bundle of (bundles.css || [])) {
         let files = bundle.files.map(file => path.join(io.stylesheets.root, file));
 
         streams.push(new Promise((res, rej) => {

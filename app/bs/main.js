@@ -11,20 +11,6 @@ var gulp = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
     rename = require("gulp-rename");
 
-var minifyCss = require('gulp-cssnano'),
-    del = require('del'),
-    browserSync = require('browser-sync'),
-    nodemon = require('gulp-nodemon'),
-    typescript = require('gulp-typescript'),
-    config = require('../../config/buildSystem.json'),
-    jade = require('gulp-jade'),
-    traceur = require('gulp-traceur'),
-    io = require('./io'),
-    typescriptConfig = typescript.createProject('tsconfig.json'),
-    postcss = require('gulp-postcss'),
-    autoprefixer = require('autoprefixer'),
-    cssnano = require('cssnano');
-
 var task;
 
 for(task in tasks){
