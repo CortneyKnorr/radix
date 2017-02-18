@@ -141,6 +141,7 @@ exports.server.build = function () {
         .pipe(gulp.dest(path.join(prefix, io.server.out)))
         .on('error', err => {
             console.log(err);
+            gutil.beep();
             console.log("Error building app");
         });
 };
@@ -161,6 +162,7 @@ exports.javascript.build = function () {
             .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
             .on('error', err => {
                 console.log(err);
+                gutil.beep();
                 console.log("Error building javascript");
             })
         ;
@@ -186,6 +188,7 @@ exports.javascript.bundle = function () {
                 .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
                 .on('error', err => {
                     console.log(err);
+                    gutil.beep();
                     console.log("Error building javascript bundles");
                 });
         } else {
@@ -198,6 +201,7 @@ exports.javascript.bundle = function () {
                 .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
                 .on('error', err => {
                     console.log(err);
+                    gutil.beep();
                     console.log("Error building js bundles");
                 });
         }
@@ -223,6 +227,7 @@ exports.typescript.build = function () {
 
     stream.on('error', err => {
         console.log(err);
+        gutil.beep();
         console.log("Error building typescript");
     });
     return stream;
@@ -257,6 +262,7 @@ exports.multiple.build_views = function () {
     stream.on('end', browserSync.reload);
     stream.on('error', err => {
         console.log(err);
+        gutil.beep();
         console.log("Error building pug");
     });
 };
@@ -274,6 +280,7 @@ exports.multiple.build_ts = function () {
 
     stream.on('error', err => {
         console.log(err);
+        gutil.beep();
         console.log("Error building MultipleTs");
     });
     return stream;
@@ -289,6 +296,7 @@ exports.multiple.build_js = function () {
             .pipe(gulp.dest(path.join(prefix, io.multiple.out)))
             .on('error', err => {
                 console.log(err);
+                gutil.beep();
                 console.log("Error building javascript");
             })
         ;
@@ -341,6 +349,7 @@ exports.css.build = function () {
         browserSync.reload()
     }).catch(err => {
         console.log(err);
+        gutil.beep();
         console.log("Error building css");
     });
 };
@@ -357,6 +366,7 @@ exports.views.build = function () {
     stream.on('end', browserSync.reload);
     stream.on('error', err => {
         console.log(err);
+        gutil.beep();
         console.log("Error building pug");
     });
 };
