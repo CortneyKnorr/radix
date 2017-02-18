@@ -19,18 +19,23 @@ function* stack_core_network(worker) {
 
         var privateKey = fs.readFileSync(path.join("./config", __env__.privateKeyPath), "utf8");
         var certificate = fs.readFileSync(path.join("./config", __env__.certificatePath), "utf8");
-        var ca = [];
-        for (var caPath of __env__.caPaths) {
-            ca.push(fs.readFileSync(path.join("./config", caPath), "utf8"));
+        var ca = __env__.caPaths.map(caPath => fs.readFileSync(path.join("./config", caPath), "utf8"));
+        var credentials = {
+            key: privateKey,
+            cert: certificate,
+            secure: true,
+            ca: ca
+        };
+
+        if(__env__.rport){
+            var redirectServer = express();
+            redirectServer.get('*', function (req, res) {
+                res.redirect('https://' + __env__.domain + ":" + port + req.url)
+            });
+            radix.globals.redirectServer = redirectServer.listen(__env__.rport);
+        } else {
+            radix.globals.redirectServer = __env__.rport;
         }
-        var credentials = {key: privateKey, cert: certificate, secure: true, ca: ca};
-
-        var redirectServer = express();
-        redirectServer.get('*', function (req, res) {
-            res.redirect('https://' + __env__.domain + ":" + port + req.url)
-        });
-
-        radix.globals.redirectServer = redirectServer.listen(__env__.rport);
 
         radix.globals.server = http2.createServer(credentials, radix.globals.expressApp);
 
@@ -38,20 +43,26 @@ function* stack_core_network(worker) {
 
         var privateKey = fs.readFileSync(path.join("./config", __env__.privateKeyPath), "utf8");
         var certificate = fs.readFileSync(path.join("./config", __env__.certificatePath), "utf8");
-        var ca = [];
-        for (var caPath of __env__.caPaths) {
-            ca.push(fs.readFileSync(path.join("./config", caPath), "utf8"));
+        var ca = __env__.caPaths.map(caPath => fs.readFileSync(path.join("./config", caPath), "utf8"));
+        var credentials = {
+            key: privateKey,
+            cert: certificate,
+            secure: true,
+            ca: ca
+        };
+
+        if(__env__.rport){
+            var redirectServer = express();
+            redirectServer.get('*', function (req, res) {
+                res.redirect('https://' + __env__.domain + ":" + port + req.url)
+            });
+            radix.globals.redirectServer = redirectServer.listen(__env__.rport);
+        } else {
+            radix.globals.redirectServer = __env__.rport;
         }
-        var credentials = {key: privateKey, cert: certificate, secure: true, ca: ca};
-
-        var redirectServer = express();
-        redirectServer.get('*', function (req, res) {
-            res.redirect('https://' + __env__.domain + ":" + port + req.url)
-        });
-
-        radix.globals.redirectServer = redirectServer.listen(__env__.rport);
 
         radix.globals.server = https.createServer(credentials, radix.globals.expressApp);
+
     } else {
         radix.globals.server = http.createServer(radix.globals.expressApp);
     }
