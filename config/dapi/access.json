@@ -2,24 +2,6 @@
   "description": "Configuration file for ACCESS DAPI",
   "namespace": true,
 
-  "failureRedirect": {
-    "description": "Url where user is redirected on failed authentication",
-    "namespace": true,
-    "value": "/login/failed"
-  },
-
-  "successRedirect": {
-    "description": "Url where user is redirected on successful authentication",
-    "namespace": true,
-    "value": "/login/success"
-  },
-
-  "enabled": {
-    "description": "Enables ACCESS DAPI on server",
-    "namespace": false,
-    "value": true
-  },
-
   "adminUser": {
     "description": "login information for superuser/admin.",
     "namespace": true,

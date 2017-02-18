@@ -60,11 +60,19 @@ function radix_dapis_access() {
                             next();
                         } else {
                             response.statusCode = 401;
-                            response.redirect(failureRedirect);
+                            if(failureRedirect){
+                                response.redirect(failureRedirect);
+                            } else {
+                                next(401);
+                            }
                         }
                     } else {
                         response.statusCode = 401;
-                        response.redirect(failureRedirect);
+                        if(failureRedirect){
+                            response.redirect(failureRedirect);
+                        } else {
+                            next(401);
+                        }
                     }
                 }
             },
