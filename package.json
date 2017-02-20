@@ -1,11 +1,11 @@
 {
   "name": "radix",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-rc.0",
   "description": "Base architecture for Radix based apps",
   "main": "launch.js",
   "scripts": {
     "start": "node index.js",
-    "test": "gulp"
+    "test": ""
   },
   "repository": {
     "type": "git",
