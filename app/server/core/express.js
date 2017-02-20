@@ -5,13 +5,15 @@ function* stack_core_express() {
     console.time("|-| Express init");
     radix.helpers.log("Importing dependencies", 1).iLog();
 
+    let store = $project.env.data.store == "mongo" ? 'connect-mongo' : 'connect-redis';
+
     var express = getDependency('express'),
         session = getDependency('express-session'),
         path = getDependency('path'),
         logger = getDependency('morgan'),
         cookieParser = getDependency('cookie-parser'),
         bodyParser = getDependency('body-parser'),
-        MongoStore = getDependency('connect-mongo')(session),
+        SStore = getDependency(store)(session),
         mongoose = getDependency('mongoose');
 
     radix.helpers.cLog("Dependencies imported");
@@ -38,11 +40,17 @@ function* stack_core_express() {
     mongoose.Promise = Promise;
     radix.helpers.cLog("MongoDB set up");
 
+    let sstoreSettings = {};
+    if($project.env.data.store == "mongo"){
+        sstoreSettings = {mongooseConnection: mongoose.connection};
+    } else {
+        sstoreSettings = $project.config.redis;
+    }
 
     let sessionOpt = {};
     if($project.env.data.nodeCluster){
         sessionOpt = {
-            store: new MongoStore({mongooseConnection: mongoose.connection}),
+            store: new SStore(sstoreSettings),
             secret: 'a4f8071f-c873-4447-8ee2',
             proxy: true,
             resave: false,

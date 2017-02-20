@@ -1,47 +1,71 @@
 {
+
+    "default": {
+      "description": "Fallback environment",
+      "port": 8080,
+      "http2": false,
+      "https": false,
+      "nodeCluster": true,
+      "threads": 1,
+      "domain": "localhost",
+      "bsport": 9500,
+      "rport": 8000,
+      "browser": "",
+      "store": "mongo",
+      "privateKeyPath": "./sslcert/server.key",
+      "certificatePath": "./sslcert/server.crt",
+      "caPaths": [
+      ]
+  },
+
   "tests": {
-    "description": "Environment used while programming",
+    "description": "Tests environment",
     "port": 8080,
-    "http2": true,
+    "http2": false,
+    "https": false,
     "nodeCluster": true,
     "threads": 1,
     "domain": "localhost",
     "bsport": 9500,
     "rport": 8000,
     "browser": "",
-    "https": false,
+    "store": "mongo",
     "privateKeyPath": "./sslcert/server.key",
     "certificatePath": "./sslcert/server.crt",
     "caPaths": [
     ]
   },
+
   "development": {
-    "description": "Environment used while programming",
+    "description": "Developement environment",
     "port": 8080,
-    "rport": 8000,
-    "bsport": 9500,
-    "http2": true,
+    "http2": false,
+    "https": false,
     "nodeCluster": true,
     "threads": 1,
     "domain": "localhost",
+    "bsport": 9500,
+    "rport": 8000,
     "browser": "",
-    "https": false,
+    "store": "mongo",
     "privateKeyPath": "./sslcert/server.key",
     "certificatePath": "./sslcert/server.crt",
     "caPaths": [
     ]
   },
+
   "production": {
-    "description": "Environment used while programming",
+    "description": "Production environment",
     "port": 8080,
-    "rport": 8000,
-    "bsport": 9500,
-    "http2": true,
+    "http2": false,
+    "https": false,
     "nodeCluster": true,
     "threads": 1,
     "domain": "localhost",
+    "bsport": 9500,
+    "rport": 8000,
     "browser": "",
-    "https": false,
+    "store": "mongo",
     "privateKeyPath": "./sslcert/server.key",
     "certificatePath": "./sslcert/server.crt",
     "caPaths": [

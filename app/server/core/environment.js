@@ -11,8 +11,8 @@ function stack_core_environment(){
         $project.env.data = env[node_env];
         $project.env.name = node_env;
     } else {
-        $project.env.data = env['development'];
-        $project.env.name = 'development';
+        $project.env.data = env['default'];
+        $project.env.name = 'default';
     }
 
     console.log(" |  | Data for [" + $project.env.name + "] environment fetched.");

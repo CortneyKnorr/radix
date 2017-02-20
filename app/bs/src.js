@@ -35,8 +35,6 @@ if(bundling.global){
     bundles.css = bundles.css.concat(bundling.global.css || []);
 }
 
-console.log(bundles);
-
 let prefix = ".output/" + ENV;
 
 var env = require('../../config/environments.json');

@@ -65,7 +65,8 @@ exports.init = function init() {
 
     //Project configuration
     $project.config = {
-        mongo: getDependency(require('path').join(__dirname, './config/mongo.json'))
+        mongo: getDependency(require('path').join(__dirname, './config/mongo.json')),
+        redis: getDependency(require('path').join(__dirname, './config/redis.json'))
     };
 
     stack_core_environment();
