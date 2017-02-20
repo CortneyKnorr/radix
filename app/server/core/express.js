@@ -8,7 +8,6 @@ function* stack_core_express() {
     var express = getDependency('express'),
         session = getDependency('express-session'),
         path = getDependency('path'),
-        favicon = getDependency('serve-favicon'),
         logger = getDependency('morgan'),
         cookieParser = getDependency('cookie-parser'),
         bodyParser = getDependency('body-parser'),
@@ -62,6 +61,7 @@ function* stack_core_express() {
     // view engine setup
     app.set('views', path.join(__dirname, './views'));
     app.set('view engine', 'pug');
+    app.set('view cache', true);
 
     radix.helpers.log("Loading Radix MAPIs", 3);
     radix.helpers.iLog();
@@ -75,7 +75,6 @@ function* stack_core_express() {
     radix.helpers.cLog("Radix MAPIs Loaded");
 
     radix.helpers.log("Setting up default Middleware");
-    app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
     if ($project.env.name === 'development' || $project.env.name === 'tests') {
         var prefix = radix.globals.WORKER ? (radix.globals.WORKER.id || "") : "";
         logger.format('radix', prefix + '\033[96m | ASYNC|->\033[0m :remote-addr - :remote-user [:date[clf]] \033[95m":method :url HTTP/:http-version" :status :res[content-length]\033[0m');
