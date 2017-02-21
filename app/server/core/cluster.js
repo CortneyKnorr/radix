@@ -1,4 +1,4 @@
-function* stack_core_cluster() {
+function* radix_core_cluster() {
     var cluster = require('cluster');
 
     process.on('SIGINT', function () {
@@ -94,8 +94,8 @@ function* stack_core_cluster() {
 
 // Code to run if we're in a worker process
     } else if (!$project.env.data.nodeCluster) {
-        yield* stack_core_network(false);
+        yield* radix_core_network(false);
     } else {
-        yield* stack_core_workerReceive(cluster.worker);
+        yield* radix_core_workerReceive(cluster.worker);
     }
 }

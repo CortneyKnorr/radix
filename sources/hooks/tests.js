@@ -1,5 +1,5 @@
 function* hooks_tests() {
-    const e2e = stack.dapis.e2e;
+    const e2e = radix.dapis.e2e;
     const action = e2e.cfs;
 
     let homePageBatch = new E2eFeatureBatch([

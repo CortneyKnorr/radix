@@ -1,4 +1,4 @@
-function stack_logging(helpers){
+function radix_logging(helpers){
     helpers.lastLogLevel = 0;
 
     helpers.iLog = function () {

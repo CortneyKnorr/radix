@@ -1,5 +1,5 @@
 var _receiveQueue = [];
-function* stack_core_workerReceive(worker){
+function* radix_core_workerReceive(worker){
     //noinspection JSDeprecatedSymbols
     worker.on("message", function (message) {
         if(message.cmd && typeof message.value === "boolean"){
@@ -20,5 +20,5 @@ function* stack_core_workerReceive(worker){
             }
         }
     });
-    yield* stack_core_network(worker);
+    yield* radix_core_network(worker);
 }

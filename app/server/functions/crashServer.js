@@ -1,4 +1,4 @@
-function stack_crashServer() {
+function radix_crashServer() {
     var debug = getDependency('debug')('test:app');
     var http = getDependency('http');
     var https = getDependency('https');
@@ -20,9 +20,9 @@ function stack_crashServer() {
         crashApp.set('port', $project.env.data.httpsPort);
         var crashServer = https.createServer(credentials, crashApp);
         crashServer.listen($project.env.data.httpsPort);
-        console.log((new Date()).toLocaleString() + " CATCH SERVER LAUNCHED ON PORT " + $project.env.data.httpsPort);
+        console.log((new Date()).toLocaleString() + " CATCH SERVER LAUNCHED ON PORT " + $project.env.data.rport);
     } else {
-        console.log((new Date()).toLocaleString() + " CATCH SERVER LAUNCHED ON PORT " + $project.env.data.httpPort);
-        crashApp.listen($project.env.data.httpPort);
+        console.log((new Date()).toLocaleString() + " CATCH SERVER LAUNCHED ON PORT " + $project.env.data.rport);
+        crashApp.listen($project.env.data.rport);
     }
 }

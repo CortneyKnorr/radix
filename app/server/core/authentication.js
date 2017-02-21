@@ -1,4 +1,4 @@
-function* stack_core_authentication() {
+function* radix_core_authentication() {
 
     var passport = getDependency('passport');
 

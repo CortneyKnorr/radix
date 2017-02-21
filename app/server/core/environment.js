@@ -1,4 +1,4 @@
-function stack_core_environment(){
+function radix_core_environment(){
     console.log();
     console.time('|-| Prepared');
     console.log("|-| Preparing $project environment...");
@@ -22,5 +22,5 @@ function stack_core_environment(){
     console.timeEnd('|-| Prepared');
     console.log();
 
-    stack_core_requirements();
+    radix_core_requirements();
 }

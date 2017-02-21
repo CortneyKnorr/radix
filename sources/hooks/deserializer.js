@@ -1,5 +1,5 @@
 function* hooks_deserializer(id, done) {
-    var User = stack.models.users;
+    var User = radix.models.users;
     if(id == "admin"){
         done(null, {admin : "true", id: "admin"})
     } else {

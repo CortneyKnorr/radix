@@ -1,4 +1,4 @@
-function* stack_core_network(worker) {
+function* radix_core_network(worker) {
     radix.globals.WORKER = worker;
     var __env__ = $project.env.data;
     radix.globals.environment = __env__;
@@ -67,7 +67,7 @@ function* stack_core_network(worker) {
         radix.globals.server = http.createServer(radix.globals.expressApp);
     }
 
-    yield* stack_core_express();
+    yield* radix_core_express();
 
     //Listen on provided port, on all network interfaces.
     radix.globals.server.listen(port);
@@ -107,8 +107,8 @@ function* stack_core_network(worker) {
             console.log(radix.globals.WORKER.id + " |-| Radix start hook executed");
 
             if ($project.env.name === 'tests') {
-                yield stackCapture(radix.dapis.e2e.init, "e2eInit");
-                yield stackCapture(launchTestsHook, "tests");
+                yield radixCapture(radix.dapis.e2e.init, "e2eInit");
+                yield radixCapture(launchTestsHook, "tests");
             }
         })()
 

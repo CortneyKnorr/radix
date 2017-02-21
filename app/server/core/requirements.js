@@ -1,4 +1,4 @@
-function stack_core_requirements() {
+function radix_core_requirements() {
     console.log("|-| Requirements");
     radix.helpers.iLog().log();
     console.time("|-| Requirements");
@@ -8,7 +8,7 @@ function stack_core_requirements() {
             radix.helpers.cLog("Requirements checked out");
             console.timeEnd("|-| Requirements");
             console.log();
-            controlFlowCall(stack_core_cluster)(); //Do not need to catch this because cluster manages the crashes;
+            controlFlowCall(radix_core_cluster)(); //Do not need to catch this because cluster manages the crashes;
         })
         .catch(error => {
             radix.helpers.cLog("Requirements could not be verified");

@@ -55,7 +55,7 @@ exports.init = function init() {
     radix.functions.capture = radixCapture;
 
     //Libraries
-    stack_logging(radix.helpers);
+    radix_logging(radix.helpers);
 
     //Project
     radix.project = $project;
@@ -69,5 +69,5 @@ exports.init = function init() {
         redis: getDependency(require('path').join(__dirname, './config/redis.json'))
     };
 
-    stack_core_environment();
+    radix_core_environment();
 };

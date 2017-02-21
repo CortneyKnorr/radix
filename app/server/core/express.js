@@ -1,4 +1,4 @@
-function* stack_core_express() {
+function* radix_core_express() {
     console.log();
     console.log("|-| Initializing express...");
     console.log(" | ");
@@ -130,7 +130,7 @@ function* stack_core_express() {
     radix.helpers.cLog("Middleware loaded");
     radix.globals.mongoose = mongoose;
     radix.helpers.log("Loading authentication", 3);
-    yield* stack_core_authentication();
+    yield* radix_core_authentication();
     radix.helpers.log("Adding app models", 3).iLog();
     let modelList = yield* hooks_models();
     for (let modelName in modelList) {
