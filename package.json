@@ -41,6 +41,7 @@
     "passport-local": "^1.0.0",
     "password-hash": "^1.2.2",
     "pug": "^2.0.0-beta3",
+    "spdy": "^3.4.4",
     "reflect-metadata": "0.1.9",
     "request": "^2.69.0",
     "sha256": "^0.2.0",

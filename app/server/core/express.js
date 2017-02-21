@@ -69,7 +69,7 @@ function* stack_core_express() {
     // view engine setup
     app.set('views', path.join(__dirname, './views'));
     app.set('view engine', 'pug');
-    app.set('view cache', true);
+    app.set('view cache', $project.env.data.viewCache);
 
     radix.helpers.log("Loading Radix MAPIs", 3);
     radix.helpers.iLog();
