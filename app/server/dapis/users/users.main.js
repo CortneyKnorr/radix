@@ -42,9 +42,7 @@ function radix_dapis_users() {
                 return yield matches > 0;
             },
             update: function*(userId, leanInstance) {
-                let oldUser = yield Users.findById(userId);
-                let newUser = radix.dapis.wizards.objects.update(oldUser, leanInstance);
-                return yield newUser.save();
+                return yield Users.findByIdAndUpdate(userId, leanInstance, {new: true});
             },
             remove: function*(userId) {
                 return yield Users.findByIdAndRemove(userId);

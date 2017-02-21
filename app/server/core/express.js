@@ -70,6 +70,7 @@ function* stack_core_express() {
     app.set('views', path.join(__dirname, './views'));
     app.set('view engine', 'pug');
     app.set('view cache', $project.env.data.viewCache);
+    radix.helpers.log("View cache " + ($project.env.data.viewCache ? "enabled" : "disabled"), 3);
 
     radix.helpers.log("Loading Radix MAPIs", 3);
     radix.helpers.iLog();
@@ -134,7 +135,7 @@ function* stack_core_express() {
     let modelList = yield* hooks_models();
     for (let modelName in modelList) {
         radix.helpers.log(`Model ${modelName} added`);
-        $project.models[modelName] = hooks_models[modelName]();
+        $project.models[modelName] = modelList[modelName]();
     }
     radix.helpers.cLog("Models added");
     radix.helpers.log("Loading Radix DAPIs", 3);
