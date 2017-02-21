@@ -381,7 +381,7 @@ exports.project.clean = function () {
 exports.browser_sync = function () {
     if (gutil.env.type != 'production') {
         browserSync.init(null, {
-            proxy: "http://localhost:" + (_.https ? _.httpsPort.toString() : _.httpPort.toString()),
+            proxy: "http://localhost:" + (_.port.toString()),
             files: ["public/**/*.*"],
             browser: _.browser || "",
             port: _.bsport
