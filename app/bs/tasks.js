@@ -7,11 +7,7 @@ module.exports = {
     "stash": src.stash,
     "reset": src.reset,
     'bundle-js': src.javascript.bundle,
-    'build-not-bundle-js': src.javascript.build,
-    'build-js': [
-        'bundle-js',
-        'build-not-bundle-js'
-    ],
+    'build-js': src.javascript.build,
     'build-mjs': src.multiple.build_js,
     'build-mts': src.multiple.build_ts,
     'build-mviews': src.multiple.build_views,
