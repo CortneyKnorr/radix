@@ -24,7 +24,11 @@ module.exports = {
         out: '/public/'
     },
     stylesheets: {
-        in: 'sources/assets/stylesheets/**/*.main.scss',
+        in: [
+            'sources/assets/stylesheets/**/*.scss',
+            'sources/assets/stylesheets/**/*.sass',
+            'sources/assets/stylesheets/**/*.css'
+        ],
         out: '/assets/stylesheets/',
         root: "sources/"
     },
