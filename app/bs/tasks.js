@@ -12,11 +12,13 @@ module.exports = {
     'build-mts': src.multiple.build_ts,
     'build-mviews': src.multiple.build_views,
     'build-mstatic': src.multiple.build_static,
+    'build-mcss': src.multiple.build_css,
     'build-multiple': [
         'build-mjs',
         'build-mts',
         'build-mviews',
         'build-mstatic',
+        'build-mcss'
     ],
 
     'build-serverPure': src.server.build,

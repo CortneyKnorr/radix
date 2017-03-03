@@ -46,9 +46,15 @@ module.exports = {
         in_js: "sources/assets/multiple/**/**.js",
         in_ts: "sources/assets/multiple/**/**.ts",
         in_pug: "sources/assets/multiple/**/**.pug",
+        in_css: [
+            "sources/assets/multiple/**/**.scss",
+            "sources/assets/multiple/**/**.sass"
+        ],
         in_static: [
             "sources/assets/multiple/**/**.**",
             "!sources/assets/multiple/**/**.pug",
+            "!sources/assets/multiple/**/**.scss",
+            "!sources/assets/multiple/**/**.sass",
             "!sources/assets/multiple/**/**.ts",
             "!sources/assets/multiple/**/**.js"
         ],

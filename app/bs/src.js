@@ -296,21 +296,42 @@ exports.multiple.build_ts = function () {
     });
     return stream;
 };
+exports.multiple.build_css = function () {
+    var processors = [
+        autoprefixer(),
+    ];
+    var stream = gulp.src(io.multiple.in_css)
+        .pipe(debug())
+        .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
+        .pipe(sass())
+        .pipe(postcss(processors))
+        .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
+        .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
+        .pipe(gulp.dest(path.join(prefix, io.multiple.out)))
+        .on('error', err => {
+            console.log(err);
+            gutil.beep();
+            console.log("Error building javascript");
+        })
+    ;
+
+    stream.on('end', browserSync.reload);
+};
 exports.multiple.build_js = function () {
     let stream = gulp.src(io.multiple.in_js)
-            .pipe(debug())
-            .pipe(sourcemaps.init())
-            //only uglifyjs if gulp is ran with '--type production'
-            .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
-            .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
-            .pipe(sourcemaps.write('./'))
-            .pipe(gulp.dest(path.join(prefix, io.multiple.out)))
-            .on('error', err => {
-                console.log(err);
-                gutil.beep();
-                console.log("Error building javascript");
-            })
-        ;
+        .pipe(debug())
+        .pipe(sourcemaps.init())
+        //only uglifyjs if gulp is ran with '--type production'
+        .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+        .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(path.join(prefix, io.multiple.out)))
+        .on('error', err => {
+            console.log(err);
+            gutil.beep();
+            console.log("Error building javascript");
+        })
+    ;
 
     stream.on('end', browserSync.reload);
 };
@@ -323,16 +344,16 @@ exports.css.build = function () {
     ];
     let streams = [];
     streams.push(new Promise((res, rej) => {
-            gulp.src(io.stylesheets.in)
-                .on('error', rej)
-                .on('end', res)
-                .pipe(debug())
-                .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
-                .pipe(sass())
-                .pipe(postcss(processors))
-                .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
-                .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
-                .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)))
+        gulp.src(io.stylesheets.in)
+            .on('error', rej)
+            .on('end', res)
+            .pipe(debug())
+            .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
+            .pipe(sass())
+            .pipe(postcss(processors))
+            .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
+            .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
+            .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)))
         }
     ));
 
