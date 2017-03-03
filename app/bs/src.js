@@ -30,12 +30,12 @@ var gulp = require('gulp'),
 
 let ENV = (gutil.env.type || 'development');
 let bundles = bundling[ENV] ? bundling[ENV] : bundling.default || {};
-if(bundling.global){
+if(bundling.global) {
     bundles.js = bundles.js.concat(bundling.global.js || []);
     bundles.css = bundles.css.concat(bundling.global.css || []);
 }
 
-let prefix = ".output/" + ENV;
+let prefix = "dist/" + ENV;
 
 var env = require('../../config/environments.json');
 var node_env = process.env.NODE_ENV || 'development';
@@ -111,7 +111,7 @@ var git = {
 
 exports.arch = {};
 exports.arch.server = function () {
-    mdir(".output");
+    mdir("dist");
     mdir(prefix);
     mdir(path.join(prefix, "/uploads"));
     mdir(path.join(prefix, "/suploads"));
