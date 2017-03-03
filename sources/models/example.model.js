@@ -29,13 +29,6 @@ function exampleModel(){
 				}
 			}
 		},
-		byName: function(name) {
-			return {
-				get: function* get(){
-					return yield model.findOne({name});
-	             }
-            }
-		},
 		get: function* get(page, length){
 			return yield model.find().skip(page*length).limit(length).lean();
 		}
