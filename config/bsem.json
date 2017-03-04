@@ -1,0 +1,8 @@
+{
+    "angular": {
+        "module": "bsem_angular",
+        "settings": {
+            "test": true
+        }
+    }
+}
