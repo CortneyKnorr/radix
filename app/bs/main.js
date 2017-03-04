@@ -3,19 +3,27 @@ var gulp = require('gulp'),
     tasks = require('./tasks');
     src = require('./src'),
     gutil = require('gulp-util'),
-    debug = require('gulp-debug'),
-    uglifyjs = require('gulp-uglify'),
-    concat = require('gulp-concat'),
-    sass = require('gulp-sass'),
-    watcher = require('gulp-watch'),
-    sourcemaps = require('gulp-sourcemaps'),
-    rename = require("gulp-rename");
+    bsem_config = require('../../config/bsem.json')
+;
 
 var task;
 
 for(task in tasks){
     gulp.task(task, tasks[task]);
 }
+
+//Manage modules
+let bsems = {};
+
+for(let module_name in bsem_config){
+    bsems[module_name] = require(bsem_config[module_name].module)
+                            .load(bsem_config[module_name].settings);
+}
+
+gulp.task('module', function(){
+    let args = process.argv.splice(3);
+    bsems[args[0].substr(1)][args[1].substr(1)](args.splice(2));
+})
 
 /* Watch these files for changes and run the task on update */
 gulp.task('watch-css', ()=> { gulp.watch(watch.files.stylesheets, ['build-css']); });
