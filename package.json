@@ -1,6 +1,6 @@
 {
   "name": "radix",
-  "version": "2.0.0-rc.0",
+  "version": "2.0.0",
   "description": "Base architecture for Radix based apps",
   "main": "launch.js",
   "scripts": {
@@ -36,7 +36,6 @@
     "morgan": "^1.7.0",
     "multer": "^1.1.0",
     "nodemailer": "^3.1.3",
-    "nodemon": "^1.8.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "password-hash": "^1.2.2",
@@ -45,7 +44,6 @@
     "reflect-metadata": "0.1.9",
     "request": "^2.69.0",
     "sha256": "^0.2.0",
-    "uglify-js": "^2.6.2",
     "winston": "^2.1.1"
   },
   "devDependencies": {
@@ -55,6 +53,7 @@
     "gulp-debug": "^3.1.0",
     "gulp-jade": "^1.1.0",
     "gulp-newer": "^1.1.0",
+    "uglify-js": "^2.6.2",
     "gulp-nodemon": "^2.0.6",
     "gulp-rename": "^1.2.2",
     "gulp-rollup": "^2.5.1",
@@ -72,6 +71,7 @@
     "gulp-pug": "^3.2.0",
     "gulp-watch": "^4.3.10",
     "autoprefixer": "latest",
+    "nodemon": "^1.8.1",
     "selenium-webdriver": "^3.0.1",
     "typings": "^2.1.0"
   }
