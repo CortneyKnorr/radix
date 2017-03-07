@@ -1,1 +1,0 @@
-var bs = require('./app/bs/main');

@@ -1,50 +1,87 @@
-var gulp = require('gulp'),
-    watch = require('./watch'),
-    tasks = require('./tasks');
-    src = require('./src'),
-    gutil = require('gulp-util'),
-    bsem_config = require('../../config/bsem.json')
-;
+var gulp = require('gulp');
 
-var task;
 
-for(task in tasks){
-    gulp.task(task, tasks[task]);
+exports.parse = function(arguments){
+    const def = require("./default.bsem.js");
+    const bsemsInformation = require("../../config/bsem.json");
+
+    let bsems = {def};
+    for(let bsem in bsemsInformation){
+        bsems[bsem] = require(bsemsInformation[bsem]);
+    }
+    let mod = {};
+    let chain = [];
+    for(let bsemIn in bsems){
+        let bsem = bsems[bsemIn];
+        if(bsem.before) chain.push({length:0, handler: bsem.before, args: []});
+        chain = chain.concat(
+            extract(arguments, bsem.lex)
+        );
+        if(bsem.after) chain.push({length:0, handler: bsem.after, args: []});
+    }
+    chain.forEach(link => link.handler(mod, ...link.args));
+
+    //Taks management
+    let tasks = {};
+    if(mod.settings.module && bsems[mod.settings.module]){
+        for(let taskName in bsems[mod.settings.module].tasks ){
+            tasks[taskName] = bsems[mod.settings.module].tasks[taskName];
+        }
+    } else {
+        for(let bsemIn in bsems){
+            let bsem = bsems[bsemIn];
+            for(let taskName in bsem.tasks ){
+                tasks[taskName] = bsem.tasks[taskName];
+            }
+        }
+    }
+
+    tasks.build = [];
+    tasks.watch = [];
+    tasks.serve = [];
+    for(let bsemIn in bsems){
+        let bsem = bsems[bsemIn];
+        tasks.build = tasks.build.concat(bsem.build || []);
+        tasks.watch = tasks.watch.concat(bsem.watch || []);
+        tasks.serve = tasks.serve.concat(bsem.serve || []);
+    }
+
+    let taskManagement = function(taskName){
+        if(tasks[taskName]){
+            let task = tasks[taskName];
+            if(typeof task == "function"){
+                task(mod);
+            } else {
+                if(task.tasks && task.files){
+                    gulp.watch(task.files, function(){
+                        taskManagement(task.tasks);
+                    });
+                } else {
+                    for(let dtask of task){
+                        taskManagement(dtask);
+                    }
+                }
+            }
+        } else {
+            console.log("Task "+taskName+" not found!!! Tasks available: ");
+            console.log(...Object.keys(tasks));
+        }
+    }
+
+    console.log("Start point: " + mod.task);
+    taskManagement(mod.task);
 }
 
-//Manage modules
-let bsems = {};
-
-for(let module_name in bsem_config){
-    bsems[module_name] = require(bsem_config[module_name].module)
-                            .load(bsem_config[module_name].settings);
+var extract = exports.extract = function(arguments, structure){
+    let chain = [];
+    for(let key in structure){
+        let index = arguments.indexOf(key);
+        let length = structure[key].length;
+        if(index < arguments.length - length && index > -1){
+            structure[key].args = arguments.splice(index+1, length);
+            arguments.splice(index,1);
+            chain.push(structure[key]);
+        }
+    }
+    return chain;
 }
-
-gulp.task('module', function(){
-    let args = process.argv.splice(3);
-    bsems[args[0].substr(1)][args[1].substr(1)](args.splice(2));
-})
-
-/* Watch these files for changes and run the task on update */
-gulp.task('watch-css', ()=> { gulp.watch(watch.files.stylesheets, ['build-css']); });
-gulp.task('watch-responsive', ()=> { gulp.watch(watch.files.responsive, ['arch-res-pages']); });
-gulp.task('watch-server', ()=> { gulp.watch(watch.files.server, ['build-server']); });
-gulp.task('watch-server-dev', ()=> { gulp.watch([...watch.files.server, watch.files.dev], ['build-server']); });
-gulp.task('watch-js', ()=> { gulp.watch(watch.files.javascript, ['build-js']); });
-gulp.task('watch-ts', ()=> { gulp.watch(watch.files.typescript, ['build-ts']); });
-gulp.task('watch-views', ()=> { gulp.watch(watch.files.views, ['build-views']); });
-gulp.task('watch-static', ()=> { gulp.watch(watch.files.static, ['build-static']); });
-gulp.task('watch-multiple', ()=> {gulp.watch(watch.files.multiple, ["build-multiple"]) });
-
-gulp.task('watch-front', ['watch-static', 'watch-views', 'watch-js', 'watch-ts', 'watch-css']);
-
-gulp.task('watch-all', ['watch-front', 'watch-server', 'watch-multiple']);
-gulp.task('watch-dev', ['watch-front', 'watch-server', 'watch-server-dev']);
-
-
-gulp.task('nodemon', ['watch-all'], src.nodemon);
-gulp.task('nodemon-dev', ['watch-dev'], src.nodemondev);
-gulp.task('serve', ['nodemon'], src.browser_sync);
-gulp.task('serve-dev', ['nodemon-dev'], src.browser_sync);
-
-gulp.task('prepare', ['arch-app', 'build-all']);
