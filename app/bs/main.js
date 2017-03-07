@@ -1,6 +1,5 @@
 var gulp = require('gulp');
 
-
 exports.parse = function(arguments){
     const def = require("./default.bsem.js");
     const bsemsInformation = require("../../config/bsem.json");
@@ -68,8 +67,10 @@ exports.parse = function(arguments){
         }
     }
 
-    console.log("Start point: " + mod.task);
-    taskManagement(mod.task);
+    if(mod.task){
+        console.log("Start point: " + mod.task);
+        taskManagement(mod.task);
+    }
 }
 
 var extract = exports.extract = function(arguments, structure){

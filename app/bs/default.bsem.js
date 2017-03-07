@@ -82,6 +82,175 @@ exports.lex = {
         handler: (mod, ...args) => {
             mod.task = "serve";
         }
+    },
+    called: {
+        length: 1,
+        handler: (mod, ...args) => {
+            mod.settings.name = args[0];
+        }
+    },
+    path: {
+        length: 1,
+        handler: (mod, ...args) => {
+            mod.settings.path = args[0];
+        }
+    },
+    generate: {
+        length: 1,
+        handler: (mod, ...args) => {
+            if(mod.settings.name){
+                switch (args[0]) {
+                    case "router":
+                        writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name+".gen.router.js"), `
+function ${mod.settings.name}Router(){
+    let router = new RadixRouter;
+    let plug = radix.dapis.useful.ehgs.plug;
+
+    router.onGet("/", plug("Hello world"));
+
+    return router;
+};
+                        `).then(data => console.log(`Router ${mod.settings.name} generated!`))
+                        break;
+                    case "model":
+                        writeToFile("./sources/models/" + (mod.settings.path || mod.settings.name+".gen.model.js"), `
+function ${mod.settings.name}Model(){
+    const mongoose = getDependency('mongoose');
+    const Schema = mongoose.Schema;
+    const conv = radix.dapis.wizards.standards.ehgf13Arg;
+
+    let structure = {
+        foo: {type: String, required: true},
+        bar: {type: String, required: true}
+    };
+
+    var schema = new Schema(structure);
+
+    let model = mongoose.model("${mod.settings.name}", schema);
+
+    model.fcs = {
+        create: function* create(leanInstance){
+            return yield (new model(leanInstance)).save();
+        },
+        byId: function(id) {
+            return {
+                get: function* get(){
+                    return yield model.findById(id);
+                },
+                delete: function* (){
+                    return yield model.findByIdAndRemove(id);
+                },
+                update: function* update(leanInstance){
+                    return yield model.findByIdAndUpdate(id, leanInstance, {new: true});
+                }
+            }
+        },
+        get: function* get(page, length){
+            return yield model.find().skip(page*length).limit(length).lean();
+        }
+    };
+
+    model.ehgs = {
+        create(leanInstance){
+            return function*(request, response, next){
+                return response.send(yield* model.fcs.create(
+                    conv(leanInstance, request, false)
+                ));
+            }
+        },
+        get(page, length){
+            return function*(request, response, next){
+                return response.send(yield* model.fcs.get(
+                    conv(page, request, false),
+                    conv(length, request, false)
+                ));
+            }
+        },
+        byId(id){
+            return {
+                get(){
+                    return function*(request, response, next){
+                        return response.send(yield* model.fcs.byId(
+                            conv(id, request, false)
+                        ).get());
+                    }
+                },
+                delete(){
+                    return function*(request, response, next){
+                        return yield* model.fcs.byId(
+                            conv(id, request, false)
+                        ).delete();
+                    }
+                },
+                update(leanInstance){
+                    return function*(request, response, next){
+                        return response.send(yield* model.fcs.byId(
+                            conv(id, request, false)
+                        ).update(
+                            conv(leanInstance, request, false)
+                        ));
+                    }
+                }
+            }
+        },
+    };
+
+    return model;
+}
+                        `).then(data => console.log(`Model ${mod.settings.name} generated!`))
+                        break;
+                    case "component/style":
+                        let rootPath = "./sources/assets/stylesheets/";
+                        if(mod.settings.path){
+                            rootPath = path.join(rootPath, mod.settings.path);
+                        }
+                        let basePath = path.join(rootPath, mod.settings.name);
+                        mdir(basePath);
+                        Promise.all([
+                            writeToFile(path.join(basePath, "_desktop.scss"), ""),
+                            writeToFile(path.join(basePath, "_global.scss"), ""),
+                            writeToFile(path.join(basePath, "_mobile.scss"), ""),
+                            writeToFile(path.join(basePath, "_tablet.scss"), ""),
+                            writeToFile(path.join(basePath, "_wide.scss"), ""),
+                            writeToFile(path.join(basePath, mod.settings.name + ".scss"), `
+@import "_global";
+
+/* Extra Small Devices, Phones */
+@media only screen and (max-width : 480px) {
+  @import "_mobile";
+}
+
+
+/* Small Devices, Tablets */
+@media only screen and (max-width : 768px) and (min-width: 481px) {
+  @import "_tablet";
+}
+
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width : 1024px) and (min-width: 769px)  {
+  @import "_desktop";
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width: 1025px)  {
+  @import "_wide";
+}
+
+                            `)
+                        ]).then(_ => {
+                            console.log("Component generated");
+                        }).catch(error => {
+                            console.log(error);
+                        });
+                        break;
+                    default:
+                        console.log("Can not generate this kind of ressource")
+                }
+            } else {
+                console.log("No name specified");
+            }
+        }
     }
 }
 
