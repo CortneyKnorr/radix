@@ -47,6 +47,12 @@ exports.lex = {
             mod.settings.spec = args[0];
         }
     },
+    language: {
+        length: 1,
+        handler: (mod, ...args) => {
+            mod.settings.language = args[0];
+        }
+    },
     build: {
         length: 0,
         handler: (mod, ...args) => {
@@ -201,19 +207,31 @@ function ${mod.settings.name}Model(){
                         break;
                     case "component/style":
                         let rootPath = "./sources/assets/stylesheets/";
-                        if(mod.settings.path){
-                            rootPath = path.join(rootPath, mod.settings.path);
+                        if(mod.settings.language != "scss" && mod.settings.language != "sass"){
+                            console.log("Component does not support this language");
+                            break;
                         }
-                        let basePath = path.join(rootPath, mod.settings.name);
-                        mdir(basePath);
-                        Promise.all([
-                            writeToFile(path.join(basePath, "_desktop.scss"), ""),
-                            writeToFile(path.join(basePath, "_global.scss"), ""),
-                            writeToFile(path.join(basePath, "_mobile.scss"), ""),
-                            writeToFile(path.join(basePath, "_tablet.scss"), ""),
-                            writeToFile(path.join(basePath, "_wide.scss"), ""),
-                            writeToFile(path.join(basePath, mod.settings.name + ".scss"), `
-@import "_global";
+                        let sassMod = `@import _global
+/* Extra Small Devices, Phones */
+@media only screen and (max-width : 480px)
+  @import _mobile
+
+
+
+/* Small Devices, Tablets */
+@media only screen and (max-width : 768px) and (min-width: 481px)
+  @import _tablet
+
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width : 1024px) and (min-width: 769px)
+  @import _desktop
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width: 1025px)
+  @import _wide
+`;
+                        let scssMod = `@import "_global";
 
 /* Extra Small Devices, Phones */
 @media only screen and (max-width : 480px) {
@@ -235,9 +253,20 @@ function ${mod.settings.name}Model(){
 /* Large Devices, Wide Screens */
 @media only screen and (min-width: 1025px)  {
   @import "_wide";
-}
-
-                            `)
+}`;
+                        if(mod.settings.path){
+                            rootPath = path.join(rootPath, mod.settings.path);
+                        }
+                        let basePath = path.join(rootPath, mod.settings.name);
+                        mdir(basePath);
+                        let extension = mod.settings.language || "scss";
+                        Promise.all([
+                            writeToFile(path.join(basePath, "_desktop." + extension), ""),
+                            writeToFile(path.join(basePath, "_global." + extension), ""),
+                            writeToFile(path.join(basePath, "_mobile." + extension), ""),
+                            writeToFile(path.join(basePath, "_tablet." + extension), ""),
+                            writeToFile(path.join(basePath, "_wide." + extension), ""),
+                            writeToFile(path.join(basePath, "main."+extension), (mod.settings.language == "sass" ? sassMod : scssMod))
                         ]).then(_ => {
                             console.log("Component generated");
                         }).catch(error => {
