@@ -69,6 +69,7 @@ function* radix_core_express() {
     // view engine setup
     app.set('views', path.join(__dirname, './views'));
     app.set('view engine', 'pug');
+    app.engine('html', getDependency('ejs').renderFile);
     app.set('view cache', $project.env.data.viewCache);
     radix.helpers.log("View cache " + ($project.env.data.viewCache ? "enabled" : "disabled"), 3);
 

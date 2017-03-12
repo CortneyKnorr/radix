@@ -29,6 +29,7 @@
     "connect-redis": "^3.1.0",
     "cookie-parser": "^1.4.1",
     "debug": "^2.2.0",
+    "ejs": "^2.5.6",
     "express": "^5.0.0-alpha.2",
     "express-session": "^1.14.0",
     "http2": "^3.3.6",
@@ -40,10 +41,10 @@
     "passport-local": "^1.0.0",
     "password-hash": "^1.2.2",
     "pug": "^2.0.0-beta3",
-    "spdy": "^3.4.4",
     "reflect-metadata": "0.1.9",
     "request": "^2.69.0",
     "sha256": "^0.2.0",
+    "spdy": "^3.4.4",
     "winston": "^2.1.1"
   },
   "devDependencies": {
