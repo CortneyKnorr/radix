@@ -104,7 +104,7 @@ exports.lex = {
     from: {
         length: 1,
         handler: (mod, ...args) => {
-            mod.settings.path = args[0];
+            mod.settings.source = args[0];
         }
     },
     generate: {
@@ -283,20 +283,22 @@ exports.lex = {
             } else {
                 switch (args[0]) {
                     case "crud":
-                        if(mod.settings.path){
+                        if(mod.settings.source){
                             const mongoose = require('mongoose');
                             const Schema = mongoose.Schema;
                             const basePath = "../../sources/schemas/";
 
                             let test;
                             try {
-                                test = require(path.join(basePath, mod.settings.path));
+                                test = require(path.join(basePath, mod.settings.source));
                             } catch (all){
                                 console.log("A problem occured oppening " + path.join("[PSD]/schemas/", mod.settings.path));
                                 break;
                             }
                             let object = {};
                             let populateFields = [];
+                            let identifiers = [];
+                            let mIdentifiers = [];
                             if(!test.$$name){
                                 console.log("Error no name for schema");
                                 break;
@@ -309,10 +311,16 @@ exports.lex = {
                                         case "ref":
                                             a.ref = test[i][key];
                                             a.type = Schema.ObjectId;
-                                            a.unique = true;
-                                            populateFields.push(i);
+                                            if(test[i]["populate"]){
+                                                populateFields.push({path: i, select: test[i]["populate"].join(" ")});
+                                            }
                                             break;
                                         case "identifier":
+                                            if(test[i]["unique"]){
+                                                identifiers.push(i);
+                                            } else {
+                                                mIdentifiers.push(i);
+                                            }
                                         case "populate":
                                             break;
                                         default:
@@ -320,10 +328,100 @@ exports.lex = {
                                     }
                                 }
                             }
-                            console.log(object);
-                            console.log(populateFields);
+                            let content = "";
+                            content += `function ${test.$$name}Model(){
+    const mongoose = require('mongoose');
+    const Schema = mongoose.Schema;
+
+    let structure = ${formatSchema(object)};
+
+    let schema = new Schema(structure);
+    let model = mongoose.model("${test.$$name}", schema);
+    let popQuery = [${populateFields.map(e => `{path: '${e.path}', select: '${e.select}'}`).join(", ")}];
+
+    model.fcs = {
+        create: function* create(leanInstance){
+            let ins = yield (new model(leanInstance)).save();
+			return yield model.populate(ins, popQuery);
+        },
+        byId: function(id) {
+            return {
+                get: function* get(){
+                    return yield model.findById(id).populate(popQuery);
+                },
+                delete: function* (){
+                    return yield model.findByIdAndRemove(id);
+                },
+                update: function* update(leanInstance){
+                    return yield model.findByIdAndUpdate(id, leanInstance, {new: true});
+                }
+            }
+        },${generateFcs(identifiers, mIdentifiers)}
+        get: function* get(page, length){
+            return yield model.find().skip(page*length).limit(length).lean();
+        }
+    };
+
+    model.ehgs = {
+        create(leanInstance){
+            return function*(request, response, next){
+                return response.send(yield* model.fcs.create(
+                    conv(leanInstance, request, false)
+                ));
+            }
+        },
+        byId(id){
+            return {
+                get(){
+                    return function*(request, response, next){
+                        return response.send(yield* model.fcs.byId(
+                            conv(id, request, false)
+                        ).get());
+                    }
+                },
+                delete(){
+                    return function*(request, response, next){
+                        return yield* model.fcs.byId(
+                            conv(id, request, false)
+                        ).delete();
+                    }
+                },
+                update(leanInstance){
+                    return function*(request, response, next){
+                        return response.send(yield* model.fcs.byId(
+                            conv(id, request, false)
+                        ).update(
+                            conv(leanInstance, request, false)
+                        ));
+                    }
+                }
+            }
+        },${generateEhgs(identifiers, mIdentifiers)}
+        get(page, length){
+            return function*(request, response, next){
+                return response.send(yield* model.fcs.get(
+                    conv(page, request, false),
+                    conv(length, request, false)
+                ));
+            }
+        }
+    };
+
+    return model;
+}`;
+                            let file = path.join("./sources/models/", mod.settings.path || (test.$$name + ".gen.model.js"));
+                            writeToFile(file, content)
+                                .then(data => {
+                                    console.log(`${file} was generated`);
+                                    console.log(`Remember to rename file and register it in the model hook`);
+                                })
+                                .catch(error => {
+                                    console.log("Something went wrong");
+                                    console.log(error);
+                                })
+
                         } else {
-                            console.log("No path specified");
+                            console.log("No source specified");
                         }
                         break;
                     default:
@@ -854,3 +952,151 @@ exports.tasks = {
 exports.build = ['build-all'];
 exports.watch = ['watch-all'];
 exports.serve = ['serve-normal'];
+
+
+//local
+
+
+function formatSchema(object){
+    const mongoose = require('mongoose');
+    const Schema = mongoose.Schema;
+
+    let str = "{";
+    let i = 0;
+    for(let key in object){
+        i++;
+        if(i > 1) str += ",";
+        str += "\n        ";
+        str += key + ": {";
+        let j = 0;
+        for(prop in object[key]){
+            j++;
+            if(j > 1) str += ", ";
+            if(prop == "type"){
+                str += prop + ": ";
+                switch (object[key]["type"]) {
+                    case Schema.ObjectId:
+                        str += "Schema.ObjectId";
+                        break;
+                    default:
+                        str += object[key]["type"].name;
+                }
+            } else {
+                str += prop + ": '";
+                str += object[key][prop].toString();
+                str += "'";
+            }
+        }
+        str += "}"
+    }
+    str += "\n    }";
+    return str;
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function generateFcs(identifiers, mIdentifiers){
+    let str = "";
+    for(let identifier of identifiers){
+        str += `
+        by${capitalizeFirstLetter(identifier)}: function(${identifier}) {
+            return {
+                get: function* get(){
+                    return yield model.findOne({${identifier}}).populate(popQuery);
+                },
+                delete: function* (){
+                    return yield model.findOneAndRemove({${identifier}});
+                },
+                update: function* update(leanInstance){
+                    return yield model.findOneAndUpdate({${identifier}}, leanInstance, {new: true});
+                }
+            }
+        },`
+    }
+    for(let identifier of mIdentifiers){
+        str += `
+        by${capitalizeFirstLetter(identifier)}: function(${identifier}) {
+            return {
+                get: function* get(){
+                    return yield model.find({${identifier}}).populate(popQuery).lean();
+                },
+                delete: function* (){
+                    return yield model.find({${identifier}}).remove();
+                },
+                update: function* update(leanInstance){
+                    return yield model.update({${identifier}}, leanInstance, { multi: true });
+                }
+            }
+        },`
+    }
+    return str;
+}
+
+function generateEhgs(identifiers, mIdentifiers){
+    let str = "";
+    for(let identifier of identifiers){
+        let tap = capitalizeFirstLetter(identifier);
+        str += `
+        by${tap}(${identifier}){
+            return {
+                get(){
+                    return function*(request, response, next){
+                        return response.send(yield* model.fcs.by${tap}(
+                            conv(${identifier}, request, false)
+                        ).get());
+                    }
+                },
+                delete(){
+                    return function*(request, response, next){
+                        return yield* model.fcs.by${tap}(
+                            conv(${identifier}, request, false)
+                        ).delete();
+                    }
+                },
+                update(leanInstance){
+                    return function*(request, response, next){
+                        return response.send(yield* model.fcs.by${tap}(
+                            conv(${identifier}, request, false)
+                        ).update(
+                            conv(leanInstance, request, false)
+                        ));
+                    }
+                }
+            }
+        },`
+    }
+    for(let identifier of mIdentifiers){
+        let tap = capitalizeFirstLetter(identifier);
+        str += `
+        by${tap}(${identifier}){
+            return {
+                get(){
+                    return function*(request, response, next){
+                        return response.send(yield* model.fcs.by${tap}(
+                            conv(${identifier}, request, false)
+                        ).get());
+                    }
+                },
+                delete(){
+                    return function*(request, response, next){
+                        return yield* model.fcs.by${tap}(
+                            conv(${identifier}, request, false)
+                        ).delete();
+                    }
+                },
+                update(leanInstance){
+                    return function*(request, response, next){
+                        return response.send(yield* model.fcs.by${tap}(
+                            conv(${identifier}, request, false)
+                        ).update(
+                            conv(leanInstance, request, false)
+                        ));
+                    }
+                }
+            }
+        },`
+    }
+    return str;
+}
