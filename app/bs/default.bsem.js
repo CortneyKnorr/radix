@@ -292,7 +292,7 @@ exports.lex = {
                             try {
                                 test = require(path.join(basePath, mod.settings.source));
                             } catch (all){
-                                console.log("A problem occured oppening " + path.join("[PSD]/schemas/", mod.settings.path));
+                                console.log("A problem occured oppening " + path.join("[PSD]/schemas/", mod.settings.source));
                                 break;
                             }
                             let object = {};
