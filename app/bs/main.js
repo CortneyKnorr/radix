@@ -4,7 +4,7 @@ exports.parse = function(arguments){
     const def = require("./default.bsem.js");
     const bsemsInformation = require("../../config/bsem.json");
 
-    let bsems = {def};
+    let bsems = {default: def};
     for(let bsem in bsemsInformation){
         bsems[bsem] = require(bsemsInformation[bsem]);
     }

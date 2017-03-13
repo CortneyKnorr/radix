@@ -101,14 +101,19 @@ exports.lex = {
             mod.settings.path = args[0];
         }
     },
+    from: {
+        length: 1,
+        handler: (mod, ...args) => {
+            mod.settings.path = args[0];
+        }
+    },
     generate: {
         length: 1,
         handler: (mod, ...args) => {
             if(mod.settings.name){
                 switch (args[0]) {
                     case "router":
-                        writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name+".gen.router.js"), `
-function ${mod.settings.name}Router(){
+                        writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name+".gen.router.js"), `function ${mod.settings.name}Router(){
     let router = new RadixRouter;
     let plug = radix.dapis.useful.ehgs.plug;
 
@@ -119,8 +124,7 @@ function ${mod.settings.name}Router(){
                         `).then(data => console.log(`Router ${mod.settings.name} generated!`))
                         break;
                     case "model":
-                        writeToFile("./sources/models/" + (mod.settings.path || mod.settings.name+".gen.model.js"), `
-function ${mod.settings.name}Model(){
+                        writeToFile("./sources/models/" + (mod.settings.path || mod.settings.name+".gen.model.js"), `function ${mod.settings.name}Model(){
     const mongoose = getDependency('mongoose');
     const Schema = mongoose.Schema;
     const conv = radix.dapis.wizards.standards.ehgf13Arg;
@@ -277,7 +281,54 @@ function ${mod.settings.name}Model(){
                         console.log("Can not generate this kind of ressource")
                 }
             } else {
-                console.log("No name specified");
+                switch (args[0]) {
+                    case "crud":
+                        if(mod.settings.path){
+                            const mongoose = require('mongoose');
+                            const Schema = mongoose.Schema;
+                            const basePath = "../../sources/schemas/";
+
+                            let test;
+                            try {
+                                test = require(path.join(basePath, mod.settings.path));
+                            } catch (all){
+                                console.log("A problem occured oppening " + path.join("[PSD]/schemas/", mod.settings.path));
+                                break;
+                            }
+                            let object = {};
+                            let populateFields = [];
+                            if(!test.$$name){
+                                console.log("Error no name for schema");
+                                break;
+                            }
+                            for(let i in test){
+                                if(i.substr(0,2) == "$$") continue;
+                                let a = object[i] = {};
+                                for(let key in test[i]){
+                                    switch (key) {
+                                        case "ref":
+                                            a.ref = test[i][key];
+                                            a.type = Schema.ObjectId;
+                                            a.unique = true;
+                                            populateFields.push(i);
+                                            break;
+                                        case "identifier":
+                                        case "populate":
+                                            break;
+                                        default:
+                                            a[key] = test[i][key];
+                                    }
+                                }
+                            }
+                            console.log(object);
+                            console.log(populateFields);
+                        } else {
+                            console.log("No path specified");
+                        }
+                        break;
+                    default:
+                        console.log("Can not generate this kind of ressource")
+                }
             }
         }
     }
