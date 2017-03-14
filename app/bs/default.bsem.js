@@ -328,6 +328,8 @@ exports.lex = {
                                     }
                                 }
                             }
+                            let file = path.join("./sources/models/", mod.settings.path || (test.$$name + ".gen.model.js"));
+                            let file2 = path.join("./sources/routers/", mod.settings.path || (test.$$name + ".gen.router.js"));
                             let content = "";
                             content += `function ${test.$$name}Model(){
     const mongoose = require('mongoose');
@@ -409,11 +411,51 @@ exports.lex = {
 
     return model;
 }`;
-                            let file = path.join("./sources/models/", mod.settings.path || (test.$$name + ".gen.model.js"));
                             writeToFile(file, content)
                                 .then(data => {
                                     console.log(`${file} was generated`);
                                     console.log(`Remember to rename file and register it in the model hook`);
+
+                                    let content2 = "";
+                                    content2 += `function ${test.$$name}Router(){
+    let router = new RadixRouter;
+
+//====> Change following line depending on how you registered the model
+    let handlers = $project.models.${test.$$name}.ehgs;
+    let parseJSON = radix.dapis.useful.pehgs.parseJson;
+    let limit = radix.dapis.access.pehgs.restrictTo;
+
+
+    let bodyInjector    = request => request.body;
+    let idInjector      = request => request.params.identifier;
+
+    router.onRoute("/")
+        .onPost(
+            limit(2),
+            parseJSON(),
+            handlers.create(bodyInjector)
+        )
+    ;
+
+    router.onGet("/byPage/:page", handlers.get(r => r.params.page, 50));
+
+    router.onRoute("/byId/:identifier")
+        .onAll(limit(2))
+        .onGet(handlers.byId(idInjector).get())
+        .onPut(parseJSON(), handlers.byId(idInjector).update(bodyInjector))
+        .onDelete(handlers.byId(idInjector).delete())
+    ;
+    ${generateRoutes(identifiers, mIdentifiers)}
+
+    return router;
+}
+`
+                                    return writeToFile(file2, content2);
+                                })
+                                .then(_ => {
+                                    console.log();
+                                    console.log(`${file2} was generated`);
+                                    console.log(`Remember to rename file and register it in the router hook`);
                                 })
                                 .catch(error => {
                                     console.log("Something went wrong");
@@ -433,7 +475,7 @@ exports.lex = {
 }
 
 exports.after = (mod, ...args) => {
-    var node_env = mod.settings.environment || "development";
+    var node_env = mod.settings.environment = mod.settings.environment || "development";
     mod.prefix = "dist/" + node_env;
     mod.environment = env[node_env];
 };
@@ -596,8 +638,8 @@ exports.tasks = {
                 .pipe(debug())
                 .pipe(sourcemaps.init())
                 //only uglifyjs if gulp is ran with '--type production'
-                .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
-                .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+                .pipe(mod.settings.environment === 'production' ? traceur() : gutil.noop())
+                .pipe(mod.settings.environment === 'production' ? uglifyjs() : gutil.noop())
                 .pipe(sourcemaps.write('./'))
                 .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
                 .on('error', rej)
@@ -768,11 +810,11 @@ exports.tasks = {
                 .on('error', rej)
                 .on('end', res)
                 .pipe(debug())
-                .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
+                .pipe(mod.settings.environment  === 'production' ? gutil.noop() : sourcemaps.init())
                 .pipe(sass())
                 .pipe(postcss(processors))
-                .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
-                .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
+                .pipe(mod.settings.environment === 'production' ? minifyCss() : gutil.noop())
+                .pipe(mod.settings.environment ? gutil.noop() : sourcemaps.write('./'))
                 .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)))
             }
         ));
@@ -785,7 +827,7 @@ exports.tasks = {
                     .on('error', rej)
                     .on('end', res)
                     .pipe(debug())
-                    .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
+                    .pipe(mod.settings.environment === 'production' ? gutil.noop() : sourcemaps.init())
                     .pipe(sass())
                     .pipe(concat(bundle.output))
                     .pipe(postcss(processors))
@@ -967,12 +1009,12 @@ function formatSchema(object){
         i++;
         if(i > 1) str += ",";
         str += "\n        ";
-        str += key + ": {";
+        str += key + (object[key].array ? ": [{" : ": {");
         let j = 0;
         for(prop in object[key]){
             j++;
-            if(j > 1) str += ", ";
             if(prop == "type"){
+                if(j > 1) str += ", ";
                 str += prop + ": ";
                 switch (object[key]["type"]) {
                     case Schema.ObjectId:
@@ -981,13 +1023,15 @@ function formatSchema(object){
                     default:
                         str += object[key]["type"].name;
                 }
+            } else if (prop == "array"){
             } else {
+                if(j > 1) str += ", ";
                 str += prop + ": '";
                 str += object[key][prop].toString();
                 str += "'";
             }
         }
-        str += "}"
+        str += (object[key].array ? "}]" : "}")
     }
     str += "\n    }";
     return str;
@@ -1098,5 +1142,23 @@ function generateEhgs(identifiers, mIdentifiers){
             }
         },`
     }
+    return str;
+}
+
+function generateRoutes(identifiers, mIdentifiers){
+    let str = "";
+
+    for(let identifier of identifiers.concat(mIdentifiers)){
+        let res = capitalizeFirstLetter(identifier);
+        str += `
+    router.onRoute("/by${res}/:identifier")
+        .onAll(limit(2))
+        .onGet(handlers.by${res}(idInjector).get())
+        .onPut(parseJSON(), handlers.by${res}(idInjector).update(bodyInjector))
+        .onDelete(handlers.by${res}(idInjector).delete())
+    ;
+        `
+    }
+
     return str;
 }
