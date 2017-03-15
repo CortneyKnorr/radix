@@ -112,6 +112,14 @@ exports.lex = {
         handler: (mod, ...args) => {
             if(mod.settings.name){
                 switch (args[0]) {
+                    case "schema":
+                        writeToFile("./sources/schemas/" + (mod.settings.path || mod.settings.name+".gen.schema.js"), `module.exports = {
+    $$name: "${mod.settings.name}",
+    foo: {type: String, required: true, identifier: true},
+    bar: {type: String},
+    ano: {ref: "${mod.settings.name}", identifier: true, populate: []}
+}`).then(data => console.log(`Schema ${mod.settings.name} generated!`))
+                        break;
                     case "router":
                         writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name+".gen.router.js"), `function ${mod.settings.name}Router(){
     let router = new RadixRouter;

@@ -1,12 +1,6 @@
 {
   "default": {
-      "js": [
-        {
-          "output": "angularBundle.js",
-          "files": [],
-          "async": false
-        }
-      ],
+      "js": [],
       "css": []
   }
 }
