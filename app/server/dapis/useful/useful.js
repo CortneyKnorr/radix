@@ -23,8 +23,8 @@ function radix_dapis_useful() {
                         try {
                             request[array][index] = JSON.parse(request[array][index])
                         } catch (e) {
-                            response.statusCode = 500;
-                            throw e;
+                            next(500);
+                            return -1;
                         }
                     }
                     next();

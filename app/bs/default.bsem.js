@@ -334,6 +334,7 @@ exports.lex = {
                             content += `function ${test.$$name}Model(){
     const mongoose = require('mongoose');
     const Schema = mongoose.Schema;
+    const conv = radix.dapis.wizards.standards.ehgf13Arg;
 
     let structure = ${formatSchema(object)};
 
@@ -1026,9 +1027,25 @@ function formatSchema(object){
             } else if (prop == "array"){
             } else {
                 if(j > 1) str += ", ";
-                str += prop + ": '";
-                str += object[key][prop].toString();
-                str += "'";
+                str += prop + ": ";
+                if(typeof object[key][prop] == "function"){
+                    let strf = object[key][prop];
+                    str += strf.toString();
+                } else {
+                    switch (prop) {
+                        case "get":
+                        case "set":
+                        case "default":
+                        case "validate":
+                            str += object[key][prop].toString();
+                            break;
+                        default:
+                            str += "'";
+                            str += object[key][prop].toString();
+                            str += "'";
+
+                    }
+                }
             }
         }
         str += (object[key].array ? "}]" : "}")
