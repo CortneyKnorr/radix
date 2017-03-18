@@ -5,7 +5,7 @@ function radix_dapis_useful() {
                 return function*(request, response, next) {
                     let page = radix.dapis.wizards.standards.ehgf13Arg(pageArg, request, false);
                     let injector = radix.dapis.wizards.standards.ehgf13Arg(injectorArg, request, r => false);
-                    response.render(page, {user: request.user || false, page: page, data: injector});
+                    response.render(page, {user: request.user || false, page: page, environment: $project.env, data: injector});
                 }
             },
             plug(messageArg){
