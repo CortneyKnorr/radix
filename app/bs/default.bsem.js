@@ -121,6 +121,7 @@ exports.lex = {
 }`).then(data => console.log(`Schema ${mod.settings.name} generated!`))
                         break;
                     case "router":
+                    case "router/normal":
                         writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name+".gen.router.js"), `function ${mod.settings.name}Router(){
     let router = new RadixRouter;
     let plug = radix.dapis.useful.ehgs.plug;
@@ -130,6 +131,67 @@ exports.lex = {
     return router;
 };
                         `).then(data => console.log(`Router ${mod.settings.name} generated!`))
+                        break;
+                    case "router/users":
+                        writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name+".gen.router.js"), `function ${mod.settings.name}Router(){
+    let router = new RadixRouter;
+
+    //some useful functions
+    let parseJson = radix.dapis.useful.pehgs.parseJson;
+    let redirect = radix.dapis.useful.pehgs.quickRedirect;
+    let ternary = radix.dapis.useful.pehgs.ternary;
+    let plug = radix.dapis.useful.ehgs.plug;
+
+    //users dependencies
+    let restrictTo = radix.dapis.access.pehgs.restrictTo;
+    let login = radix.dapis.access.pehgs.login;
+    let logout = radix.dapis.access.pehgs.logout;
+    let handlers = radix.dapis.users.ehgs;
+
+    //Reusable extractors for dynamic args
+    let bodyExtractor = r => r.body;
+    let idExtractor = r => r.params.id;
+
+    router.onPost("/", handlers.create(r => {
+        return {
+            username: r.body.username,
+            password: r.body.password,
+            rights: 5
+        }
+    }));
+
+    //Routes
+    router.onRoute("/me")
+        .onGet(plug(r => r.user || {}))
+        .onPut(
+             restrictTo(5),
+             parseJson(),
+             handlers.update(r => r.user._id, bodyExtractor)
+        )
+    ;
+
+    router.onRoute("/access")
+        .onPost(login("./success", "/"))
+        .onGet(logout(), redirect("/"))
+    ;
+
+    router.onAll("/success",
+        // if user is admin redirect to /admin else redirect to /
+        ternary(r => r.user.rights > 3, redirect("/admin"), redirect("/"))
+    );
+
+    router.onGet("/pages/:page", handlers.getPaged(r => r.params.page, 20));
+
+    router.onRoute("/byId/:id")
+        .onAll(restrictTo(2)) //restrict to admins
+    	.onGet(handlers.get(idExtractor))
+    	.onPut(handlers.update(idExtractor, bodyExtractor))
+    	.onDelete(handlers.remove(idExtractor));
+    ;
+
+    return router;
+};
+                        `).then(data => console.log(`Router ${mod.settings.name} managing users and access generated!`))
                         break;
                     case "model":
                         writeToFile("./sources/models/" + (mod.settings.path || mod.settings.name+".gen.model.js"), `function ${mod.settings.name}Model(){
@@ -765,7 +827,7 @@ exports.tasks = {
             var stream = gulp.src(io.multiple.in_css)
                 .pipe(debug())
                 .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
-                .pipe(sass())
+                .pipe(sass().on('error', sass.logError))
                 .pipe(postcss(processors))
                 .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
                 .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))

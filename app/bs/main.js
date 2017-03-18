@@ -90,7 +90,15 @@ exports.parse = function(arguments){
 
     if(mod.task){
         console.log("Start point: " + mod.task);
-        taskManagement(mod.task);
+        let upper = function(){
+            try {
+                taskManagement(mod.task);
+            } catch(e) {
+                console.log(e);
+                upper();
+            }
+        };
+        upper();
     }
 }
 

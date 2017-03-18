@@ -14,7 +14,7 @@
     "password": {
       "description": "The password in sha256 form to keep it safe",
       "namespace": false,
-      "value": "7ac9dfc3c723b735264a2f9ff33e891218f917818bb4d67d2089d0a8ed1f468f"
+      "value": "37bd45d638c2d11c49c641d2e9c4f49f406caf3ee282743e0c800aa1ed68e2ee"
     }
   },
 
