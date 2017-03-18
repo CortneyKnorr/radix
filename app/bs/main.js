@@ -49,16 +49,37 @@ exports.parse = function(arguments){
         if(tasks[taskName]){
             let task = tasks[taskName];
             if(typeof task == "function"){
-                task(mod);
+                return task(mod)
+                    .then(_ => {
+                        console.log(taskName + " finished!");
+                        console.log();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        console.log("Error " + taskName);
+                    })
+                ;
             } else {
                 if(task.tasks && task.files){
-                    gulp.watch(task.files, function(){
-                        taskManagement(task.tasks);
+                    return new Promise((res, rej) => {
+                        gulp.watch(task.files, function(){
+                            taskManagement(task.tasks);
+                            res();
+                        });
                     });
-                } else {
-                    for(let dtask of task){
-                        taskManagement(dtask);
+                } else if(task.sequence && task.tasks) {
+                    let tsks = task.tasks.map(t => _ => taskManagement(t));
+                    let rec = function(prom, index){
+                        index++;
+                        if(index < tsks.length){
+                            return prom.then(_ => {
+                                rec(tsks[index](), index);
+                            }).catch(console.log);
+                        }
                     }
+                    return rec(tsks[0](), 0);
+                } else {
+                    return Promise.all(task.map(dtask => taskManagement(dtask)));
                 }
             }
         } else {

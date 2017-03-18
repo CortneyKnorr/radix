@@ -634,6 +634,7 @@ exports.tasks = {
             .pipe(gulp.dest(path.join(prefix, io.independent.out)));
         var streamC = gulp.src(io.config.in)
             .pipe(gulp.dest(path.join(prefix, io.config.out)));
+        return Promise.resolve();
     },
     'build-js': function (mod) {
         let prefix = mod.prefix;
@@ -692,117 +693,106 @@ exports.tasks = {
             }
         }
 
-        Promise.all(streams)
-            .then(_ => {
-                browserSync.reload();
-                console.log("Js and bundles built")
-            })
-            .catch(err => {
-                console.log(err);
-                gutil.beep();
-                console.log("Error building javascript");
-            })
-        ;
+        return Promise.all(streams).then(_ => browserSync.reload());
 
         // stream.on('end', browserSync.reload);
     },
     'build-mjs': function (mod) {
-        let prefix = mod.prefix;
-        let stream = gulp.src(io.multiple.in_js)
-            .pipe(debug())
-            .pipe(sourcemaps.init())
-            //only uglifyjs if gulp is ran with '--type production'
-            .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
-            .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
-            .pipe(sourcemaps.write('./'))
-            .pipe(gulp.dest(path.join(prefix, io.multiple.out)))
-            .on('error', err => {
-                console.log(err);
-                gutil.beep();
-                console.log("Error building javascript");
-            })
-        ;
+        return new Promise(function(res, rej){
+            let prefix = mod.prefix;
+            let stream = gulp.src(io.multiple.in_js)
+                .pipe(debug())
+                .pipe(sourcemaps.init())
+                //only uglifyjs if gulp is ran with '--type production'
+                .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+                .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+                .pipe(sourcemaps.write('./'))
+                .pipe(gulp.dest(path.join(prefix, io.multiple.out)))
+                .on('error', rej)
+            ;
 
-        stream.on('end', browserSync.reload);
+            stream.on('end', res);
+        }).then(_ => browserSync.reload())
     },
     'build-mts': function (mod) {
-        let prefix = mod.prefix;
-        var stream = gulp.src(io.multiple.in_ts)
-            .pipe(debug())
-            .pipe(sourcemaps.init())
-            .pipe(typescript(typescriptMultipleConfig))
-            //only uglifyjs if gulp is ran with '--type production'
-            .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
-            .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
-            .pipe(sourcemaps.write('./'))
-            .pipe(gulp.dest(path.join(prefix, io.multiple.out)));
-        stream.on('end', browserSync.reload);
+        return new Promise(function(res, rej){
+            let prefix = mod.prefix;
+            var stream = gulp.src(io.multiple.in_ts)
+                .pipe(debug())
+                .pipe(sourcemaps.init())
+                .pipe(typescript(typescriptMultipleConfig))
+                //only uglifyjs if gulp is ran with '--type production'
+                .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+                .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+                .pipe(sourcemaps.write('./'))
+                .pipe(gulp.dest(path.join(prefix, io.multiple.out)))
+                .on('error', rej)
+            ;
 
-        stream.on('error', err => {
-            console.log(err);
-            gutil.beep();
-            console.log("Error building MultipleTs");
-        });
-        return stream;
+            stream.on('end', res);
+        }).then(_ => browserSync.reload())
     },
     'build-mviews':  function (mod) {
-        let prefix = mod.prefix;
-        var stream = gulp.src(io.multiple.in_pug)
-            .pipe(debug())
-            .pipe(pug())
-            .pipe(gulp.dest(path.join(prefix, io.multiple.out)));
-        stream.on('end', browserSync.reload);
-        stream.on('error', err => {
-            console.log(err);
-            gutil.beep();
-            console.log("Error building pug");
-        });
+        return new Promise(function(res, rej){
+            let prefix = mod.prefix;
+            var stream = gulp.src(io.multiple.in_pug)
+                .pipe(debug())
+                .pipe(pug())
+                .pipe(gulp.dest(path.join(prefix, io.multiple.out)))
+                .on('error', rej)
+            ;
+
+            stream.on('end', res);
+        }).then(_ => browserSync.reload())
     },
     'build-mstatic': function (mod) {
-        let prefix = mod.prefix;
-        return gulp.src(io.multiple.in_static)
-            .pipe(debug())
-            .pipe(gulp.dest(path.join(prefix, io.multiple.out)));
+        return new Promise(function(res, rej){
+            let prefix = mod.prefix;
+            gulp.src(io.multiple.in_static)
+                .pipe(debug())
+                .pipe(gulp.dest(path.join(prefix, io.multiple.out)))
+                .on('error', rej)
+                .on('end', res)
+            ;
+        }).then(_ => browserSync.reload())
     },
     'build-mcss': function (mod) {
-        let prefix = mod.prefix;
-        var processors = [
-            autoprefixer(),
-        ];
-        var stream = gulp.src(io.multiple.in_css)
-            .pipe(debug())
-            .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
-            .pipe(sass())
-            .pipe(postcss(processors))
-            .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
-            .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
-            .pipe(gulp.dest(path.join(prefix, io.multiple.out)))
-            .on('error', err => {
-                console.log(err);
-                gutil.beep();
-                console.log("Error building javascript");
-            })
-        ;
+        return new Promise(function(res, rej){
+            let prefix = mod.prefix;
+            var processors = [
+                autoprefixer(),
+            ];
+            var stream = gulp.src(io.multiple.in_css)
+                .pipe(debug())
+                .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.init())
+                .pipe(sass())
+                .pipe(postcss(processors))
+                .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
+                .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
+                .pipe(gulp.dest(path.join(prefix, io.multiple.out)))
+                .on('error', rej)
+            ;
 
-        stream.on('end', browserSync.reload);
+            stream.on('end', res);
+        }).then(_ => browserSync.reload())
     },
     'build-serverPure': function (mod) {
-        let prefix = mod.prefix;
-        return gulp.src(io.server.in)
-            .pipe(debug())
-            .pipe(sourcemaps.init())
-            .pipe(concat('index.js'))
-            // has to be fixed
-            // .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
-            // //only uglifyjs if gulp is ran with '--type production'
-            // .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
-            .pipe(sourcemaps.write('./'))
-            .pipe(gulp.dest(path.join(prefix, io.server.out)))
-            .on('error', err => {
-                console.log(err);
-                gutil.beep();
-                console.log("Error building app");
-            });
+        return new Promise(function(res, rej){
+            let prefix = mod.prefix;
+            return gulp.src(io.server.in)
+                .pipe(debug())
+                .pipe(sourcemaps.init())
+                .pipe(concat('index.js'))
+                // has to be fixed
+                // .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+                // //only uglifyjs if gulp is ran with '--type production'
+                // .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+                .pipe(sourcemaps.write('./'))
+                .pipe(gulp.dest(path.join(prefix, io.server.out)))
+                .on('error', rej)
+                .on('end', res)
+            ;
+        });
     },
     'build-css': function (mod) {
         let prefix = mod.prefix;
@@ -816,8 +806,6 @@ exports.tasks = {
         let streams = [];
         streams.push(new Promise((res, rej) => {
             gulp.src(io.stylesheets.in)
-                .on('error', rej)
-                .on('end', res)
                 .pipe(debug())
                 .pipe(mod.settings.environment  === 'production' ? gutil.noop() : sourcemaps.init())
                 .pipe(sass())
@@ -825,6 +813,8 @@ exports.tasks = {
                 .pipe(mod.settings.environment === 'production' ? minifyCss() : gutil.noop())
                 .pipe(mod.settings.environment ? gutil.noop() : sourcemaps.write('./'))
                 .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)))
+                .on('error', rej)
+                .on('end', res)
             }
         ));
 
@@ -833,8 +823,6 @@ exports.tasks = {
 
             streams.push(new Promise((res, rej) => {
                 gulp.src(files)
-                    .on('error', rej)
-                    .on('end', res)
                     .pipe(debug())
                     .pipe(mod.settings.environment === 'production' ? gutil.noop() : sourcemaps.init())
                     .pipe(sass())
@@ -843,58 +831,58 @@ exports.tasks = {
                     .pipe(gutil.env.type === 'production' ? minifyCss() : gutil.noop())
                     .pipe(gutil.env.type === 'production' ? gutil.noop() : sourcemaps.write('./'))
                     .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)))
+                    .on('error', rej)
+                    .on('end', res)
                 ;
             }));
         }
 
-        Promise.all(streams).then(_ => {
-            console.log("All css built");
+        return Promise.all(streams).then(_ => {
             setTimeout(function(){
                 browserSync.reload();
             }, 500);
-        }).catch(err => {
-            console.log(err);
-            gutil.beep();
-            console.log("Error building css");
         });
     },
     'build-ts': function (mod) {
-        let prefix = mod.prefix;
-        var stream = gulp.src(io.typescript.in)
-            .pipe(debug())
-            .pipe(sourcemaps.init())
-            .pipe(typescript(typescriptMainConfig))
-            //only uglifyjs if gulp is ran with '--type production'
-            .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
-            .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
-            .pipe(sourcemaps.write('./'))
-            .pipe(gulp.dest(path.join(prefix, io.typescript.out)));
-        stream.on('end', browserSync.reload);
+        return new Promise(function(res, rej){
+            let prefix = mod.prefix;
+            var stream = gulp.src(io.typescript.in)
+                .pipe(debug())
+                .pipe(sourcemaps.init())
+                .pipe(typescript(typescriptMainConfig))
+                //only uglifyjs if gulp is ran with '--type production'
+                .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+                .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+                .pipe(sourcemaps.write('./'))
+                .pipe(gulp.dest(path.join(prefix, io.typescript.out)))
+                .on('error', rej)
+            ;
 
-        stream.on('error', err => {
-            console.log(err);
-            gutil.beep();
-            console.log("Error building typescript");
-        });
-        return stream;
+            stream.on('end', res);
+        }).then(_ => browserSync.reload())
     },
     'build-views': function (mod) {
-        let prefix = mod.prefix;
-        var stream = gulp.src(io.views.in)
-            .pipe(debug())
-            .pipe(gulp.dest(path.join(prefix, io.views.out)));
-        stream.on('end', browserSync.reload);
-        stream.on('error', err => {
-            console.log(err);
-            gutil.beep();
-            console.log("Error building pug");
-        });
+        return new Promise(function(res, rej){
+            let prefix = mod.prefix;
+            var stream = gulp.src(io.views.in)
+                .pipe(debug())
+                .pipe(gulp.dest(path.join(prefix, io.views.out)))
+                .on('error', rej)
+            ;
+
+            stream.on('end', res);
+        }).then(_ => browserSync.reload())
     },
     'build-static': function (mod) {
-        let prefix = mod.prefix;
-        return gulp.src(io.static.in)
-            .pipe(debug())
-            .pipe(gulp.dest(path.join(prefix, io.static.out)));
+        return new Promise(function(res, rej){
+            let prefix = mod.prefix;
+            gulp.src(io.static.in)
+                .pipe(debug())
+                .pipe(gulp.dest(path.join(prefix, io.static.out)))
+                .on('error', rej)
+                .on('end', res)
+            ;
+        }).then(_ => browserSync.reload())
     },
     'build-multiple': [
         'build-mjs',
@@ -932,6 +920,10 @@ exports.tasks = {
         files: watch.views,
         tasks: ['build-views']
     },
+    'watch-static': {
+        files: watch.static,
+        tasks: ['build-static']
+    },
     'watch-multiple': {
         files: watch.multiple,
         tasks: ['build-multiple']
@@ -942,21 +934,23 @@ exports.tasks = {
 
     //Nodemon
     'nodemonPure': function (mod) {
+        return new Promise((res, rej) => {
+            var started = false;
 
-        var started = false;
+            return nodemon({
+                script: 'radix.js',
+                ext: 'js',
+                args: ["launch", mod.settings.environment ? "in " + mod.settings.environment : ""],
+                watch: watch.server,
+                tasks: ['build-all']
+            }).on('start', function () {
+                res();
+                if (!started) {
+                    started = true;
+                }
+            }).on('restart', function () {
 
-        return nodemon({
-            script: 'radix.js',
-            ext: 'js',
-            args: ["launch", mod.settings.environment ? "in " + mod.settings.environment : ""],
-            watch: watch.server,
-            tasks: ['build-all']
-        }).on('start', function () {
-            if (!started) {
-                started = true;
-            }
-        }).on('restart', function () {
-
+            });
         });
     },
     'nodemon': ['watch-all', 'nodemonPure'],
@@ -979,6 +973,7 @@ exports.tasks = {
         }).on('restart', function () {
 
         });
+        return Promise.resolve();
     },
     'nodemon-dev': ['watch-all', 'nodemonPureDev'],
 
@@ -995,11 +990,15 @@ exports.tasks = {
             browser: _.browser || "",
             port: _.bsport
         });
+        return Promise.resolve();
     },
 
+    'ltools': ["nodemon", "browser-sync"],
+    'ltools-dev': ['nodemon-dev', 'browser-sync'],
+
     //serve
-    'serve-normal': ['build-all', 'nodemon', 'browser-sync'],
-    'serve-dev': ['build-all', 'nodemon-dev', 'browser-sync']
+    'serve-normal': {tasks: ['build-all', 'ltools'], sequence: true},
+    'serve-dev': {tasks: ['build-all', 'ltools-dev'], sequence: true}
 };
 
 exports.build = ['build-all'];
