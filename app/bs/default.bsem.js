@@ -849,7 +849,9 @@ exports.tasks = {
 
         Promise.all(streams).then(_ => {
             console.log("All css built");
-            browserSync.reload()
+            setTimeout(function(){
+                browserSync.reload();
+            }, 500);
         }).catch(err => {
             console.log(err);
             gutil.beep();
