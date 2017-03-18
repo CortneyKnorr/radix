@@ -34,7 +34,7 @@ function radix_dapis_files() {
                 return yield File.count({type: new RegExp(typeName+"\/[A-z]*", 'g')});
             },
 
-            delete: function*(fileId) {
+            remove: function*(fileId) {
                 let file = yield File.findById(fileId).lean();
 
                 yield new Promise(function (resolve, reject) {
@@ -45,13 +45,7 @@ function radix_dapis_files() {
             },
 
             update: function*(fileId, leanInstance) {
-                let file = yield File.findById(fileId);
-                if (file) {
-                    radix.dapis.wizards.objects.update(file, leanInstance);
-                    return yield file.save();
-                } else {
-                    return {};
-                }
+                return yield File.findByIdAndUpdate(fileId, leanInstance, {new: true});
             }
         },
         pehgs: {

@@ -193,6 +193,33 @@ exports.lex = {
 };
                         `).then(data => console.log(`Router ${mod.settings.name} managing users and access generated!`))
                         break;
+                    case "router/upload":
+                        writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name+".gen.router.js"), `function ${mod.settings.name}Router(){
+    let router = new RadixRouter;
+    let plug = radix.dapis.useful.ehgs.plug;
+    let upload = radix.dapis.files.pehgs.upload;
+    let restrictTo = radix.dapis.access.pehgs.restrictTo;
+    let handlers = radix.dapis.files.ehgs;
+
+    //Reusable extractors for dynamic args
+    let bodyExtractor = r => r.body;
+    let idExtractor = r => r.params.id;
+
+    router.onPost("/", upload(), plug(r => r.peh));
+
+    router.onGet("/pages/:page", handlers.getPaged(r => r.params.page, 20));
+
+    router.onRoute("/byId/:id")
+        .onAll(restrictTo(2)) //restrict to admins
+    	.onGet(handlers.get(idExtractor))
+    	.onPut(handlers.update(idExtractor, bodyExtractor))
+    	.onDelete(handlers.delete(idExtractor));
+    ;
+
+    return router;
+};
+                        `).then(data => console.log(`Router ${mod.settings.name} managing uploads and files generated!`))
+                        break;
                     case "model":
                         writeToFile("./sources/models/" + (mod.settings.path || mod.settings.name+".gen.model.js"), `function ${mod.settings.name}Model(){
     const mongoose = getDependency('mongoose');
