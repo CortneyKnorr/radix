@@ -755,7 +755,7 @@ exports.tasks = {
             }
         }
 
-        return Promise.all(streams).then(_ => browserSync.reload());
+        return Promise.all(streams).then(bsreload);
 
         // stream.on('end', browserSync.reload);
     },
@@ -774,7 +774,7 @@ exports.tasks = {
             ;
 
             stream.on('end', res);
-        }).then(_ => browserSync.reload())
+        }).then(bsreload)
     },
     'build-mts': function (mod) {
         return new Promise(function(res, rej){
@@ -792,7 +792,7 @@ exports.tasks = {
             ;
 
             stream.on('end', res);
-        }).then(_ => browserSync.reload())
+        }).then(bsreload)
     },
     'build-mviews':  function (mod) {
         return new Promise(function(res, rej){
@@ -805,7 +805,7 @@ exports.tasks = {
             ;
 
             stream.on('end', res);
-        }).then(_ => browserSync.reload())
+        }).then(bsreload)
     },
     'build-mstatic': function (mod) {
         return new Promise(function(res, rej){
@@ -816,7 +816,7 @@ exports.tasks = {
                 .on('error', rej)
                 .on('end', res)
             ;
-        }).then(_ => browserSync.reload())
+        }).then(bsreload)
     },
     'build-mcss': function (mod) {
         return new Promise(function(res, rej){
@@ -836,7 +836,7 @@ exports.tasks = {
             ;
 
             stream.on('end', res);
-        }).then(_ => browserSync.reload())
+        }).then(bsreload)
     },
     'build-serverPure': function (mod) {
         return new Promise(function(res, rej){
@@ -899,11 +899,7 @@ exports.tasks = {
             }));
         }
 
-        return Promise.all(streams).then(_ => {
-            setTimeout(function(){
-                browserSync.reload();
-            }, 500);
-        });
+        return Promise.all(streams).then(bsreload);
     },
     'build-ts': function (mod) {
         return new Promise(function(res, rej){
@@ -921,7 +917,7 @@ exports.tasks = {
             ;
 
             stream.on('end', res);
-        }).then(_ => browserSync.reload())
+        }).then(bsreload)
     },
     'build-views': function (mod) {
         return new Promise(function(res, rej){
@@ -933,7 +929,7 @@ exports.tasks = {
             ;
 
             stream.on('end', res);
-        }).then(_ => browserSync.reload())
+        }).then(bsreload)
     },
     'build-static': function (mod) {
         return new Promise(function(res, rej){
@@ -944,7 +940,7 @@ exports.tasks = {
                 .on('error', rej)
                 .on('end', res)
             ;
-        }).then(_ => browserSync.reload())
+        }).then(bsreload)
     },
     'build-multiple': [
         'build-mjs',
@@ -1249,4 +1245,16 @@ function generateRoutes(identifiers, mIdentifiers){
     }
 
     return str;
+}
+
+var bsreload_monitor = true;
+
+function bsreload(){
+    if(bsreload_monitor){
+        bsreload_monitor = false;
+        setTimeout(function(){
+            browserSync.reload();
+            bsreload_monitor = true;
+        }, 1000);
+    }
 }
