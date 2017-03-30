@@ -1,5 +1,5 @@
 //Requires and declares
-var gulp = require('gulp'),
+const gulp = require('gulp'),
     gutil = require('gulp-util'),
     path = require('path'),
     rollup = require('gulp-rollup'),
@@ -29,7 +29,6 @@ var gulp = require('gulp'),
     cssnano = require('cssnano');
 
 
-
 exports.before = (mod, ...args) => {
     mod.settings = {};
 };
@@ -57,29 +56,17 @@ exports.lex = {
         length: 0,
         handler: (mod, ...args) => {
             mod.task = "build";
-            if(mod.settings.spec){
-                mod.task += "-"+mod.settings.spec;
+            if (mod.settings.spec) {
+                mod.task += "-" + mod.settings.spec;
             }
-        }
-    },
-    module: {
-        length: 1,
-        handler: (mod, ...args) => {
-            mod.settings.module = args[0];
-        }
-    },
-    task: {
-        length: 1,
-        handler: (mod, ...args) => {
-            mod.task = args[0];
         }
     },
     watch: {
         length: 0,
         handler: (mod, ...args) => {
             mod.task = "watch";
-            if(mod.settings.spec){
-                mod.task += "-"+mod.settings.spec;
+            if (mod.settings.spec) {
+                mod.task += "-" + mod.settings.spec;
             }
         }
     },
@@ -110,10 +97,10 @@ exports.lex = {
     generate: {
         length: 1,
         handler: (mod, ...args) => {
-            if(mod.settings.name){
+            if (mod.settings.name) {
                 switch (args[0]) {
                     case "schema":
-                        writeToFile("./sources/schemas/" + (mod.settings.path || mod.settings.name+".gen.schema.js"), `module.exports = {
+                        writeToFile("./sources/schemas/" + (mod.settings.path || mod.settings.name + ".gen.schema.js"), `module.exports = {
     $$name: "${mod.settings.name}",
     foo: {type: String, required: true, identifier: true},
     bar: {type: String},
@@ -122,7 +109,7 @@ exports.lex = {
                         break;
                     case "router":
                     case "router/normal":
-                        writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name+".gen.router.js"), `function ${mod.settings.name}Router(){
+                        writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name + ".gen.router.js"), `function ${mod.settings.name}Router(){
     let router = new RadixRouter;
     let plug = radix.dapis.useful.ehgs.plug;
 
@@ -133,7 +120,7 @@ exports.lex = {
                         `).then(data => console.log(`Router ${mod.settings.name} generated!`))
                         break;
                     case "router/users":
-                        writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name+".gen.router.js"), `function ${mod.settings.name}Router(){
+                        writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name + ".gen.router.js"), `function ${mod.settings.name}Router(){
     let router = new RadixRouter;
 
     //some useful functions
@@ -194,7 +181,7 @@ exports.lex = {
                         `).then(data => console.log(`Router ${mod.settings.name} managing users and access generated!`))
                         break;
                     case "router/upload":
-                        writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name+".gen.router.js"), `function ${mod.settings.name}Router(){
+                        writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name + ".gen.router.js"), `function ${mod.settings.name}Router(){
     let router = new RadixRouter;
     let plug = radix.dapis.useful.ehgs.plug;
     let upload = radix.dapis.files.pehgs.upload;
@@ -213,15 +200,15 @@ exports.lex = {
         .onAll(restrictTo(2)) //restrict to admins
     	.onGet(handlers.get(idExtractor))
     	.onPut(handlers.update(idExtractor, bodyExtractor))
-    	.onDelete(handlers.delete(idExtractor));
+    	.onDelete(handlers.delete(idExtractor))
     ;
 
     return router;
-};
+}
                         `).then(data => console.log(`Router ${mod.settings.name} managing uploads and files generated!`))
                         break;
                     case "model":
-                        writeToFile("./sources/models/" + (mod.settings.path || mod.settings.name+".gen.model.js"), `function ${mod.settings.name}Model(){
+                        writeToFile("./sources/models/" + (mod.settings.path || mod.settings.name + ".gen.model.js"), `function ${mod.settings.name}Model(){
     const mongoose = getDependency('mongoose');
     const Schema = mongoose.Schema;
     const conv = radix.dapis.wizards.standards.ehgf13Arg;
@@ -308,7 +295,7 @@ exports.lex = {
                         break;
                     case "component/style":
                         let rootPath = "./sources/assets/stylesheets/";
-                        if(mod.settings.language != "scss" && mod.settings.language != "sass"){
+                        if (mod.settings.language != "scss" && mod.settings.language != "sass") {
                             console.log("Component does not support this language");
                             break;
                         }
@@ -355,7 +342,7 @@ exports.lex = {
 @media only screen and (min-width: 1025px)  {
   @import "_wide";
 }`;
-                        if(mod.settings.path){
+                        if (mod.settings.path) {
                             rootPath = path.join(rootPath, mod.settings.path);
                         }
                         let basePath = path.join(rootPath, mod.settings.name);
@@ -367,7 +354,7 @@ exports.lex = {
                             writeToFile(path.join(basePath, "_mobile." + extension), ""),
                             writeToFile(path.join(basePath, "_tablet." + extension), ""),
                             writeToFile(path.join(basePath, "_wide." + extension), ""),
-                            writeToFile(path.join(basePath, "main."+extension), (mod.settings.language == "sass" ? sassMod : scssMod))
+                            writeToFile(path.join(basePath, "main." + extension), (mod.settings.language == "sass" ? sassMod : scssMod))
                         ]).then(_ => {
                             console.log("Component generated");
                         }).catch(error => {
@@ -380,7 +367,7 @@ exports.lex = {
             } else {
                 switch (args[0]) {
                     case "crud":
-                        if(mod.settings.source){
+                        if (mod.settings.source) {
                             const mongoose = require('mongoose');
                             const Schema = mongoose.Schema;
                             const basePath = "../../sources/schemas/";
@@ -388,7 +375,7 @@ exports.lex = {
                             let test;
                             try {
                                 test = require(path.join(basePath, mod.settings.source));
-                            } catch (all){
+                            } catch (all) {
                                 console.log("A problem occured oppening " + path.join("[PSD]/schemas/", mod.settings.source));
                                 break;
                             }
@@ -396,24 +383,24 @@ exports.lex = {
                             let populateFields = [];
                             let identifiers = [];
                             let mIdentifiers = [];
-                            if(!test.$$name){
+                            if (!test.$$name) {
                                 console.log("Error no name for schema");
                                 break;
                             }
-                            for(let i in test){
-                                if(i.substr(0,2) == "$$") continue;
+                            for (let i in test) {
+                                if (i.substr(0, 2) == "$$") continue;
                                 let a = object[i] = {};
-                                for(let key in test[i]){
+                                for (let key in test[i]) {
                                     switch (key) {
                                         case "ref":
                                             a.ref = test[i][key];
                                             a.type = Schema.ObjectId;
-                                            if(test[i]["populate"]){
+                                            if (test[i]["populate"]) {
                                                 populateFields.push({path: i, select: test[i]["populate"].join(" ")});
                                             }
                                             break;
                                         case "identifier":
-                                            if(test[i]["unique"]){
+                                            if (test[i]["unique"]) {
                                                 identifiers.push(i);
                                             } else {
                                                 mIdentifiers.push(i);
@@ -547,7 +534,7 @@ exports.lex = {
 
     return router;
 }
-`
+`;
                                     return writeToFile(file2, content2);
                                 })
                                 .then(_ => {
@@ -570,7 +557,7 @@ exports.lex = {
             }
         }
     }
-}
+};
 
 exports.after = (mod, ...args) => {
     var node_env = mod.settings.environment = mod.settings.environment || "development";
@@ -728,11 +715,11 @@ exports.tasks = {
     'build-js': function (mod) {
         let prefix = mod.prefix;
         let bundles = bundling[mod.settings.environment || "development"] ? bundling[mod.settings.environment || "development"] : bundling.default || {};
-        if(bundling.global) {
+        if (bundling.global) {
             bundles.js = bundles.js.concat(bundling.global.js || []);
         }
         let streams = [];
-        streams.push(new Promise(function(res, rej){
+        streams.push(new Promise(function (res, rej) {
             gulp.src(io.javascript.in)
                 .pipe(debug())
                 .pipe(sourcemaps.init())
@@ -749,35 +736,35 @@ exports.tasks = {
         for (let bundle of (bundles.js || [])) {
             let files = bundle.files.map(file => path.join(io.javascript.root, file));
             if (bundle.async) {
-                streams.push(new Promise(function(res, rej){
+                streams.push(new Promise(function (res, rej) {
                     gulp.src(files)
-                    .pipe(debug())
-                    .pipe(sourcemaps.init())
-                    .pipe(rollupmep({
-                        format: "amd",
-                        sourceMap: true
-                    }))
-                    .pipe(concat(bundle.output))
-                    //only uglifyjs if gulp is ran with '--type production'
-                    .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
-                    .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
-                    .pipe(sourcemaps.write('./'))
-                    .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
-                    .on('error', rej)
-                    .on('end', res)
+                        .pipe(debug())
+                        .pipe(sourcemaps.init())
+                        .pipe(rollupmep({
+                            format: "amd",
+                            sourceMap: true
+                        }))
+                        .pipe(concat(bundle.output))
+                        //only uglifyjs if gulp is ran with '--type production'
+                        .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+                        .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+                        .pipe(sourcemaps.write('./'))
+                        .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
+                        .on('error', rej)
+                        .on('end', res)
                 }));
             } else {
-                streams.push(new Promise(function(res, rej){
-                gulp.src(files)
-                    .pipe(debug())
-                    .pipe(sourcemaps.init())
-                    .pipe(concat(bundle.output))
-                    .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
-                    .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
-                    .pipe(sourcemaps.write('./'))
-                    .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
-                    .on('error', rej)
-                    .on('end', res)
+                streams.push(new Promise(function (res, rej) {
+                    gulp.src(files)
+                        .pipe(debug())
+                        .pipe(sourcemaps.init())
+                        .pipe(concat(bundle.output))
+                        .pipe(gutil.env.type === 'production' ? traceur() : gutil.noop())
+                        .pipe(gutil.env.type === 'production' ? uglifyjs() : gutil.noop())
+                        .pipe(sourcemaps.write('./'))
+                        .pipe(gulp.dest(path.join(prefix, io.javascript.out)))
+                        .on('error', rej)
+                        .on('end', res)
                 }));
             }
         }
@@ -787,7 +774,7 @@ exports.tasks = {
         // stream.on('end', browserSync.reload);
     },
     'build-mjs': function (mod) {
-        return new Promise(function(res, rej){
+        return new Promise(function (res, rej) {
             let prefix = mod.prefix;
             let stream = gulp.src(io.multiple.in_js)
                 .pipe(debug())
@@ -804,7 +791,7 @@ exports.tasks = {
         }).then(bsreload)
     },
     'build-mts': function (mod) {
-        return new Promise(function(res, rej){
+        return new Promise(function (res, rej) {
             let prefix = mod.prefix;
             var stream = gulp.src(io.multiple.in_ts)
                 .pipe(debug())
@@ -821,8 +808,8 @@ exports.tasks = {
             stream.on('end', res);
         }).then(bsreload)
     },
-    'build-mviews':  function (mod) {
-        return new Promise(function(res, rej){
+    'build-mviews': function (mod) {
+        return new Promise(function (res, rej) {
             let prefix = mod.prefix;
             var stream = gulp.src(io.multiple.in_pug)
                 .pipe(debug())
@@ -835,7 +822,7 @@ exports.tasks = {
         }).then(bsreload)
     },
     'build-mstatic': function (mod) {
-        return new Promise(function(res, rej){
+        return new Promise(function (res, rej) {
             let prefix = mod.prefix;
             gulp.src(io.multiple.in_static)
                 .pipe(debug())
@@ -846,7 +833,7 @@ exports.tasks = {
         }).then(bsreload)
     },
     'build-mcss': function (mod) {
-        return new Promise(function(res, rej){
+        return new Promise(function (res, rej) {
             let prefix = mod.prefix;
             var processors = [
                 autoprefixer(),
@@ -866,7 +853,7 @@ exports.tasks = {
         }).then(bsreload)
     },
     'build-serverPure': function (mod) {
-        return new Promise(function(res, rej){
+        return new Promise(function (res, rej) {
             let prefix = mod.prefix;
             return gulp.src(io.server.in)
                 .pipe(debug())
@@ -880,13 +867,13 @@ exports.tasks = {
                 .pipe(gulp.dest(path.join(prefix, io.server.out)))
                 .on('error', rej)
                 .on('end', res)
-            ;
+                ;
         });
     },
     'build-css': function (mod) {
         let prefix = mod.prefix;
         let bundles = bundling[mod.settings.environment || "development"] ? bundling[mod.settings.environment || "development"] : bundling.default || {};
-        if(bundling.global) {
+        if (bundling.global) {
             bundles.css = bundles.css.concat(bundling.global.css || []);
         }
         var processors = [
@@ -894,16 +881,16 @@ exports.tasks = {
         ];
         let streams = [];
         streams.push(new Promise((res, rej) => {
-            gulp.src(io.stylesheets.in)
-                .pipe(debug())
-                .pipe(mod.settings.environment  === 'production' ? gutil.noop() : sourcemaps.init())
-                .pipe(sass().on('error', sass.logError))
-                .pipe(postcss(processors))
-                .pipe(mod.settings.environment === 'production' ? minifyCss() : gutil.noop())
-                .pipe(mod.settings.environment ? gutil.noop() : sourcemaps.write('./'))
-                .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)))
-                .on('error', rej)
-                .on('end', res)
+                gulp.src(io.stylesheets.in)
+                    .pipe(debug())
+                    .pipe(mod.settings.environment === 'production' ? gutil.noop() : sourcemaps.init())
+                    .pipe(sass().on('error', sass.logError))
+                    .pipe(postcss(processors))
+                    .pipe(mod.settings.environment === 'production' ? minifyCss() : gutil.noop())
+                    .pipe(mod.settings.environment ? gutil.noop() : sourcemaps.write('./'))
+                    .pipe(gulp.dest(path.join(prefix, io.stylesheets.out)))
+                    .on('error', rej)
+                    .on('end', res)
             }
         ));
 
@@ -929,7 +916,7 @@ exports.tasks = {
         return Promise.all(streams).then(bsreload);
     },
     'build-ts': function (mod) {
-        return new Promise(function(res, rej){
+        return new Promise(function (res, rej) {
             let prefix = mod.prefix;
             var stream = gulp.src(io.typescript.in)
                 .pipe(debug())
@@ -947,7 +934,7 @@ exports.tasks = {
         }).then(bsreload)
     },
     'build-views': function (mod) {
-        return new Promise(function(res, rej){
+        return new Promise(function (res, rej) {
             let prefix = mod.prefix;
             var stream = gulp.src(io.views.in)
                 .pipe(debug())
@@ -959,7 +946,7 @@ exports.tasks = {
         }).then(bsreload)
     },
     'build-static': function (mod) {
-        return new Promise(function(res, rej){
+        return new Promise(function (res, rej) {
             let prefix = mod.prefix;
             gulp.src(io.static.in)
                 .pipe(debug())
@@ -981,7 +968,7 @@ exports.tasks = {
     'build-all': ['build-front', 'build-server', 'build-multiple'],
 
     //watch tasks
-    'watch-css':  {
+    'watch-css': {
         files: watch.stylesheets,
         tasks: ["build-css"]
     },
@@ -1070,7 +1057,7 @@ exports.tasks = {
         var _ = env[node_env];
 
         browserSync.init(null, {
-            proxy: (_.https || _.http2 ? "https://localhost:":"http://localhost:") + (_.port.toString()),
+            proxy: (_.https || _.http2 ? "https://localhost:" : "http://localhost:") + (_.port.toString()),
             files: ["public/**/*.*"],
             browser: _.browser || "",
             port: _.bsport
@@ -1094,22 +1081,22 @@ exports.serve = ['serve-normal'];
 //local
 
 
-function formatSchema(object){
+function formatSchema(object) {
     const mongoose = require('mongoose');
     const Schema = mongoose.Schema;
 
     let str = "{";
     let i = 0;
-    for(let key in object){
+    for (let key in object) {
         i++;
-        if(i > 1) str += ",";
+        if (i > 1) str += ",";
         str += "\n        ";
         str += key + (object[key].array ? ": [{" : ": {");
         let j = 0;
-        for(prop in object[key]){
+        for (prop in object[key]) {
             j++;
-            if(prop == "type"){
-                if(j > 1) str += ", ";
+            if (prop == "type") {
+                if (j > 1) str += ", ";
                 str += prop + ": ";
                 switch (object[key]["type"]) {
                     case Schema.ObjectId:
@@ -1118,11 +1105,11 @@ function formatSchema(object){
                     default:
                         str += object[key]["type"].name;
                 }
-            } else if (prop == "array"){
+            } else if (prop == "array") {
             } else {
-                if(j > 1) str += ", ";
+                if (j > 1) str += ", ";
                 str += prop + ": ";
-                if(typeof object[key][prop] == "function"){
+                if (typeof object[key][prop] == "function") {
                     let strf = object[key][prop];
                     str += strf.toString();
                 } else {
@@ -1152,9 +1139,9 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function generateFcs(identifiers, mIdentifiers){
+function generateFcs(identifiers, mIdentifiers) {
     let str = "";
-    for(let identifier of identifiers){
+    for (let identifier of identifiers) {
         str += `
         by${capitalizeFirstLetter(identifier)}: function(${identifier}) {
             return {
@@ -1170,7 +1157,7 @@ function generateFcs(identifiers, mIdentifiers){
             }
         },`
     }
-    for(let identifier of mIdentifiers){
+    for (let identifier of mIdentifiers) {
         str += `
         by${capitalizeFirstLetter(identifier)}: function(${identifier}) {
             return {
@@ -1189,9 +1176,9 @@ function generateFcs(identifiers, mIdentifiers){
     return str;
 }
 
-function generateEhgs(identifiers, mIdentifiers){
+function generateEhgs(identifiers, mIdentifiers) {
     let str = "";
-    for(let identifier of identifiers){
+    for (let identifier of identifiers) {
         let tap = capitalizeFirstLetter(identifier);
         str += `
         by${tap}(${identifier}){
@@ -1222,7 +1209,7 @@ function generateEhgs(identifiers, mIdentifiers){
             }
         },`
     }
-    for(let identifier of mIdentifiers){
+    for (let identifier of mIdentifiers) {
         let tap = capitalizeFirstLetter(identifier);
         str += `
         by${tap}(${identifier}){
@@ -1256,10 +1243,10 @@ function generateEhgs(identifiers, mIdentifiers){
     return str;
 }
 
-function generateRoutes(identifiers, mIdentifiers){
+function generateRoutes(identifiers, mIdentifiers) {
     let str = "";
 
-    for(let identifier of identifiers.concat(mIdentifiers)){
+    for (let identifier of identifiers.concat(mIdentifiers)) {
         let res = capitalizeFirstLetter(identifier);
         str += `
     router.onRoute("/by${res}/:identifier")
@@ -1276,10 +1263,10 @@ function generateRoutes(identifiers, mIdentifiers){
 
 var bsreload_monitor = true;
 
-function bsreload(){
-    if(bsreload_monitor){
+function bsreload() {
+    if (bsreload_monitor) {
         bsreload_monitor = false;
-        setTimeout(function(){
+        setTimeout(function () {
             browserSync.reload();
             bsreload_monitor = true;
         }, 1000);
