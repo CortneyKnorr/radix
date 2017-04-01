@@ -107,6 +107,14 @@ exports.lex = {
     ano: {ref: "${mod.settings.name}", identifier: true, populate: []}
 }`).then(data => console.log(`Schema ${mod.settings.name} generated!`))
                         break;
+                    case "schema/users":
+                        writeToFile("./sources/schemas/" + (mod.settings.path || mod.settings.name + ".gen.schema.js"), `module.exports = {
+    $$name: "users",
+    username: {type: String, required: true, identifier: true, unique: true},
+    password: {type: String, required: true},
+    rights: {type: Number, identifier: true}
+}`).then(data => console.log(`Schema ${mod.settings.name} generated!`));
+                        break;
                     case "router":
                     case "router/normal":
                         writeToFile("./sources/routers/" + (mod.settings.path || mod.settings.name + ".gen.router.js"), `function ${mod.settings.name}Router(){
