@@ -247,9 +247,15 @@ exports.lex = {
     model.ehgs = {
         create(leanInstance){
             return function*(request, response, next){
-                return response.send(yield* model.fcs.create(
-                    conv(leanInstance, request, false)
-                ));
+                let data;
+                try {
+                    data = yield* model.fcs.create(
+                        conv(leanInstance, request, false)
+                    )
+                } catch(e) {
+                    next(500);
+                }
+                return response.send(data);
             }
         },
         get(page, length){
@@ -264,25 +270,43 @@ exports.lex = {
             return {
                 get(){
                     return function*(request, response, next){
-                        return response.send(yield* model.fcs.byId(
-                            conv(id, request, false)
-                        ).get());
+                        let data;
+                        try {
+                            data = yield* model.fcs.byId(
+                                conv(id, request, false)
+                            ).get();
+                            return response.send(data);
+                        } catch(e) {
+                            next(500);
+                        }
                     }
                 },
                 delete(){
                     return function*(request, response, next){
-                        return yield* model.fcs.byId(
-                            conv(id, request, false)
-                        ).delete();
+                        let data;
+                        try {
+                            data = yield* model.fcs.byId(
+                                conv(id, request, false)
+                            ).delete();
+                            return response.send(data);
+                        } catch(e) {
+                            next(500);
+                        }
                     }
                 },
                 update(leanInstance){
                     return function*(request, response, next){
-                        return response.send(yield* model.fcs.byId(
-                            conv(id, request, false)
-                        ).update(
-                            conv(leanInstance, request, false)
-                        ));
+                        let data;
+                        try {
+                            data = yield* model.fcs.byId(
+                                conv(id, request, false)
+                            ).update(
+                                conv(leanInstance, request, false)
+                            );
+                            return response.send(data);
+                        } catch(e) {
+                            next(500);
+                        }
                     }
                 }
             }
@@ -452,34 +476,54 @@ exports.lex = {
     model.ehgs = {
         create(leanInstance){
             return function*(request, response, next){
-                return response.send(yield* model.fcs.create(
-                    conv(leanInstance, request, false)
-                ));
+                try {
+                    let data = yield* model.fcs.create(
+                        conv(leanInstance, request, false)
+                    );
+                    return response.send(data);
+                } catch(e) {
+                    next(500);
+                }
             }
         },
         byId(id){
             return {
                 get(){
                     return function*(request, response, next){
-                        return response.send(yield* model.fcs.byId(
-                            conv(id, request, false)
-                        ).get());
+                        try {
+                            let data = yield* model.fcs.byId(
+                                conv(id, request, false)
+                            ).get();
+                            return response.send(data);
+                        } catch(e) {
+                            next(500);
+                        }
                     }
                 },
                 delete(){
                     return function*(request, response, next){
-                        return yield* model.fcs.byId(
-                            conv(id, request, false)
-                        ).delete();
+                        try {
+                            let data = yield* model.fcs.byId(
+                                conv(id, request, false)
+                            ).delete();
+                            return response.send(data);
+                        } catch(e) {
+                            next(500);
+                        }
                     }
                 },
                 update(leanInstance){
                     return function*(request, response, next){
-                        return response.send(yield* model.fcs.byId(
-                            conv(id, request, false)
-                        ).update(
-                            conv(leanInstance, request, false)
-                        ));
+                        try {
+                            let data = yield* model.fcs.byId(
+                                conv(id, request, false)
+                            ).update(
+                                conv(leanInstance, request, false)
+                            );
+                            return response.send(data);
+                        } catch(e) {
+                            next(500);
+                        }
                     }
                 }
             }
@@ -1185,25 +1229,43 @@ function generateEhgs(identifiers, mIdentifiers) {
             return {
                 get(){
                     return function*(request, response, next){
-                        return response.send(yield* model.fcs.by${tap}(
-                            conv(${identifier}, request, false)
-                        ).get());
+                        let data;
+                        try {
+                            data = yield* model.fcs.by${tap}(
+                                conv(${identifier}, request, false)
+                            ).get();
+                        } catch(e) {
+                            next(500);
+                        }
+                        return response.send(data);
                     }
                 },
                 delete(){
                     return function*(request, response, next){
-                        return yield* model.fcs.by${tap}(
-                            conv(${identifier}, request, false)
-                        ).delete();
+                        let data;
+                        try {
+                            data = yield* model.fcs.by${tap}(
+                                conv(${identifier}, request, false)
+                            ).delete();
+                        } catch(e) {
+                            next(500);
+                        }
+                        return response.send(data);
                     }
                 },
                 update(leanInstance){
                     return function*(request, response, next){
-                        return response.send(yield* model.fcs.by${tap}(
-                            conv(${identifier}, request, false)
-                        ).update(
-                            conv(leanInstance, request, false)
-                        ));
+                        let data;
+                        try {
+                            data = yield* model.fcs.by${tap}(
+                                conv(${identifier}, request, false)
+                            ).update(
+                                conv(leanInstance, request, false)
+                            );
+                        } catch(e) {
+                            next(500);
+                        }
+                        response.send(data);
                     }
                 }
             }
@@ -1216,25 +1278,40 @@ function generateEhgs(identifiers, mIdentifiers) {
             return {
                 get(){
                     return function*(request, response, next){
-                        return response.send(yield* model.fcs.by${tap}(
-                            conv(${identifier}, request, false)
-                        ).get());
+                        try {
+                            let data = yield* model.fcs.by${tap}(
+                                conv(${identifier}, request, false)
+                            ).get();
+                            response.send(data);
+                        } catch(e) {
+                            next(500);
+                        }
                     }
                 },
                 delete(){
                     return function*(request, response, next){
-                        return yield* model.fcs.by${tap}(
-                            conv(${identifier}, request, false)
-                        ).delete();
+                        try {
+                            let data = yield* model.fcs.by${tap}(
+                                conv(${identifier}, request, false)
+                            ).delete();
+                            response.send(data);
+                        } catch(e) {
+                            next(500);
+                        }
                     }
                 },
                 update(leanInstance){
                     return function*(request, response, next){
-                        return response.send(yield* model.fcs.by${tap}(
-                            conv(${identifier}, request, false)
-                        ).update(
-                            conv(leanInstance, request, false)
-                        ));
+                        try {
+                            let data = yield* model.fcs.by${tap}(
+                                conv(${identifier}, request, false)
+                            ).update(
+                                conv(leanInstance, request, false)
+                            );
+                            response.send(data);
+                        } catch(e) {
+                            next(500);
+                        }
                     }
                 }
             }
