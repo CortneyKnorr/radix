@@ -46,13 +46,6 @@ function controlFlowCall(controlFlow) {
                 console.log("\033[37m asd" + e + "\033[0m");
             }
         }
-    })).catch(e => {
-        if(radix.globals.WORKER){
-            console.log(radix.helpers.colors.RED + "Error");
-            console.log(e.toString());
-            console.log(radix.helpers.colors.RESET);
-            radix.globals.WORKER.kill();
-        }
-    });
+    }));
 
 }

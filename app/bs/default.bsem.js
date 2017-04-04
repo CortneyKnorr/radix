@@ -105,7 +105,7 @@ exports.lex = {
     foo: {type: String, required: true, identifier: true},
     bar: {type: String},
     ano: {ref: "${mod.settings.name}", identifier: true, populate: []}
-}`).then(data => console.log(`Schema ${mod.settings.name} generated!`))
+};`).then(data => console.log(`Schema ${mod.settings.name} generated!`));
                         break;
                     case "schema/users":
                         writeToFile("./sources/schemas/" + (mod.settings.path || mod.settings.name + ".gen.schema.js"), `module.exports = {
@@ -113,7 +113,7 @@ exports.lex = {
     username: {type: String, required: true, identifier: true, unique: true},
     password: {type: String, required: true},
     rights: {type: Number, identifier: true}
-}`).then(data => console.log(`Schema ${mod.settings.name} generated!`));
+};`).then(data => console.log(`Schema ${mod.settings.name} generated!`));
                         break;
                     case "router":
                     case "router/normal":
@@ -124,7 +124,7 @@ exports.lex = {
     router.onGet("/", plug("Hello world"));
 
     return router;
-};
+}
                         `).then(data => console.log(`Router ${mod.settings.name} generated!`))
                         break;
                     case "router/users":
@@ -181,7 +181,7 @@ exports.lex = {
         .onAll(restrictTo(2)) //restrict to admins
     	.onGet(handlers.get(idExtractor))
     	.onPut(handlers.update(idExtractor, bodyExtractor))
-    	.onDelete(handlers.remove(idExtractor));
+    	.onDelete(handlers.remove(idExtractor))
     ;
 
     return router;
@@ -1168,10 +1168,14 @@ function formatSchema(object) {
                     switch (prop) {
                         case "get":
                         case "set":
-                        case "default":
                         case "validate":
                             str += object[key][prop].toString();
                             break;
+                        case "default":
+                            if(typeof object[key][prop] !== "string"){
+                                str += object[key][prop].toString();
+                                break;
+                            }
                         default:
                             str += "'";
                             str += object[key][prop].toString();
