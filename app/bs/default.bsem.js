@@ -415,6 +415,7 @@ exports.lex = {
                             let populateFields = [];
                             let identifiers = [];
                             let mIdentifiers = [];
+                            let fieldSets = [];
                             if (!test.$$name) {
                                 console.log("Error no name for schema");
                                 break;
@@ -430,6 +431,9 @@ exports.lex = {
                                             if (test[i]["populate"]) {
                                                 populateFields.push({path: i, select: test[i]["populate"].join(" ")});
                                             }
+                                            break;
+                                        case "fieldSet":
+                                            fieldSets.push(i);
                                             break;
                                         case "identifier":
                                             if (test[i]["unique"]) {
@@ -478,7 +482,21 @@ exports.lex = {
         },${generateFcs(identifiers, mIdentifiers)}
         get: function* get(page, length){
             return yield model.find().skip(page*length).limit(length).lean();
-        }
+        }${(()=>{
+                if(fieldSets.length) {
+                    let str = `,        
+        fieldSet: {`;
+                    str += fieldSets.map(key =>`
+            ${key}: function* (){
+                return yield model.distinct("${key}");
+            }`).join(",");
+                    str += `
+        }`;
+                    return str;
+                } else {
+                    return "";
+                }
+            })()}
     };
 
     model.ehgs = {
@@ -543,7 +561,108 @@ exports.lex = {
                     conv(length, request, false)
                 ));
             }
-        }
+        }${(()=>{
+            if(fieldSets.length) {
+                let str = `,        
+        fieldSet: {`;
+                str += fieldSets.map(key =>`
+            ${key}: function*(request, response, next){
+                return response.send(yield* model.fcs.fieldSet.${key}());
+            }`).join(",");
+                str += `
+        }`;
+                return str;
+            } else {
+                return "";
+            }
+        })()}
+    };
+    
+    model.pehgs = {
+        create(leanInstance){
+            return function*(request, response, next){
+                try {
+                    let data = yield* model.fcs.create(
+                        conv(leanInstance, request, false)
+                    );
+                    request.peh${capitalizeFirstLetter(test.$$name)} = data;
+                    next();
+                } catch(e) {
+                    next(500);
+                }
+            }
+        },
+        byId(id){
+            return {
+                get(){
+                    return function*(request, response, next){
+                        try {
+                            let data = yield* model.fcs.byId(
+                                conv(id, request, false)
+                            ).get();
+                            request.peh${capitalizeFirstLetter(test.$$name)} = data;
+                            next();
+                        } catch(e) {
+                            next(500);
+                        }
+                    }
+                },
+                delete(){
+                    return function*(request, response, next){
+                        try {
+                            let data = yield* model.fcs.byId(
+                                conv(id, request, false)
+                            ).delete();
+                            request.peh${capitalizeFirstLetter(test.$$name)} = data;
+                            next();
+                        } catch(e) {
+                            next(500);
+                        }
+                    }
+                },
+                update(leanInstance){
+                    return function*(request, response, next){
+                        try {
+                            let data = yield* model.fcs.byId(
+                                conv(id, request, false)
+                            ).update(
+                                conv(leanInstance, request, false)
+                            );
+                            request.peh${capitalizeFirstLetter(test.$$name)} = data;
+                            next();
+                        } catch(e) {
+                            next(500);
+                        }
+                    }
+                }
+            }
+        },${generatePehgs(identifiers, mIdentifiers, capitalizeFirstLetter(test.$$name))}
+        get(page, length){
+            return function*(request, response, next){
+                let data = yield* model.fcs.get(
+                    conv(page, request, false),
+                    conv(length, request, false)
+                );
+                request.peh${capitalizeFirstLetter(test.$$name)} = data;
+                next();
+            }
+        }${(()=>{
+                                if(fieldSets.length) {
+                                    let str = `,        
+        fieldSet: {`;
+                                    str += fieldSets.map(key =>`
+            ${key}: function*(request, response, next){
+                let data = yield* model.fcs.fieldSet.${key}();
+                request.peh${capitalizeFirstLetter(test.$$name)} = data;
+                next();
+            }`).join(",");
+                                    str += `
+        }`;
+                                    return str;
+                                } else {
+                                    return "";
+                                }
+                            })()}
     };
 
     return model;
@@ -1259,10 +1378,10 @@ function generateEhgs(identifiers, mIdentifiers) {
                             data = yield* model.fcs.by${tap}(
                                 conv(${identifier}, request, false)
                             ).delete();
+                            return response.send(data);
                         } catch(e) {
                             next(500);
                         }
-                        return response.send(data);
                     }
                 },
                 update(leanInstance){
@@ -1274,10 +1393,10 @@ function generateEhgs(identifiers, mIdentifiers) {
                             ).update(
                                 conv(leanInstance, request, false)
                             );
+                            return response.send(data);
                         } catch(e) {
                             next(500);
                         }
-                        response.send(data);
                     }
                 }
             }
@@ -1321,6 +1440,111 @@ function generateEhgs(identifiers, mIdentifiers) {
                                 conv(leanInstance, request, false)
                             );
                             response.send(data);
+                        } catch(e) {
+                            next(500);
+                        }
+                    }
+                }
+            }
+        },`
+    }
+    return str;
+}
+function generatePehgs(identifiers, mIdentifiers, name) {
+    let str = "";
+    for (let identifier of identifiers) {
+        let tap = capitalizeFirstLetter(identifier);
+        str += `
+        by${tap}(${identifier}){
+            return {
+                get(){
+                    return function*(request, response, next){
+                        let data;
+                        try {
+                            data = yield* model.fcs.by${tap}(
+                                conv(${identifier}, request, false)
+                            ).get();
+                            request.peh${name} = data;
+                            next();
+                        } catch(e) {
+                            next(500);
+                        }
+                    }
+                },
+                delete(){
+                    return function*(request, response, next){
+                        let data;
+                        try {
+                            data = yield* model.fcs.by${tap}(
+                                conv(${identifier}, request, false)
+                            ).delete();
+                            request.peh${name} = data;
+                            next();
+                        } catch(e) {
+                            next(500);
+                        }
+                    }
+                },
+                update(leanInstance){
+                    return function*(request, response, next){
+                        let data;
+                        try {
+                            data = yield* model.fcs.by${tap}(
+                                conv(${identifier}, request, false)
+                            ).update(
+                                conv(leanInstance, request, false)
+                            );
+                            request.peh${name} = data;
+                            next();
+                        } catch(e) {
+                            next(500);
+                        }
+                    }
+                }
+            }
+        },`
+    }
+    for (let identifier of mIdentifiers) {
+        let tap = capitalizeFirstLetter(identifier);
+        str += `
+        by${tap}(${identifier}){
+            return {
+                get(){
+                    return function*(request, response, next){
+                        try {
+                            let data = yield* model.fcs.by${tap}(
+                                conv(${identifier}, request, false)
+                            ).get();
+                            request.peh${name} = data;
+                            next();
+                        } catch(e) {
+                            next(500);
+                        }
+                    }
+                },
+                delete(){
+                    return function*(request, response, next){
+                        try {
+                            let data = yield* model.fcs.by${tap}(
+                                conv(${identifier}, request, false)
+                            ).delete();
+                            request.peh${name} = data;
+                            next();
+                        } catch(e) {
+                            next(500);
+                        }
+                    }
+                },
+                update(leanInstance){
+                    return function*(request, response, next){
+                        try {
+                            let data = yield* model.fcs.by${tap}(
+                                conv(${identifier}, request, false)
+                            ).update(
+                                conv(leanInstance, request, false)
+                            );
+                            request.peh${name} = data;
+                            next();
                         } catch(e) {
                             next(500);
                         }
