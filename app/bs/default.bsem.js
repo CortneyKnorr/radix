@@ -682,7 +682,7 @@ exports.lex = {
     let limit = radix.dapis.access.pehgs.restrictTo;
 
 
-    let bodyInjector    = request => request.body;
+    let bodyInjector    = ${test.$$dataInjector || "request => request.body"};
     let idInjector      = request => request.params.identifier;
 
     router.onRoute("/")
