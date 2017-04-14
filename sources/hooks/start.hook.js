@@ -1,3 +1,0 @@
-function* hooks_start() {
-    
-}
