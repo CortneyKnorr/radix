@@ -1,0 +1,136 @@
+{
+  "description": "Configuration file for ACCESS DAPI",
+  "namespace": true,
+
+  "adminUser": {
+    "description": "login information for superuser/admin.",
+    "namespace": true,
+
+    "login": {
+      "description": "The pseudonime/login",
+      "namespace": false,
+      "value": "admin"
+    },
+    "password": {
+      "description": "The password in sha256 form to keep it safe",
+      "namespace": false,
+      "value": "37bd45d638c2d11c49c641d2e9c4f49f406caf3ee282743e0c800aa1ed68e2ee"
+    }
+  },
+
+  "rights": {
+    "description": "Different rights",
+    "namespace": true,
+
+    "1":  {
+      "canCreateGroup": {
+        "description": "",
+        "namespace": false,
+        "value": true
+      },
+      "canCreateUser": {
+        "description": "",
+        "namespace": false,
+        "value": true
+      },
+      "canChangeGroup": {
+        "description": "",
+        "namespace": false,
+        "value": true
+      },
+      "canChangeUser": {
+        "description": "",
+        "namespace": false,
+        "value": true
+      }
+    },
+    "2":  {
+      "canCreateGroup": {
+        "description": "",
+        "namespace": false,
+        "value": true
+      },
+      "canCreateUser": {
+        "description": "",
+        "namespace": false,
+        "value": false
+      },
+      "canChangeGroup": {
+        "description": "",
+        "namespace": false,
+        "value": true
+      },
+      "canChangeUser": {
+        "description": "",
+        "namespace": false,
+        "value": true
+      }
+    },
+    "3":  {
+      "canCreateGroup": {
+        "description": "",
+        "namespace": false,
+        "value": false
+      },
+      "canCreateUser": {
+        "description": "",
+        "namespace": false,
+        "value": false
+      },
+      "canChangeGroup": {
+        "description": "",
+        "namespace": false,
+        "value": false
+      },
+      "canChangeUser": {
+        "description": "",
+        "namespace": false,
+        "value": false
+      }
+    },
+    "4":  {
+      "canCreateGroup": {
+        "description": "",
+        "namespace": false,
+        "value": false
+      },
+      "canCreateUser": {
+        "description": "",
+        "namespace": false,
+        "value": false
+      },
+      "canChangeGroup": {
+        "description": "",
+        "namespace": false,
+        "value": false
+      },
+      "canChangeUser": {
+        "description": "",
+        "namespace": false,
+        "value": false
+      }
+    },
+    "5":  {
+      "canCreateGroup": {
+        "description": "",
+        "namespace": false,
+        "value": false
+      },
+      "canCreateUser": {
+        "description": "",
+        "namespace": false,
+        "value": false
+      },
+      "canChangeGroup": {
+        "description": "",
+        "namespace": false,
+        "value": false
+      },
+      "canChangeUser": {
+        "description": "",
+        "namespace": false,
+        "value": false
+      }
+    }
+  }
+}

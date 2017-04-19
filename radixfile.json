@@ -1,0 +1,15 @@
+{
+  "bsems": {
+
+  },
+  "mongo": {
+    "url": "mongodb://127.0.0.1/StackDev",
+    "user": "",
+    "password": ""
+  },
+  "redis": {
+    "host": "127.0.0.1",
+    "port": "6379",
+    "prefix": "radix"
+  }
+}
