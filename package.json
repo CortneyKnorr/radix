@@ -27,6 +27,6 @@
   },
   "homepage": "https://github.com/radixjs/radix#readme",
   "dependencies": {
-    "radixjs": "^1.1.0"
+    "radixjs": "^2.0.0"
   }
 }
