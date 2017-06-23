@@ -3,7 +3,7 @@ function* hooks_serializer(user, done) {
 }
 
 function* hooks_deserializer(id, done) {
-    let User = $libraries.models.users;
+    let User = $libraries.Users;
     if(id === "admin"){
         done(null, {admin : "true", id: "admin"})
     } else {
